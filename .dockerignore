@@ -1,0 +1,43 @@
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Nuxt
+.nuxt
+.output
+.data
+.cache
+dist
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+*.md
+!package.json
+
+# Tests
+coverage
+.nyc_output
+
+# Misc
+*.log

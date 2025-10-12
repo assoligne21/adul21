@@ -1,0 +1,32 @@
+# Configuration Coolify pour ADUL21
+
+# Type de déploiement
+type: dockerfile
+
+# Port exposé par l'application
+port: 3000
+
+# Healthcheck
+healthcheck:
+  path: /
+  interval: 30
+  timeout: 10
+  retries: 3
+
+# Build settings
+build:
+  dockerfile: Dockerfile
+  context: .
+
+# Variables d'environnement (à définir dans Coolify UI)
+# SITE_URL
+# SUPABASE_URL
+# SUPABASE_KEY
+# SUPABASE_SERVICE_KEY
+# STRIPE_PUBLISHABLE_KEY
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
+# RESEND_API_KEY
+# EMAIL_FROM
+# JWT_SECRET
+# PLAUSIBLE_DOMAIN

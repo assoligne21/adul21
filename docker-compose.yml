@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  adul21-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: adul21-website
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Général
+      - NODE_ENV=production
+      - SITE_URL=${SITE_URL}
+
+      # Supabase
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+
+      # Stripe
+      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+
+      # Email (Resend)
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - EMAIL_FROM=${EMAIL_FROM}
+
+      # Auth
+      - JWT_SECRET=${JWT_SECRET}
+
+      # Analytics
+      - PLAUSIBLE_DOMAIN=${PLAUSIBLE_DOMAIN}
+    networks:
+      - adul21-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  adul21-network:
+    driver: bridge
