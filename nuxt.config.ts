@@ -73,7 +73,18 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'node-server'
+    preset: 'node-server',
+    // Force bundling of problematic runtime imports
+    externals: {
+      inline: [
+        '@nuxt/ui-pro'
+      ]
+    },
+    // Ensure Node.js can resolve modules from parent directories
+    nodeModulesDirs: [
+      './node_modules',
+      '../node_modules'
+    ]
   },
 
   typescript: {

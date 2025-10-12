@@ -35,6 +35,10 @@ COPY --from=builder /app/package*.json /app/
 # Installer les dépendances de production
 RUN npm ci --omit=dev
 
+# Créer un symlink pour que Nuxt trouve les modules au bon endroit
+RUN mkdir -p /app/.output/server && \
+    ln -s /app/node_modules /app/.output/server/node_modules
+
 # Variables d'environnement par défaut
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
