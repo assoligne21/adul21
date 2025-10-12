@@ -54,15 +54,16 @@
           </p>
         </div>
 
-        <!-- CTA Buttons -->
-        <div class="flex flex-wrap justify-center gap-4 pt-4">
+        <!-- CTA Buttons - Enhanced visibility -->
+        <div class="flex flex-wrap justify-center gap-6 pt-6">
           <UButton
             to="/temoignages/nouveau"
             color="red"
             size="xl"
             icon="i-heroicons-document-text"
             label="Témoigner"
-            class="shadow-2xl"
+            class="shadow-2xl hover:shadow-red-500/50 hover:scale-105 transition-all duration-300 text-lg px-10 py-6 font-bold uppercase tracking-wide"
+            :ui="{ rounded: 'rounded-xl' }"
           />
           <UButton
             to="/rejoindre/adherer"
@@ -70,7 +71,8 @@
             size="xl"
             icon="i-heroicons-user-plus"
             label="Adhérer"
-            class="shadow-2xl"
+            class="shadow-2xl hover:shadow-white/50 hover:scale-105 transition-all duration-300 text-lg px-10 py-6 font-bold uppercase tracking-wide"
+            :ui="{ rounded: 'rounded-xl' }"
           />
           <UButton
             to="/revendications"
@@ -79,6 +81,8 @@
             size="xl"
             trailing-icon="i-heroicons-arrow-right"
             label="Nos revendications"
+            class="hover:bg-white/10 hover:scale-105 transition-all duration-300 text-lg px-8 py-6 font-semibold border-2"
+            :ui="{ rounded: 'rounded-xl' }"
           />
         </div>
 
