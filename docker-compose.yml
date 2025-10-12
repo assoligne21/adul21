@@ -3,7 +3,6 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: adul21-postgres
     restart: unless-stopped
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-adul21}
@@ -25,10 +24,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: adul21-website
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     environment:
       # Général
       - NODE_ENV=production
