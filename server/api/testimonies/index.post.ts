@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseServiceRole } from '~/server/utils/supabase-compat'
 
 // Helper function to get user type label
 const getUserTypeLabel = (type: string): string => {

@@ -202,11 +202,13 @@ const fetchTestimony = async () => {
 
     testimony.value = data
 
-    // Increment views count
-    await supabase
-      .from('testimonies')
-      .update({ views_count: data.views_count + 1 })
-      .eq('id', id)
+    // Increment views count via API
+    try {
+      await $fetch(`/api/testimonies/${id}/increment-views`, { method: 'POST' })
+    } catch (e) {
+      // Silently fail - views count is not critical
+      console.error('Failed to increment views:', e)
+    }
   } catch (e: any) {
     console.error('Error fetching testimony:', e)
     error.value = e.message || 'Impossible de charger le témoignage'

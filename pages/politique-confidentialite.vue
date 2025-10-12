@@ -263,15 +263,15 @@
 
               <div class="space-y-4 mt-4">
                 <div class="bg-gray-50 rounded-lg p-4">
-                  <h4 class="font-bold text-gray-900 mb-2">Supabase (base de données)</h4>
+                  <h4 class="font-bold text-gray-900 mb-2">PostgreSQL (base de données)</h4>
                   <p class="text-sm mb-2">
                     <strong>Service :</strong> Hébergement et gestion de la base de données contenant vos informations (témoignages, adhésions, contacts, dons)
                   </p>
                   <p class="text-sm mb-2">
-                    <strong>Localisation :</strong> Serveurs hébergés dans l'Union Européenne
+                    <strong>Localisation :</strong> Serveurs hébergés en France
                   </p>
                   <p class="text-sm">
-                    <strong>Conformité RGPD :</strong> Supabase est conforme au RGPD et a signé les clauses contractuelles types de l'UE
+                    <strong>Conformité RGPD :</strong> Base de données hébergée en France, conforme au RGPD
                   </p>
                 </div>
 

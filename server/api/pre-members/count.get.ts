@@ -1,4 +1,4 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseServiceRole } from '~/server/utils/supabase-compat'
 
 export default defineEventHandler(async (event) => {
   try {

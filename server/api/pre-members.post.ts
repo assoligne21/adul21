@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseServiceRole } from '~/server/utils/supabase-compat'
 
 // Validation schema
 const preMemberSchema = z.object({
