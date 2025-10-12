@@ -18,17 +18,18 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys (server-only)
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY || '',
-    stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
-    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
-    resendApiKey: process.env.RESEND_API_KEY || '',
     jwtSecret: process.env.JWT_SECRET || '',
+
+    // Gmail SMTP configuration
+    gmailUser: process.env.GMAIL_USER || '',
+    gmailAppPassword: process.env.GMAIL_APP_PASSWORD || '',
+    emailFrom: process.env.EMAIL_FROM || 'ADUL21 <assoligne21@gmail.com>',
 
     // Public keys (exposed to client)
     public: {
       siteUrl: process.env.SITE_URL || 'http://localhost:3000',
       supabaseUrl: process.env.SUPABASE_URL || '',
       supabaseKey: process.env.SUPABASE_KEY || '',
-      stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
       plausibleDomain: process.env.PLAUSIBLE_DOMAIN || 'adul21.fr'
     }
   },

@@ -41,8 +41,8 @@ CREATE TABLE members (
   membership_status VARCHAR(20) DEFAULT 'pending' CHECK (membership_status IN ('pending', 'active', 'expired', 'cancelled')),
   membership_start_date DATE,
   membership_end_date DATE,
-  payment_method VARCHAR(50) CHECK (payment_method IN ('card', 'paypal', 'check', 'transfer', 'cash')),
-  stripe_customer_id VARCHAR(100),
+  payment_method VARCHAR(50) CHECK (payment_method IN ('check', 'transfer', 'cash')),
+  payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'confirmed', 'failed')),
 
   -- Engagement
   wants_to_participate BOOLEAN DEFAULT FALSE,
@@ -176,15 +176,11 @@ CREATE TABLE donations (
   -- Don
   amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0),
   currency VARCHAR(3) DEFAULT 'EUR',
-  payment_method VARCHAR(50) CHECK (payment_method IN ('card', 'paypal', 'check', 'transfer', 'cash')),
-
-  -- Stripe
-  stripe_payment_intent_id VARCHAR(100) UNIQUE,
-  stripe_customer_id VARCHAR(100),
+  payment_method VARCHAR(50) CHECK (payment_method IN ('check', 'transfer', 'cash')),
 
   -- Statut
-  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
-  completed_at TIMESTAMPTZ,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'failed')),
+  confirmed_at TIMESTAMPTZ,
 
   -- Reçu fiscal
   receipt_sent BOOLEAN DEFAULT FALSE,
@@ -194,7 +190,8 @@ CREATE TABLE donations (
   accepts_newsletter BOOLEAN DEFAULT FALSE,
 
   -- Notes
-  message TEXT
+  message TEXT,
+  admin_notes TEXT
 );
 
 -- Index
@@ -203,46 +200,9 @@ CREATE INDEX idx_donations_status ON donations(status);
 CREATE INDEX idx_donations_created ON donations(created_at DESC);
 
 -- ============================================
--- TABLE : subscriptions (Dons mensuels)
+-- TABLE REMOVED: subscriptions (Dons mensuels)
+-- NOTE: Table supprimée - sera réactivée avec Stripe dans le futur
 -- ============================================
-
-CREATE TABLE subscriptions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
-
-  -- Abonné
-  email VARCHAR(255) NOT NULL,
-  first_name VARCHAR(100),
-  last_name VARCHAR(100),
-
-  -- Abonnement
-  amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0),
-  currency VARCHAR(3) DEFAULT 'EUR',
-  billing_day INT DEFAULT 5 CHECK (billing_day BETWEEN 1 AND 28),
-
-  -- Stripe
-  stripe_subscription_id VARCHAR(100) UNIQUE NOT NULL,
-  stripe_customer_id VARCHAR(100) NOT NULL,
-
-  -- Statut
-  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'paused', 'cancelled', 'past_due')),
-  start_date TIMESTAMPTZ NOT NULL,
-  end_date TIMESTAMPTZ,
-  cancel_at_period_end BOOLEAN DEFAULT FALSE,
-
-  -- Consentements
-  accepts_newsletter BOOLEAN DEFAULT FALSE
-);
-
--- Index
-CREATE INDEX idx_subscriptions_email ON subscriptions(email);
-CREATE INDEX idx_subscriptions_status ON subscriptions(status);
-CREATE INDEX idx_subscriptions_stripe_id ON subscriptions(stripe_subscription_id);
-
--- Trigger updated_at
-CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions
-FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================
 -- TABLE : downloads (Tracking téléchargements)
@@ -368,7 +328,7 @@ SELECT
   COUNT(*) as count,
   SUM(amount) as total_amount
 FROM donations
-WHERE status = 'completed'
+WHERE status = 'confirmed'
 GROUP BY month
 ORDER BY month DESC;
 
@@ -380,7 +340,6 @@ ORDER BY month DESC;
 ALTER TABLE members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE donations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE downloads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE news ENABLE ROW LEVEL SECURITY;
 ALTER TABLE incidents ENABLE ROW LEVEL SECURITY;
