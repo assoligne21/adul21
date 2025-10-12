@@ -31,6 +31,7 @@ WORKDIR /app
 # Copier les fichiers nécessaires depuis le build
 COPY --from=builder /app/.output /app/.output
 COPY --from=builder /app/package*.json /app/
+COPY --from=builder /app/node_modules /app/node_modules
 
 # Variables d'environnement par défaut
 ENV NODE_ENV=production
