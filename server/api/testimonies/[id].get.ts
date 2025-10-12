@@ -1,4 +1,6 @@
-import { serverSupabaseServiceRole } from '../../utils/supabase-compat.ts'
+import { eq, and } from 'drizzle-orm'
+import { db } from '~/server/database/connection'
+import { testimonies } from '~/server/database/schema'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,17 +13,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const supabase = serverSupabaseServiceRole(event)
+    // Fetch testimony by ID
+    const [testimony] = await db
+      .select()
+      .from(testimonies)
+      .where(
+        and(
+          eq(testimonies.id, id),
+          eq(testimonies.isPublished, true),
+          eq(testimonies.moderationStatus, 'approved')
+        )
+      )
+      .limit(1)
 
-    const { data, error } = await supabase
-      .from('testimonies')
-      .select('*')
-      .eq('id', id)
-      .eq('is_published', true)
-      .eq('moderation_status', 'approved')
-      .single()
-
-    if (error || !data) {
+    if (!testimony) {
       throw createError({
         statusCode: 404,
         statusMessage: 'Témoignage introuvable'
@@ -30,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      data
+      data: testimony
     }
   } catch (error: any) {
     console.error('Error fetching testimony:', error)
