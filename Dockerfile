@@ -32,8 +32,8 @@ WORKDIR /app
 COPY --from=builder /app/.output /app/.output
 COPY --from=builder /app/package*.json /app/
 
-# Copier node_modules dans le dossier où Nuxt s'attend à les trouver
-COPY --from=builder /app/node_modules /app/.output/server/node_modules
+# Installer les dépendances de production
+RUN npm ci --omit=dev
 
 # Variables d'environnement par défaut
 ENV NODE_ENV=production
