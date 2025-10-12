@@ -36,9 +36,9 @@ COPY --from=builder /app/package*.json /app/
 # a besoin de tailwindcss à runtime et le bundling ne fonctionne pas correctement
 RUN npm ci
 
-# Créer un symlink pour que Nuxt trouve les modules au bon endroit
+# Copier node_modules au lieu d'un symlink (les symlinks ne fonctionnent pas bien avec ESM)
 RUN mkdir -p /app/.output/server && \
-    ln -s /app/node_modules /app/.output/server/node_modules
+    cp -r /app/node_modules /app/.output/server/node_modules
 
 # Variables d'environnement par défaut
 ENV NODE_ENV=production
