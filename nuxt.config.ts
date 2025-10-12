@@ -15,6 +15,11 @@ export default defineNuxtConfig({
     '@nuxt/icon'
   ],
 
+  tailwindcss: {
+    cssPath: '~/assets/css/main.css',
+    configPath: 'tailwind.config.ts'
+  },
+
   runtimeConfig: {
     // Private keys (server-only)
     databaseUrl: process.env.DATABASE_URL || '',
@@ -66,8 +71,6 @@ export default defineNuxtConfig({
       ]
     }
   },
-
-  css: ['~/assets/css/main.css'],
 
   nitro: {
     preset: 'node-server'
