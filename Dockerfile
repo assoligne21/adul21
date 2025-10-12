@@ -32,8 +32,9 @@ WORKDIR /app
 COPY --from=builder /app/.output /app/.output
 COPY --from=builder /app/package*.json /app/
 
-# Installer les dépendances de production
-RUN npm ci --omit=dev
+# Installer TOUTES les dépendances (y compris dev) car @nuxt/ui-pro
+# a besoin de tailwindcss à runtime et le bundling ne fonctionne pas correctement
+RUN npm ci
 
 # Créer un symlink pour que Nuxt trouve les modules au bon endroit
 RUN mkdir -p /app/.output/server && \
