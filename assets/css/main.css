@@ -1,40 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Custom styles for ADUL21 */
-@layer base {
-  html {
-    @apply scroll-smooth;
-  }
+/* @nuxt/ui v4 gère automatiquement Tailwind CSS v4 */
 
-  body {
-    @apply font-sans antialiased text-gray-900;
-  }
-}
-
-@layer components {
-  /* Button styles */
-  .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium text-primary-700 bg-primary-100 rounded-lg hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors;
-  }
-
-  /* Card styles */
-  .card {
-    @apply bg-white rounded-xl shadow-md overflow-hidden;
-  }
-
-  /* Container */
-  .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-}
-
-/* Accessibility improvements */
-.skip-to-content {
-  @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-md;
-}
+/* TODO: Recréer les styles custom si nécessaire */

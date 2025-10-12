@@ -259,7 +259,7 @@ const getSolutionLabel = (solution: string): string => {
   const labels: Record<string, string> = {
     car: 'Voiture personnelle',
     correspondences: 'Bus avec correspondances',
-    depends_on_someone: 'Dépend de quelqu'un',
+    depends_on_someone: "Dépend de quelqu'un",
     stopped: 'A arrêté'
   }
   return labels[solution] || solution

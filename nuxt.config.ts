@@ -8,17 +8,13 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxt/ui-pro',
-    '@nuxtjs/tailwindcss',
+    '@nuxt/ui',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxt/icon'
   ],
 
-  tailwindcss: {
-    cssPath: '~/assets/css/main.css',
-    configPath: 'tailwind.config.ts'
-  },
+  css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
     // Private keys (server-only)
@@ -73,18 +69,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'node-server',
-    // Force bundling of problematic runtime imports
-    externals: {
-      inline: [
-        '@nuxt/ui-pro'
-      ]
-    },
-    // Ensure Node.js can resolve modules from parent directories
-    nodeModulesDirs: [
-      './node_modules',
-      '../node_modules'
-    ]
+    preset: 'node-server'
   },
 
   typescript: {
