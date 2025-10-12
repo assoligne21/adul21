@@ -5,572 +5,553 @@
       <div class="container-custom">
         <h1 class="text-4xl md:text-5xl font-bold mb-4">Adhérer à l'ADUL21</h1>
         <p class="text-xl text-primary-100 max-w-3xl">
-          Votre adhésion finance nos actions juridiques et renforce notre légitimité auprès des élus
+          Rejoignez notre combat pour rétablir la ligne 21 directe et défendre le droit à la mobilité
         </p>
       </div>
     </section>
 
-    <!-- Benefits -->
-    <section class="py-12 bg-white border-b">
-      <div class="container-custom">
-        <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Pourquoi adhérer ?</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="text-center p-6">
-            <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Icon name="heroicons:scale" class="w-6 h-6 text-primary-600" />
-            </div>
-            <h3 class="font-bold text-gray-900 mb-2">Actions juridiques</h3>
-            <p class="text-gray-600">Financer les recours en justice et les expertises juridiques</p>
-          </div>
-          <div class="text-center p-6">
-            <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Icon name="heroicons:megaphone" class="w-6 h-6 text-primary-600" />
-            </div>
-            <h3 class="font-bold text-gray-900 mb-2">Poids politique</h3>
-            <p class="text-gray-600">Plus nous sommes nombreux, plus notre voix porte auprès des élus</p>
-          </div>
-          <div class="text-center p-6">
-            <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Icon name="heroicons:users" class="w-6 h-6 text-primary-600" />
-            </div>
-            <h3 class="font-bold text-gray-900 mb-2">Mobilisation collective</h3>
-            <p class="text-gray-600">Participer aux décisions et aux actions de l'association</p>
-          </div>
-        </div>
+    <!-- Success message -->
+    <section v-if="submitSuccess" class="py-12 bg-green-50">
+      <div class="container-custom max-w-2xl text-center">
+        <Icon name="heroicons:check-circle" class="w-20 h-20 text-green-600 mx-auto mb-6" />
+        <h2 class="text-3xl font-bold text-green-900 mb-4">Demande d'adhésion reçue !</h2>
+        <p class="text-lg text-green-800 mb-6">
+          Merci pour votre soutien ! Vous allez recevoir un email avec les instructions de paiement.
+        </p>
+        <p class="text-green-700 mb-8">
+          Votre adhésion sera effective dès réception de votre règlement.
+        </p>
+        <NuxtLink to="/" class="btn-primary">
+          Retour à l'accueil
+        </NuxtLink>
       </div>
     </section>
 
-    <!-- Membership Form -->
-    <section class="py-16 bg-gray-50">
-      <div class="container-custom max-w-3xl">
-        <div class="card p-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Formulaire d'adhésion</h2>
-
-          <!-- Progress indicator -->
-          <div class="mb-8">
-            <div class="flex items-center justify-between mb-2">
-              <span
-                v-for="i in 4"
-                :key="i"
-                :class="[
-                  'flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm',
-                  currentStep >= i ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-500'
-                ]"
+    <!-- Form -->
+    <section v-else class="py-16 bg-white">
+      <div class="container-custom max-w-4xl">
+        <!-- Progress indicator -->
+        <div class="mb-12">
+          <div class="flex items-center justify-between">
+            <div v-for="stepNumber in 4" :key="stepNumber" class="flex-1">
+              <div class="flex items-center">
+                <div
+                  :class="[
+                    'w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all',
+                    step >= stepNumber
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-200 text-gray-500'
+                  ]"
+                >
+                  {{ stepNumber }}
+                </div>
+                <div
+                  v-if="stepNumber < 4"
+                  :class="[
+                    'flex-1 h-1 mx-2 transition-all',
+                    step > stepNumber ? 'bg-primary-600' : 'bg-gray-200'
+                  ]"
+                ></div>
+              </div>
+              <div
+                class="mt-2 text-xs font-medium"
+                :class="step >= stepNumber ? 'text-primary-600' : 'text-gray-500'"
               >
-                {{ i }}
-              </span>
-            </div>
-            <div class="flex items-center justify-between text-xs text-gray-600">
-              <span>Informations</span>
-              <span>Profil</span>
-              <span>Cotisation</span>
-              <span>Confirmation</span>
+                {{ getStepLabel(stepNumber) }}
+              </div>
             </div>
           </div>
+        </div>
 
-          <form @submit.prevent="nextStep">
-            <!-- Step 1: Personal Information -->
-            <div v-if="currentStep === 1" class="space-y-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">1. Informations personnelles</h3>
+        <form @submit.prevent="handleSubmit" class="card p-8">
+          <!-- Step 1: Personal Information -->
+          <div v-show="step === 1" class="space-y-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Informations personnelles</h2>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label for="civility" class="block text-sm font-medium text-gray-700 mb-2">
-                    Civilité <span class="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="civility"
-                    v-model="form.civility"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  >
-                    <option value="">Choisir</option>
-                    <option value="M.">M.</option>
-                    <option value="Mme">Mme</option>
-                    <option value="Autre">Autre</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
-                    Prénom <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="firstName"
-                    v-model="form.firstName"
-                    type="text"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                </div>
-                <div>
-                  <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
-                    Nom <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="lastName"
-                    v-model="form.lastName"
-                    type="text"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                </div>
-              </div>
-
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label for="birthDate" class="block text-sm font-medium text-gray-700 mb-2">
-                  Date de naissance (optionnelle)
-                </label>
-                <input
-                  id="birthDate"
-                  v-model="form.birthDate"
-                  type="date"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                />
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                    Email <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                </div>
-                <div>
-                  <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                    Téléphone <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="phone"
-                    v-model="form.phone"
-                    type="tel"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
-                  Adresse complète <span class="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="address"
-                  v-model="form.address"
-                  rows="2"
-                  required
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Numéro, rue, résidence..."
-                ></textarea>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-2">
-                    Code postal <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="postalCode"
-                    v-model="form.postalCode"
-                    type="text"
-                    required
-                    pattern="[0-9]{5}"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                </div>
-                <div>
-                  <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
-                    Commune <span class="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="city"
-                    v-model="form.city"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  >
-                    <option value="">Choisir</option>
-                    <option value="Ledenon">Ledenon</option>
-                    <option value="Cabrières">Cabrières</option>
-                    <option value="Saint-Gervasy">Saint-Gervasy</option>
-                    <option value="Autre">Autre</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 2: User Profile -->
-            <div v-if="currentStep === 2" class="space-y-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">2. Votre profil d'usager</h3>
-
-              <div>
-                <label for="userType" class="block text-sm font-medium text-gray-700 mb-2">
-                  Vous êtes <span class="text-red-500">*</span>
+                <label for="civility" class="block text-sm font-medium text-gray-700 mb-2">
+                  Civilité <span class="text-red-500">*</span>
                 </label>
                 <select
-                  id="userType"
-                  v-model="form.userType"
+                  id="civility"
+                  v-model="form.civility"
                   required
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="">Choisir</option>
-                  <option value="student">Lycéen</option>
-                  <option value="parent">Parent d'élève</option>
-                  <option value="worker">Actif</option>
-                  <option value="senior">Senior</option>
-                  <option value="pmr">Personne à mobilité réduite</option>
-                  <option value="other">Autre</option>
+                  <option value="M.">M.</option>
+                  <option value="Mme">Mme</option>
+                  <option value="Autre">Autre</option>
                 </select>
               </div>
-
-              <!-- Student specific fields -->
-              <div v-if="form.userType === 'student'" class="space-y-4">
-                <div>
-                  <label for="schoolName" class="block text-sm font-medium text-gray-700 mb-2">
-                    Lycée
-                  </label>
-                  <input
-                    id="schoolName"
-                    v-model="form.schoolName"
-                    type="text"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                </div>
-                <div>
-                  <label for="schoolSection" class="block text-sm font-medium text-gray-700 mb-2">
-                    Filière/Section
-                  </label>
-                  <input
-                    id="schoolSection"
-                    v-model="form.schoolSection"
-                    type="text"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label for="usageBefore" class="block text-sm font-medium text-gray-700 mb-2">
-                    Utilisation AVANT la suppression
-                  </label>
-                  <select
-                    id="usageBefore"
-                    v-model="form.usageBefore"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  >
-                    <option value="">Non renseigné</option>
-                    <option value="daily">Quotidienne</option>
-                    <option value="2-3_per_week">2-3 fois/semaine</option>
-                    <option value="weekly">Hebdomadaire</option>
-                    <option value="occasional">Occasionnelle</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="usageAfter" class="block text-sm font-medium text-gray-700 mb-2">
-                    Solution APRÈS la suppression
-                  </label>
-                  <select
-                    id="usageAfter"
-                    v-model="form.usageAfter"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  >
-                    <option value="">Non renseigné</option>
-                    <option value="car">Voiture</option>
-                    <option value="correspondences">Correspondances</option>
-                    <option value="depends_on_someone">Dépend de quelqu'un</option>
-                    <option value="stopped">A arrêté</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Participation -->
-              <div class="bg-primary-50 rounded-lg p-6">
-                <h4 class="font-bold text-gray-900 mb-4">Souhaitez-vous participer aux actions de l'association ?</h4>
-                <label class="flex items-start mb-4 cursor-pointer">
-                  <input
-                    v-model="form.wantsToParticipate"
-                    type="checkbox"
-                    class="mt-1 mr-3"
-                  />
-                  <span class="text-sm text-gray-700">
-                    Oui, je souhaite être contacté(e) pour participer aux actions
-                  </span>
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
+                  Prénom <span class="text-red-500">*</span>
                 </label>
-
-                <div v-if="form.wantsToParticipate" class="space-y-2 ml-6">
-                  <label class="flex items-center">
-                    <input v-model="form.participationAreas" type="checkbox" value="communication" class="mr-2" />
-                    <span class="text-sm">Communication (réseaux sociaux, flyers)</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input v-model="form.participationAreas" type="checkbox" value="legal" class="mr-2" />
-                    <span class="text-sm">Soutien juridique</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input v-model="form.participationAreas" type="checkbox" value="events" class="mr-2" />
-                    <span class="text-sm">Organisation d'événements</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input v-model="form.participationAreas" type="checkbox" value="actions" class="mr-2" />
-                    <span class="text-sm">Actions de terrain</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input v-model="form.participationAreas" type="checkbox" value="press" class="mr-2" />
-                    <span class="text-sm">Relations presse</span>
-                  </label>
-                </div>
+                <input
+                  id="firstName"
+                  v-model="form.firstName"
+                  type="text"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
+                  Nom <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="lastName"
+                  v-model="form.lastName"
+                  type="text"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
               </div>
             </div>
 
-            <!-- Step 3: Membership Fee -->
-            <div v-if="currentStep === 3" class="space-y-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">3. Cotisation annuelle</h3>
+            <div>
+              <label for="birthDate" class="block text-sm font-medium text-gray-700 mb-2">
+                Date de naissance (optionnel)
+              </label>
+              <input
+                id="birthDate"
+                v-model="form.birthDate"
+                type="date"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
 
-              <div class="bg-primary-50 border-l-4 border-primary-600 p-6 rounded-r-lg mb-6">
-                <p class="text-primary-900">
-                  <strong>Important :</strong> Votre cotisation finance les actions juridiques et la mobilisation.
-                  Choisissez le montant qui correspond à vos moyens.
-                </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                  Email <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="email"
+                  v-model="form.email"
+                  type="email"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
               </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                  Téléphone <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="phone"
+                  v-model="form.phone"
+                  type="tel"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+            </div>
 
-              <div class="space-y-4">
-                <label
-                  v-for="option in membershipOptions"
-                  :key="option.type"
-                  :class="[
-                    'card p-6 cursor-pointer transition-all border-2',
-                    form.membershipType === option.type
-                      ? 'border-primary-600 bg-primary-50'
-                      : 'border-gray-200 hover:border-primary-300'
-                  ]"
+            <div>
+              <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                Adresse complète <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="address"
+                v-model="form.address"
+                rows="2"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Numéro, rue, bâtiment..."
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-2">
+                  Code postal <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="postalCode"
+                  v-model="form.postalCode"
+                  type="text"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
+                  Commune <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="city"
+                  v-model="form.city"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
-                  <input
-                    v-model="form.membershipType"
-                    type="radio"
-                    :value="option.type"
-                    class="mr-4"
-                    required
-                  />
-                  <div class="inline-block">
-                    <div class="flex items-center gap-3 mb-2">
-                      <span class="text-lg font-bold text-gray-900">{{ option.label }}</span>
-                      <span class="text-2xl font-bold text-primary-600">{{ option.amount }}€</span>
-                    </div>
-                    <p class="text-sm text-gray-600">{{ option.description }}</p>
-                  </div>
-                </label>
+                  <option value="">Choisir</option>
+                  <option value="Ledenon">Ledenon</option>
+                  <option value="Cabrières">Cabrières</option>
+                  <option value="Saint-Gervasy">Saint-Gervasy</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-                <!-- Custom amount -->
-                <label
-                  :class="[
-                    'card p-6 cursor-pointer transition-all border-2',
-                    form.membershipType === 'custom'
-                      ? 'border-primary-600 bg-primary-50'
-                      : 'border-gray-200 hover:border-primary-300'
-                  ]"
+          <!-- Step 2: User Profile -->
+          <div v-show="step === 2" class="space-y-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Votre profil d'usager</h2>
+
+            <div>
+              <label for="userType" class="block text-sm font-medium text-gray-700 mb-2">
+                Vous êtes <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="userType"
+                v-model="form.userType"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="">Choisir</option>
+                <option value="student">Lycéen</option>
+                <option value="parent">Parent d'élève</option>
+                <option value="worker">Actif</option>
+                <option value="senior">Senior</option>
+                <option value="pmr">Personne à mobilité réduite</option>
+                <option value="other">Autre</option>
+              </select>
+            </div>
+
+            <!-- Conditional fields for students -->
+            <div v-if="form.userType === 'student'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="schoolName" class="block text-sm font-medium text-gray-700 mb-2">
+                  Établissement scolaire
+                </label>
+                <input
+                  id="schoolName"
+                  v-model="form.schoolName"
+                  type="text"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+              <div>
+                <label for="schoolSection" class="block text-sm font-medium text-gray-700 mb-2">
+                  Filière
+                </label>
+                <input
+                  id="schoolSection"
+                  v-model="form.schoolSection"
+                  type="text"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="usageBefore" class="block text-sm font-medium text-gray-700 mb-2">
+                  Utilisation AVANT la suppression
+                </label>
+                <select
+                  id="usageBefore"
+                  v-model="form.usageBefore"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
-                  <input
-                    v-model="form.membershipType"
-                    type="radio"
-                    value="custom"
-                    class="mr-4"
-                  />
-                  <div class="inline-block">
-                    <div class="font-bold text-gray-900 mb-2">Montant libre</div>
-                    <input
-                      v-if="form.membershipType === 'custom'"
-                      v-model.number="form.customAmount"
-                      type="number"
-                      min="5"
-                      step="1"
-                      placeholder="Minimum 5€"
-                      class="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      required
-                    />
-                  </div>
-                </label>
+                  <option value="">Non concerné</option>
+                  <option value="daily">Quotidiennement</option>
+                  <option value="2-3_per_week">2-3 fois par semaine</option>
+                  <option value="weekly">Hebdomadairement</option>
+                  <option value="occasional">Occasionnellement</option>
+                </select>
               </div>
-
-              <!-- RGPD Consents -->
-              <div class="bg-gray-50 rounded-lg p-6 space-y-3">
-                <label class="flex items-start cursor-pointer">
-                  <input
-                    v-model="form.acceptsNewsletter"
-                    type="checkbox"
-                    class="mt-1 mr-3"
-                  />
-                  <span class="text-sm text-gray-700">
-                    J'accepte de recevoir la newsletter de l'ADUL21 (actualités, événements)
-                  </span>
+              <div>
+                <label for="usageAfter" class="block text-sm font-medium text-gray-700 mb-2">
+                  Solution APRÈS la suppression
                 </label>
-                <label class="flex items-start cursor-pointer">
-                  <input
-                    v-model="form.acceptsActionSolicitation"
-                    type="checkbox"
-                    class="mt-1 mr-3"
-                  />
-                  <span class="text-sm text-gray-700">
-                    J'accepte d'être sollicité(e) pour participer aux actions de mobilisation
-                  </span>
-                </label>
-                <label class="flex items-start cursor-pointer">
-                  <input
-                    v-model="form.acceptsMediaContact"
-                    type="checkbox"
-                    class="mt-1 mr-3"
-                  />
-                  <span class="text-sm text-gray-700">
-                    J'accepte d'être contacté(e) par les médias si nécessaire
-                  </span>
-                </label>
+                <select
+                  id="usageAfter"
+                  v-model="form.usageAfter"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="">Non concerné</option>
+                  <option value="car">Voiture personnelle</option>
+                  <option value="correspondences">Bus avec correspondances</option>
+                  <option value="depends_on_someone">Dépend de quelqu'un</option>
+                  <option value="stopped">A arrêté</option>
+                </select>
               </div>
             </div>
+          </div>
 
-            <!-- Step 4: Confirmation -->
-            <div v-if="currentStep === 4" class="space-y-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">4. Confirmation et paiement</h3>
+          <!-- Step 3: Membership Type -->
+          <div v-show="step === 3" class="space-y-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Type d'adhésion</h2>
 
-              <!-- Summary -->
-              <div class="card p-6 bg-gray-50">
-                <h4 class="font-bold text-gray-900 mb-4">Récapitulatif</h4>
-                <div class="space-y-2 text-sm">
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Nom :</span>
-                    <span class="font-semibold">{{ form.civility }} {{ form.firstName }} {{ form.lastName }}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Email :</span>
-                    <span class="font-semibold">{{ form.email }}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Commune :</span>
-                    <span class="font-semibold">{{ form.city }}</span>
-                  </div>
-                  <div class="flex justify-between pt-4 border-t">
-                    <span class="text-gray-600">Cotisation :</span>
-                    <span class="text-2xl font-bold text-primary-600">{{ finalAmount }}€</span>
-                  </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Reduced -->
+              <div
+                :class="[
+                  'cursor-pointer border-2 rounded-lg p-6 transition-all',
+                  form.membershipType === 'reduced'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-gray-300 hover:border-primary-300'
+                ]"
+                @click="selectMembership('reduced', 5)"
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <h3 class="text-lg font-bold text-gray-900">Tarif réduit</h3>
+                  <div class="text-2xl font-bold text-primary-600">5€</div>
                 </div>
-              </div>
-
-              <!-- Payment instructions -->
-              <div class="bg-yellow-50 border-l-4 border-yellow-600 p-6 rounded-r-lg">
-                <h4 class="font-bold text-yellow-900 mb-3 flex items-center gap-2">
-                  <Icon name="heroicons:information-circle" class="w-6 h-6" />
-                  Instructions de paiement
-                </h4>
-                <p class="text-yellow-900 mb-4">
-                  Le paiement en ligne sera disponible prochainement. Pour l'instant, veuillez effectuer votre règlement par :
-                </p>
-                <ul class="space-y-2 text-yellow-900">
-                  <li class="flex items-start">
-                    <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-                    <span><strong>Virement bancaire</strong> (coordonnées envoyées par email)</span>
-                  </li>
-                  <li class="flex items-start">
-                    <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-                    <span><strong>Chèque</strong> à l'ordre de "ADUL21" (adresse envoyée par email)</span>
-                  </li>
-                  <li class="flex items-start">
-                    <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-                    <span><strong>Espèces</strong> lors d'une permanence</span>
-                  </li>
-                </ul>
-                <p class="text-yellow-900 mt-4 text-sm">
-                  Vous recevrez un email de confirmation avec toutes les instructions de paiement.
+                <p class="text-sm text-gray-600">
+                  Pour les étudiants, demandeurs d'emploi et personnes en difficulté financière
                 </p>
               </div>
 
-              <!-- Final consent -->
-              <div class="bg-gray-50 rounded-lg p-6">
-                <label class="flex items-start cursor-pointer">
+              <!-- Normal -->
+              <div
+                :class="[
+                  'cursor-pointer border-2 rounded-lg p-6 transition-all',
+                  form.membershipType === 'normal'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-gray-300 hover:border-primary-300'
+                ]"
+                @click="selectMembership('normal', 15)"
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <h3 class="text-lg font-bold text-gray-900">Tarif normal</h3>
+                  <div class="text-2xl font-bold text-primary-600">15€</div>
+                </div>
+                <p class="text-sm text-gray-600">
+                  Adhésion individuelle standard
+                </p>
+              </div>
+
+              <!-- Support -->
+              <div
+                :class="[
+                  'cursor-pointer border-2 rounded-lg p-6 transition-all',
+                  form.membershipType === 'support'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-gray-300 hover:border-primary-300'
+                ]"
+                @click="selectMembership('support', 50)"
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <h3 class="text-lg font-bold text-gray-900">Tarif de soutien</h3>
+                  <div class="text-2xl font-bold text-primary-600">50€</div>
+                </div>
+                <p class="text-sm text-gray-600">
+                  Pour soutenir davantage notre mobilisation
+                </p>
+              </div>
+
+              <!-- Custom -->
+              <div
+                :class="[
+                  'cursor-pointer border-2 rounded-lg p-6 transition-all',
+                  form.membershipType === 'custom'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-gray-300 hover:border-primary-300'
+                ]"
+                @click="selectMembership('custom', form.membershipFee)"
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <h3 class="text-lg font-bold text-gray-900">Montant libre</h3>
+                  <div class="text-2xl font-bold text-primary-600">{{ form.membershipFee }}€</div>
+                </div>
+                <input
+                  v-model.number="form.membershipFee"
+                  type="number"
+                  min="5"
+                  step="1"
+                  placeholder="Montant minimum: 5€"
+                  class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  @click.stop
+                  @input="form.membershipType = 'custom'"
+                />
+              </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p class="text-sm text-blue-900">
+                <strong>💡 À savoir :</strong> Votre cotisation est valable 1 an et vous donne accès aux assemblées générales et à toutes les informations de l'association.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4: Engagement & Consent -->
+          <div v-show="step === 4" class="space-y-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Engagement et consentements</h2>
+
+            <div>
+              <label class="flex items-start mb-3">
+                <input
+                  v-model="form.wantsToParticipate"
+                  type="checkbox"
+                  class="mt-1 mr-3"
+                />
+                <span class="text-sm text-gray-700">
+                  <strong>Je souhaite participer activement à la mobilisation</strong>
+                </span>
+              </label>
+
+              <div v-if="form.wantsToParticipate" class="ml-6 space-y-2">
+                <label class="flex items-start">
                   <input
-                    v-model="form.acceptsProcessing"
+                    v-model="form.participationAreas"
+                    value="communication"
                     type="checkbox"
-                    required
                     class="mt-1 mr-3"
                   />
-                  <span class="text-sm text-gray-700">
-                    J'accepte que mes données soient traitées par l'ADUL21 dans le cadre de mon adhésion.
-                    Ces données ne seront jamais partagées avec des tiers. <span class="text-red-500">*</span>
-                  </span>
+                  <span class="text-sm text-gray-700">Communication (réseaux sociaux, flyers...)</span>
+                </label>
+                <label class="flex items-start">
+                  <input
+                    v-model="form.participationAreas"
+                    value="legal"
+                    type="checkbox"
+                    class="mt-1 mr-3"
+                  />
+                  <span class="text-sm text-gray-700">Actions juridiques</span>
+                </label>
+                <label class="flex items-start">
+                  <input
+                    v-model="form.participationAreas"
+                    value="events"
+                    type="checkbox"
+                    class="mt-1 mr-3"
+                  />
+                  <span class="text-sm text-gray-700">Organisation d'événements</span>
+                </label>
+                <label class="flex items-start">
+                  <input
+                    v-model="form.participationAreas"
+                    value="actions"
+                    type="checkbox"
+                    class="mt-1 mr-3"
+                  />
+                  <span class="text-sm text-gray-700">Actions de terrain</span>
+                </label>
+                <label class="flex items-start">
+                  <input
+                    v-model="form.participationAreas"
+                    value="press"
+                    type="checkbox"
+                    class="mt-1 mr-3"
+                  />
+                  <span class="text-sm text-gray-700">Relations presse</span>
                 </label>
               </div>
             </div>
 
-            <!-- Navigation buttons -->
-            <div class="flex items-center justify-between mt-8 pt-6 border-t">
-              <button
-                v-if="currentStep > 1"
-                type="button"
-                @click="previousStep"
-                class="btn-secondary"
-              >
-                <Icon name="heroicons:arrow-left" class="w-5 h-5 mr-2 inline" />
-                Retour
-              </button>
-              <div v-else></div>
+            <div class="border-t pt-6 space-y-3">
+              <h3 class="font-bold text-gray-900 mb-4">Consentements RGPD</h3>
 
-              <button
-                v-if="currentStep < 4"
-                type="submit"
-                class="btn-primary"
-              >
-                Continuer
-                <Icon name="heroicons:arrow-right" class="w-5 h-5 ml-2 inline" />
-              </button>
-              <button
-                v-else
-                type="button"
-                @click="submitMembership"
-                :disabled="isSubmitting || !form.acceptsProcessing"
-                class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Icon v-if="!isSubmitting" name="heroicons:check-circle" class="w-5 h-5 mr-2 inline" />
-                <Icon v-else name="heroicons:arrow-path" class="w-5 h-5 mr-2 inline animate-spin" />
-                {{ isSubmitting ? 'Envoi en cours...' : 'Valider mon adhésion' }}
-              </button>
+              <label class="flex items-start">
+                <input
+                  v-model="form.acceptsNewsletter"
+                  type="checkbox"
+                  class="mt-1 mr-3"
+                />
+                <span class="text-sm text-gray-700">
+                  J'accepte de recevoir la newsletter avec les actualités de la mobilisation
+                </span>
+              </label>
+
+              <label class="flex items-start">
+                <input
+                  v-model="form.acceptsTestimonyPublication"
+                  type="checkbox"
+                  class="mt-1 mr-3"
+                />
+                <span class="text-sm text-gray-700">
+                  J'accepte que mon témoignage (si je le soumets) soit publié sur le site
+                </span>
+              </label>
+
+              <label class="flex items-start">
+                <input
+                  v-model="form.acceptsMediaContact"
+                  type="checkbox"
+                  class="mt-1 mr-3"
+                />
+                <span class="text-sm text-gray-700">
+                  J'accepte d'être contacté par des médias dans le cadre de la mobilisation
+                </span>
+              </label>
+
+              <label class="flex items-start">
+                <input
+                  v-model="form.acceptsActionSolicitation"
+                  type="checkbox"
+                  class="mt-1 mr-3"
+                />
+                <span class="text-sm text-gray-700">
+                  J'accepte d'être sollicité pour participer à des actions de mobilisation
+                </span>
+              </label>
             </div>
 
-            <!-- Success/Error Messages -->
-            <div v-if="submitSuccess" class="mt-6 bg-green-50 border border-green-200 rounded-lg p-6 text-green-800">
-              <div class="flex items-start gap-3">
-                <Icon name="heroicons:check-circle" class="w-6 h-6 flex-shrink-0" />
-                <div>
-                  <p class="font-bold mb-2">✓ Votre demande d'adhésion a été enregistrée avec succès !</p>
-                  <p class="text-sm">
-                    Vous allez recevoir un email de confirmation avec les instructions de paiement.
-                    Votre adhésion sera activée dès réception de votre règlement.
-                  </p>
-                </div>
-              </div>
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <h3 class="font-bold text-yellow-900 mb-2">Modalités de règlement</h3>
+              <p class="text-sm text-yellow-800 mb-3">
+                Suite à votre demande d'adhésion, vous recevrez un email avec les coordonnées bancaires pour effectuer votre règlement par virement.
+              </p>
+              <p class="text-sm text-yellow-800">
+                <strong>Modes de paiement acceptés :</strong> Virement bancaire, chèque, espèces
+              </p>
             </div>
-            <div v-if="submitError" class="mt-6 bg-red-50 border border-red-200 rounded-lg p-6 text-red-800">
-              <div class="flex items-start gap-3">
-                <Icon name="heroicons:x-circle" class="w-6 h-6 flex-shrink-0" />
-                <div>
-                  <p class="font-bold mb-2">✗ Une erreur est survenue</p>
-                  <p class="text-sm">{{ submitError }}</p>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
+          </div>
+
+          <!-- Navigation buttons -->
+          <div class="flex items-center justify-between pt-8 border-t mt-8">
+            <button
+              v-if="step > 1"
+              type="button"
+              @click="step--"
+              class="btn-outline"
+            >
+              <Icon name="heroicons:arrow-left" class="w-5 h-5 mr-2 inline" />
+              Précédent
+            </button>
+            <div v-else></div>
+
+            <button
+              v-if="step < 4"
+              type="button"
+              @click="step++"
+              class="btn-primary"
+            >
+              Suivant
+              <Icon name="heroicons:arrow-right" class="w-5 h-5 ml-2 inline" />
+            </button>
+            <button
+              v-else
+              type="submit"
+              :disabled="isSubmitting"
+              class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Icon v-if="!isSubmitting" name="heroicons:check" class="w-5 h-5 mr-2 inline" />
+              <Icon v-else name="heroicons:arrow-path" class="w-5 h-5 mr-2 inline animate-spin" />
+              {{ isSubmitting ? 'Envoi en cours...' : 'Valider mon adhésion' }}
+            </button>
+          </div>
+
+          <!-- Error message -->
+          <div v-if="submitError" class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+            ✗ {{ submitError }}
+          </div>
+        </form>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-const currentStep = ref(1)
+const step = ref(1)
 const isSubmitting = ref(false)
 const submitSuccess = ref(false)
-const submitError = ref<string | null>(null)
+const submitError = ref('')
 
 const form = ref({
   // Step 1: Personal info
@@ -584,98 +565,74 @@ const form = ref({
   postalCode: '',
   city: '',
 
-  // Step 2: Profile
+  // Step 2: User profile
   userType: '',
   schoolName: '',
   schoolSection: '',
   usageBefore: '',
   usageAfter: '',
-  wantsToParticipate: false,
-  participationAreas: [] as string[],
 
   // Step 3: Membership
   membershipType: '',
-  customAmount: null as number | null,
+  membershipFee: 15,
+
+  // Step 4: Engagement
+  wantsToParticipate: false,
+  participationAreas: [] as string[],
   acceptsNewsletter: false,
-  acceptsActionSolicitation: false,
+  acceptsTestimonyPublication: false,
   acceptsMediaContact: false,
-
-  // Step 4: Confirmation
-  acceptsProcessing: false
+  acceptsActionSolicitation: false
 })
 
-const membershipOptions = [
-  { type: 'reduced', label: 'Tarif réduit', amount: 5, description: 'Lycéens, étudiants, demandeurs d\'emploi' },
-  { type: 'normal', label: 'Tarif normal', amount: 10, description: 'Adhésion individuelle standard' },
-  { type: 'support', label: 'Tarif soutien', amount: 20, description: 'Pour soutenir davantage nos actions' }
-]
-
-const finalAmount = computed(() => {
-  if (form.value.membershipType === 'custom') {
-    return form.value.customAmount || 0
+const getStepLabel = (stepNumber: number): string => {
+  const labels: Record<number, string> = {
+    1: 'Coordonnées',
+    2: 'Profil',
+    3: 'Cotisation',
+    4: 'Engagement'
   }
-  const option = membershipOptions.find(o => o.type === form.value.membershipType)
-  return option?.amount || 0
-})
+  return labels[stepNumber] || ''
+}
 
-const nextStep = () => {
-  if (currentStep.value < 4) {
-    currentStep.value++
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+const selectMembership = (type: string, amount: number) => {
+  form.value.membershipType = type
+  if (type !== 'custom') {
+    form.value.membershipFee = amount
   }
 }
 
-const previousStep = () => {
-  if (currentStep.value > 1) {
-    currentStep.value--
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-}
-
-const submitMembership = async () => {
-  if (!form.value.acceptsProcessing) {
-    submitError.value = 'Vous devez accepter le traitement de vos données'
+const handleSubmit = async () => {
+  if (form.value.membershipFee < 5) {
+    submitError.value = 'Le montant minimum d\'adhésion est de 5€'
     return
   }
 
   isSubmitting.value = true
-  submitSuccess.value = false
-  submitError.value = null
+  submitError.value = ''
 
   try {
-    await $fetch('/api/membership', {
+    await $fetch('/api/members', {
       method: 'POST',
-      body: {
-        ...form.value,
-        membershipFee: finalAmount.value
-      }
+      body: form.value
     })
 
     submitSuccess.value = true
-
-    // Scroll to success message
-    setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-    }, 100)
-
-    // Redirect after 5 seconds
-    setTimeout(() => {
-      navigateTo('/')
-    }, 5000)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error: any) {
-    console.error('Error submitting membership:', error)
-    submitError.value = error.data?.message || 'Une erreur est survenue. Veuillez réessayer ou nous contacter directement.'
+    submitError.value = error.data?.message || 'Une erreur est survenue. Veuillez réessayer.'
   } finally {
     isSubmitting.value = false
   }
 }
 
+// SEO
 useHead({
   title: 'Adhérer à l\'association',
   meta: [
     {
       name: 'description',
-      content: 'Adhérez à l\'ADUL21 pour soutenir notre mobilisation. Votre cotisation finance nos actions juridiques et renforce notre légitimité.'
+      content: 'Adhérez à l\'ADUL21 et rejoignez notre combat pour rétablir la ligne 21 directe. Plusieurs formules d\'adhésion disponibles à partir de 5€.'
     }
   ]
 })
