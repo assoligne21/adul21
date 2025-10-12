@@ -7,6 +7,18 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
+-- FONCTION : Trigger pour updated_at
+-- ============================================
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- ============================================
 -- TABLE : pre_members (Pré-adhésions - Phase 1)
 -- ============================================
 
@@ -40,7 +52,7 @@ CREATE TABLE pre_members (
   -- Statut
   converted_to_member BOOLEAN DEFAULT FALSE,
   converted_at TIMESTAMPTZ,
-  member_id UUID REFERENCES members(id)
+  member_id UUID -- Foreign key will be added later after members table is created
 );
 
 -- Index
@@ -123,14 +135,6 @@ CREATE INDEX idx_members_status ON members(membership_status);
 CREATE INDEX idx_members_created ON members(created_at DESC);
 
 -- Trigger pour updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ language 'plpgsql';
-
 CREATE TRIGGER update_members_updated_at BEFORE UPDATE ON members
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -149,7 +153,7 @@ CREATE TABLE testimonies (
   email VARCHAR(255) NOT NULL,
   phone VARCHAR(20),
   city VARCHAR(100) NOT NULL CHECK (city IN ('Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre')),
-  age_range VARCHAR(20) NOT NULL CHECK (age_range IN ('under_18', '18-30', '30-50', '50-70', 'over_70')),
+  age_range VARCHAR(20) NOT NULL CHECK (age_range IN ('13-17', '18-25', '26-35', '36-50', '51-65', '66+')),
 
   -- Profil
   user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('student', 'parent', 'senior', 'pmr', 'worker', 'other')),
@@ -166,13 +170,18 @@ CREATE TABLE testimonies (
 
   -- Usage ligne 21 - APRÈS
   usage_after_solution VARCHAR(50) CHECK (usage_after_solution IN ('car', 'correspondences', 'depends_on_someone', 'stopped')),
-  usage_after_time INT, -- en minutes
-  usage_after_correspondences INT,
-  usage_after_wait_time INT,
-  usage_after_cost DECIMAL(10, 2),
   usage_after_distance DECIMAL(10, 2), -- km
-  problems TEXT[], -- ['missed_correspondences', 'delays', 'physical_difficulty', 'fear', 'extra_cost']
-  missed_correspondences_per_month INT,
+  usage_after_cost DECIMAL(10, 2),
+  usage_after_num_correspondences INT,
+  usage_after_wait_time INT,
+  usage_after_missed_per_month INT,
+
+  -- Problèmes rencontrés (boolean flags)
+  has_missed_correspondences BOOLEAN DEFAULT FALSE,
+  has_delays BOOLEAN DEFAULT FALSE,
+  has_physical_difficulty BOOLEAN DEFAULT FALSE,
+  has_fear BOOLEAN DEFAULT FALSE,
+  has_extra_cost BOOLEAN DEFAULT FALSE,
 
   -- Témoignage
   testimony_text TEXT NOT NULL CHECK (LENGTH(testimony_text) >= 200 AND LENGTH(testimony_text) <= 2000),
@@ -354,6 +363,15 @@ CREATE TABLE incidents (
 -- Index
 CREATE INDEX idx_incidents_date ON incidents(incident_date DESC);
 CREATE INDEX idx_incidents_type ON incidents(incident_type);
+
+-- ============================================
+-- FOREIGN KEYS (ajoutées après création des tables)
+-- ============================================
+
+-- Ajouter la foreign key pour pre_members.member_id maintenant que members existe
+ALTER TABLE pre_members
+ADD CONSTRAINT fk_pre_members_member_id
+FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE SET NULL;
 
 -- ============================================
 -- VUES UTILES (pour stats rapides)
