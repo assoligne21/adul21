@@ -1,4 +1,10 @@
-/* Custom styles for ADUL21 */
-/* @nuxt/ui v4 gère automatiquement Tailwind CSS v4 */
+/* Import Tailwind CSS v4 */
+@import "tailwindcss";
 
-/* TODO: Recréer les styles custom si nécessaire */
+/* Import Nuxt UI v4 */
+@import "@nuxt/ui";
+
+/* Custom theme configuration */
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
