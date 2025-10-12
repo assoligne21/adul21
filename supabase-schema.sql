@@ -7,7 +7,54 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
--- TABLE : members (Adhérents)
+-- TABLE : pre_members (Pré-adhésions - Phase 1)
+-- ============================================
+
+CREATE TABLE pre_members (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  -- Informations personnelles
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  city VARCHAR(100) NOT NULL CHECK (city IN ('Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre')),
+
+  -- Profil
+  user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('student', 'parent', 'worker', 'senior', 'pmr', 'other')),
+
+  -- Intentions d'engagement
+  wants_to_become_member BOOLEAN DEFAULT TRUE,
+  wants_to_volunteer BOOLEAN DEFAULT FALSE,
+  can_host_meeting BOOLEAN DEFAULT FALSE,
+  can_distribute_flyers BOOLEAN DEFAULT FALSE,
+  participation_areas TEXT[], -- ['communication', 'legal', 'events', 'actions', 'press', 'admin']
+
+  -- Consentements
+  accepts_newsletter BOOLEAN DEFAULT FALSE,
+  accepts_contact_when_created BOOLEAN DEFAULT TRUE,
+  accepts_ag_invitation BOOLEAN DEFAULT TRUE,
+
+  -- Statut
+  converted_to_member BOOLEAN DEFAULT FALSE,
+  converted_at TIMESTAMPTZ,
+  member_id UUID REFERENCES members(id)
+);
+
+-- Index
+CREATE INDEX idx_pre_members_email ON pre_members(email);
+CREATE INDEX idx_pre_members_city ON pre_members(city);
+CREATE INDEX idx_pre_members_converted ON pre_members(converted_to_member);
+CREATE INDEX idx_pre_members_created ON pre_members(created_at DESC);
+
+-- Trigger updated_at
+CREATE TRIGGER update_pre_members_updated_at BEFORE UPDATE ON pre_members
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================
+-- TABLE : members (Adhérents - Phase 2)
 -- ============================================
 
 CREATE TABLE members (
@@ -35,18 +82,24 @@ CREATE TABLE members (
   usage_before VARCHAR(50) CHECK (usage_before IN ('daily', '2-3_per_week', 'weekly', 'occasional')),
   usage_after VARCHAR(50) CHECK (usage_after IN ('car', 'correspondences', 'depends_on_someone', 'stopped')),
 
-  -- Adhésion
-  membership_fee DECIMAL(10, 2) NOT NULL CHECK (membership_fee >= 5),
-  membership_type VARCHAR(20) NOT NULL CHECK (membership_type IN ('reduced', 'normal', 'support', 'custom')),
+  -- Adhésion (Phase 2: 4 niveaux)
+  membership_fee DECIMAL(10, 2) NOT NULL CHECK (membership_fee >= 0),
+  membership_level VARCHAR(20) NOT NULL CHECK (membership_level IN ('solidaire', 'soutien', 'actif', 'parrain')),
+  membership_type VARCHAR(20) CHECK (membership_type IN ('reduced', 'normal', 'support', 'custom')), -- Backward compatibility
   membership_status VARCHAR(20) DEFAULT 'pending' CHECK (membership_status IN ('pending', 'active', 'expired', 'cancelled')),
   membership_start_date DATE,
   membership_end_date DATE,
   payment_method VARCHAR(50) CHECK (payment_method IN ('check', 'transfer', 'cash')),
   payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'confirmed', 'failed')),
 
-  -- Engagement
+  -- Justificatif pour adhésion solidaire (0€)
+  solidarity_proof_type VARCHAR(50) CHECK (solidarity_proof_type IN ('student_card', 'unemployment', 'rsa', 'aah', 'other')),
+  solidarity_proof_url TEXT,
+
+  -- Engagement (pour niveau "actif")
   wants_to_participate BOOLEAN DEFAULT FALSE,
-  participation_areas TEXT[], -- ['communication', 'legal', 'events', 'actions', 'press']
+  participation_areas TEXT[], -- ['communication', 'legal', 'events', 'actions', 'press', 'admin']
+  monthly_hours_commitment INT, -- Pour niveau "actif": minimum 2h/mois
 
   -- Consentements RGPD
   accepts_newsletter BOOLEAN DEFAULT FALSE,
@@ -57,7 +110,10 @@ CREATE TABLE members (
   -- Admin
   is_admin BOOLEAN DEFAULT FALSE,
   password_hash VARCHAR(255), -- Si admin
-  notes TEXT
+  notes TEXT,
+
+  -- Lien avec pré-adhésion
+  from_pre_member_id UUID REFERENCES pre_members(id)
 );
 
 -- Index pour performances
@@ -336,13 +392,28 @@ ORDER BY month DESC;
 -- POLICIES ROW LEVEL SECURITY (Supabase)
 -- ============================================
 
+-- Vue : Stats pré-membres (Phase 1)
+CREATE VIEW pre_members_stats AS
+SELECT
+  COUNT(*) as total_supports,
+  COUNT(*) FILTER (WHERE wants_to_become_member = TRUE) as wants_membership,
+  COUNT(*) FILTER (WHERE wants_to_volunteer = TRUE) as wants_to_volunteer,
+  COUNT(*) FILTER (WHERE converted_to_member = TRUE) as converted
+FROM pre_members;
+
 -- Activer RLS sur toutes les tables
+ALTER TABLE pre_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE donations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE downloads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE news ENABLE ROW LEVEL SECURITY;
 ALTER TABLE incidents ENABLE ROW LEVEL SECURITY;
+
+-- Policies pour pre_members (écriture libre, lecture admin uniquement)
+CREATE POLICY "Anyone can register as pre-member"
+ON pre_members FOR INSERT
+WITH CHECK (TRUE);
 
 -- Policies pour testimonies (lecture publique des publiés, écriture libre)
 CREATE POLICY "Public can view published testimonies"

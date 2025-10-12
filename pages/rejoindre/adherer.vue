@@ -548,6 +548,13 @@
 </template>
 
 <script setup lang="ts">
+const config = useRuntimeConfig()
+
+// Redirect to pre-adhesion page if association not created yet
+if (!config.public.associationCreated) {
+  navigateTo('/rejoindre/soutien', { redirectCode: 301 })
+}
+
 const step = ref(1)
 const isSubmitting = ref(false)
 const submitSuccess = ref(false)

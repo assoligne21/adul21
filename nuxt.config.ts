@@ -30,7 +30,9 @@ export default defineNuxtConfig({
       siteUrl: process.env.SITE_URL || 'http://localhost:3000',
       supabaseUrl: process.env.SUPABASE_URL || '',
       supabaseKey: process.env.SUPABASE_KEY || '',
-      plausibleDomain: process.env.PLAUSIBLE_DOMAIN || 'adul21.fr'
+      plausibleDomain: process.env.PLAUSIBLE_DOMAIN || 'adul21.fr',
+      // Association status: false = Phase 1 (pre-adhesion), true = Phase 2 (full membership)
+      associationCreated: process.env.ASSOCIATION_CREATED === 'true'
     }
   },
 
