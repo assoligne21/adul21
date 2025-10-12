@@ -211,21 +211,3 @@ const relatedArticles = ref([
     </UContainer>
   </div>
 </template>
-
-<style scoped>
-.prose :deep(a) {
-  @apply text-primary-600 hover:text-primary-700 underline;
-}
-
-.prose :deep(ul) {
-  @apply list-disc list-inside space-y-2 my-4;
-}
-
-.prose :deep(ol) {
-  @apply list-decimal list-inside space-y-2 my-4;
-}
-
-.prose :deep(p) {
-  @apply mb-4;
-}
-</style>
