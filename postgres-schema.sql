@@ -1,6 +1,6 @@
 -- ============================================
 -- SCRIPT COMPLET CRÉATION BDD ADUL21
--- PostgreSQL via Supabase
+-- PostgreSQL natif
 -- ============================================
 
 -- Activer les UUID (si pas déjà fait)
