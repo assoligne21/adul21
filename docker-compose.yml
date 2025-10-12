@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: adul21-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-adul21}
+      - POSTGRES_USER=${POSTGRES_USER:-adul21}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./supabase-schema.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - adul21-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adul21}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   adul21-web:
     build:
       context: .
@@ -14,18 +33,12 @@ services:
       - NODE_ENV=production
       - SITE_URL=${SITE_URL}
 
-      # Supabase
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
-      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+      # PostgreSQL
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-adul21}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-adul21}
 
-      # Stripe
-      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
-      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
-
-      # Email (Resend)
-      - RESEND_API_KEY=${RESEND_API_KEY}
+      # Gmail SMTP
+      - GMAIL_USER=${GMAIL_USER}
+      - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
       - EMAIL_FROM=${EMAIL_FROM}
 
       # Auth
@@ -33,8 +46,14 @@ services:
 
       # Analytics
       - PLAUSIBLE_DOMAIN=${PLAUSIBLE_DOMAIN}
+
+      # Association status
+      - ASSOCIATION_CREATED=${ASSOCIATION_CREATED:-false}
     networks:
       - adul21-network
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s
@@ -45,3 +64,6 @@ services:
 networks:
   adul21-network:
     driver: bridge
+
+volumes:
+  postgres-data:

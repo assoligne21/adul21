@@ -17,7 +17,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Private keys (server-only)
-    supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY || '',
+    databaseUrl: process.env.DATABASE_URL || '',
     jwtSecret: process.env.JWT_SECRET || '',
 
     // Gmail SMTP configuration
@@ -28,8 +28,6 @@ export default defineNuxtConfig({
     // Public keys (exposed to client)
     public: {
       siteUrl: process.env.SITE_URL || 'http://localhost:3000',
-      supabaseUrl: process.env.SUPABASE_URL || '',
-      supabaseKey: process.env.SUPABASE_KEY || '',
       plausibleDomain: process.env.PLAUSIBLE_DOMAIN || 'adul21.fr',
       // Association status: false = Phase 1 (pre-adhesion), true = Phase 2 (full membership)
       associationCreated: process.env.ASSOCIATION_CREATED === 'true'

@@ -16,12 +16,8 @@ COPY . .
 
 # Variables d'environnement nécessaires pour le build
 # Les vraies valeurs seront injectées par Coolify
-ARG SUPABASE_URL
-ARG SUPABASE_KEY
 ARG SITE_URL=https://adul21.fr
 
-ENV SUPABASE_URL=${SUPABASE_URL}
-ENV SUPABASE_KEY=${SUPABASE_KEY}
 ENV SITE_URL=${SITE_URL}
 
 # Build l'application
