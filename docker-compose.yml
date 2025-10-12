@@ -11,14 +11,15 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./supabase-schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./supabase-schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - adul21-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adul21}"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adul21} -d ${POSTGRES_DB:-adul21}"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 10s
 
   adul21-web:
     build:
