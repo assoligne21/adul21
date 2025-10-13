@@ -11,29 +11,35 @@ useHead({
 
 // Données Ledenon
 const ledenonData = {
-  distance: '10 km',
-  costPerTrip: '1€',
-  time: '25 min',
-  costPerMonth: '24€',
-  costPerYear: '216€',
-  co2: '2,6 kg'
+  distance: '9,2 km',
+  distanceRoundTrip: '18,4 km',
+  costPerDay: '~1,80€',
+  time: '22 min',
+  costPerMonth: '194€',
+  costPerYear: '194€',
+  co2PerDay: '4,8 kg',
+  co2PerYear: '520 kg',
+  timePerYear: '40 heures'
 }
 
 // Données Cabrières
 const cabrieresData = {
-  distance: '6,5 km',
-  costPerTrip: '0,65€',
-  time: '8 min',
-  costPerMonth: '15,60€',
-  costPerYear: '187€',
-  co2: '1,7 kg'
+  distance: '6 km',
+  distanceRoundTrip: '12 km',
+  costPerDay: '~1,20€',
+  time: '14 min',
+  costPerMonth: '130€',
+  costPerYear: '130€',
+  co2PerDay: '3,1 kg',
+  co2PerYear: '335 kg',
+  timePerYear: '25 heures'
 }
 
 // Impact global
 const globalImpact = {
   residents: '700+',
   students: '120+',
-  timeMultiplier: 'x2,5',
+  timeMultiplier: 'x2',
   extraCarTrips: '+80',
   co2PerYear: '+1.000 tonnes'
 }
@@ -137,28 +143,39 @@ const profiles = [
               <span class="font-bold text-lg">{{ ledenonData.distance }}</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
-              <span class="text-muted">Coût carburant</span>
-              <span class="font-bold text-lg text-red-600">{{ ledenonData.costPerTrip }}</span>
+              <span class="text-muted">Aller-retour quotidien</span>
+              <span class="font-bold text-lg">{{ ledenonData.distanceRoundTrip }}</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
-              <span class="text-muted">Temps minimum</span>
+              <span class="text-muted">Coût carburant par jour</span>
+              <span class="font-bold text-lg text-red-600">{{ ledenonData.costPerDay }}</span>
+            </div>
+            <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
+              <span class="text-muted">Temps perdu par jour</span>
               <span class="font-bold text-lg">{{ ledenonData.time }}</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
-              <span class="text-muted">CO2 émis (aller simple)</span>
-              <span class="font-bold text-lg text-orange-600">{{ ledenonData.co2 }}</span>
+              <span class="text-muted">CO2 émis par jour</span>
+              <span class="font-bold text-lg text-orange-600">{{ ledenonData.co2PerDay }}</span>
             </div>
           </div>
 
           <template #footer>
             <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 space-y-2">
-              <div class="flex justify-between">
-                <span class="font-semibold">Parent 3x/semaine :</span>
-                <span class="font-bold text-red-600">{{ ledenonData.costPerMonth }}/mois</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="font-semibold">Sur 1 an scolaire :</span>
-                <span class="font-bold text-red-700 text-lg">{{ ledenonData.costPerYear }}</span>
+              <p class="font-bold text-red-900 mb-2">Sur une année scolaire (36 semaines) :</p>
+              <div class="space-y-1 text-sm">
+                <div class="flex justify-between">
+                  <span class="font-semibold">Surcoût carburant :</span>
+                  <span class="font-bold text-red-600">{{ ledenonData.costPerYear }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-semibold">CO2 supplémentaire :</span>
+                  <span class="font-bold text-red-600">{{ ledenonData.co2PerYear }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-semibold">Temps perdu :</span>
+                  <span class="font-bold text-red-600">{{ ledenonData.timePerYear }}</span>
+                </div>
               </div>
             </div>
           </template>
@@ -184,28 +201,39 @@ const profiles = [
               <span class="font-bold text-lg">{{ cabrieresData.distance }}</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
-              <span class="text-muted">Coût carburant</span>
-              <span class="font-bold text-lg text-red-600">{{ cabrieresData.costPerTrip }}</span>
+              <span class="text-muted">Aller-retour quotidien</span>
+              <span class="font-bold text-lg">{{ cabrieresData.distanceRoundTrip }}</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
-              <span class="text-muted">Temps minimum</span>
+              <span class="text-muted">Coût carburant par jour</span>
+              <span class="font-bold text-lg text-red-600">{{ cabrieresData.costPerDay }}</span>
+            </div>
+            <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
+              <span class="text-muted">Temps perdu par jour</span>
               <span class="font-bold text-lg">{{ cabrieresData.time }}</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-800">
-              <span class="text-muted">CO2 émis (aller simple)</span>
-              <span class="font-bold text-lg text-orange-600">{{ cabrieresData.co2 }}</span>
+              <span class="text-muted">CO2 émis par jour</span>
+              <span class="font-bold text-lg text-orange-600">{{ cabrieresData.co2PerDay }}</span>
             </div>
           </div>
 
           <template #footer>
             <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 space-y-2">
-              <div class="flex justify-between">
-                <span class="font-semibold">Parent 3x/semaine :</span>
-                <span class="font-bold text-red-600">{{ cabrieresData.costPerMonth }}/mois</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="font-semibold">Sur 1 an scolaire :</span>
-                <span class="font-bold text-red-700 text-lg">{{ cabrieresData.costPerYear }}</span>
+              <p class="font-bold text-orange-900 mb-2">Sur une année scolaire (36 semaines) :</p>
+              <div class="space-y-1 text-sm">
+                <div class="flex justify-between">
+                  <span class="font-semibold">Surcoût carburant :</span>
+                  <span class="font-bold text-orange-600">{{ cabrieresData.costPerYear }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-semibold">CO2 supplémentaire :</span>
+                  <span class="font-bold text-orange-600">{{ cabrieresData.co2PerYear }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-semibold">Temps perdu :</span>
+                  <span class="font-bold text-orange-600">{{ cabrieresData.timePerYear }}</span>
+                </div>
               </div>
             </div>
           </template>
@@ -355,6 +383,7 @@ const profiles = [
           color="white"
           icon="i-heroicons-user-plus"
           label="Adhérer"
+          class="!border-4 !border-primary-600 !shadow-lg hover:!shadow-xl hover:!scale-105 !transition-all !duration-300"
         />
       </div>
     </div>
