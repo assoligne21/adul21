@@ -27,12 +27,12 @@ useSeoMeta({
 
 <template>
   <div>
-    <AppHeader />
+    <LayoutAppHeader />
 
     <main>
       <NuxtPage />
     </main>
 
-    <AppFooter />
+    <LayoutAppFooter />
   </div>
 </template>
