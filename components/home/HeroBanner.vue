@@ -1,5 +1,5 @@
 <template>
-  <section class="relative bg-gradient-to-br from-blue-900 via-blue-600 to-blue-900 text-white overflow-hidden min-h-[95vh] flex items-center">
+  <section class="relative bg-gradient-to-br from-blue-900 via-blue-600 to-blue-900 text-white overflow-hidden min-h-[95vh] flex items-start">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-10">
       <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48ZyBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjEiPjxwYXRoIGQ9Ik0zNiAzNHYtNGgtMnY0aC00djJoNHY0aDJ2LTRoNHYtMmgtNHptMC0zMFYwSjMydjRoLTR2Mmg0djRoMlY2aDRWNGgtNHpNNiAzNHYtNEg0djRIMHYyaDR2NGgydi00aDR2LTJING3pNiA0VjBINHY0SDB2Mmg0djRoMlY2aDRWNEg2eiIvPjwvZz48L2c+PC9zdmc+')]"></div>
@@ -9,7 +9,7 @@
     <div class="absolute inset-0 bg-gradient-to-br from-blue-900/95 via-blue-600/90 to-blue-900/95"></div>
 
     <!-- Content -->
-    <UContainer class="relative z-10 py-16">
+    <UContainer class="relative z-10 pt-0 pb-16">
       <div class="max-w-5xl mx-auto text-center space-y-12">
         <!-- Logo -->
         <div class="flex justify-center mb-8">
