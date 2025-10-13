@@ -34,7 +34,7 @@ async function onSubmit() {
             Association de Défense des Usagers de la Ligne 21
           </p>
           <p class="text-xs text-gray-500">
-            Association loi 1901 • © {{ new Date().getFullYear() }} ADUL21
+            Association loi 1901 (En création) • © {{ new Date().getFullYear() }} ADUL21
           </p>
         </div>
 

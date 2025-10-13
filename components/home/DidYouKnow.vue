@@ -50,7 +50,7 @@
                 </li>
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>3 trajets par semaine</strong> (4h24 par mois)</span>
+                  <span><strong>3 trajets par semaine</strong> = 4h24 par mois</span>
                 </li>
               </ul>
             </div>
@@ -105,7 +105,7 @@
                 </li>
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>3 trajets par semaine</strong> (2h48 par mois)</span>
+                  <span><strong>3 trajets par semaine</strong> = 2h48 par mois</span>
                 </li>
               </ul>
             </div>
