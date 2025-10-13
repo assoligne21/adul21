@@ -1,12 +1,12 @@
-export const useAuth = () => {
-  const authToken = useCookie('auth_token', {
-    maxAge: 60 * 60 * 24 * 7, // 7 jours
-    secure: true,
-    httpOnly: true,
-    sameSite: 'lax'
-  })
+export interface AdminUser {
+  id: string
+  email: string
+  name: string
+}
 
-  const isAuthenticated = computed(() => !!authToken.value)
+export const useAuth = () => {
+  const user = useState<AdminUser | null>('admin-user', () => null)
+  const loading = useState<boolean>('auth-loading', () => false)
 
   const login = async (email: string, password: string) => {
     try {
@@ -15,14 +15,14 @@ export const useAuth = () => {
         body: { email, password }
       })
 
-      if (response.token) {
-        authToken.value = response.token
-        return { success: true }
+      user.value = response.user
+      return { success: true }
+    } catch (error: any) {
+      console.error('Login error:', error)
+      return {
+        success: false,
+        message: error.data?.message || 'Erreur de connexion'
       }
-
-      return { success: false, error: 'Invalid credentials' }
-    } catch (error) {
-      return { success: false, error: 'Login failed' }
     }
   }
 
@@ -31,28 +31,34 @@ export const useAuth = () => {
       await $fetch('/api/auth/logout', {
         method: 'POST'
       })
-      authToken.value = null
-      navigateTo('/admin/login')
+      user.value = null
+      await navigateTo('/admin/login')
     } catch (error) {
-      console.error('Logout failed:', error)
+      console.error('Logout error:', error)
     }
   }
 
   const checkAuth = async () => {
-    if (!authToken.value) return false
+    if (user.value) return true
 
+    loading.value = true
     try {
-      const response = await $fetch('/api/auth/check', {
-        method: 'GET'
-      })
-      return response.authenticated
+      const response = await $fetch('/api/auth/me')
+      user.value = response.user
+      return true
     } catch (error) {
-      authToken.value = null
+      user.value = null
       return false
+    } finally {
+      loading.value = false
     }
   }
 
+  const isAuthenticated = computed(() => !!user.value)
+
   return {
+    user,
+    loading,
     isAuthenticated,
     login,
     logout,

@@ -258,3 +258,17 @@ export const contactMessages = pgTable('contact_messages', {
   repliedBy: varchar('replied_by', { length: 255 }),
   replyNotes: text('reply_notes')
 })
+
+// Admin Users Table
+export const adminUsers = pgTable('admin_users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+  name: varchar('name', { length: 100 }).notNull(),
+
+  lastLoginAt: timestamp('last_login_at'),
+  isActive: boolean('is_active').notNull().default(true)
+})

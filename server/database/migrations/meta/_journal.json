@@ -8,6 +8,13 @@
       "when": 1760313565633,
       "tag": "0000_safe_sunfire",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760317208977,
+      "tag": "0001_faithful_machine_man",
+      "breakpoints": true
     }
   ]
 }

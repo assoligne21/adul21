@@ -1,0 +1,183 @@
+<template>
+  <div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Gestion des témoignages</h1>
+
+    <div v-if="pending" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+    </div>
+
+    <div v-else>
+      <div class="mb-6 flex gap-4">
+        <UButton
+          :color="filter === 'all' ? 'primary' : 'gray'"
+          @click="filter = 'all'"
+        >
+          Tous ({{ testimoniesList?.length || 0 }})
+        </UButton>
+        <UButton
+          :color="filter === 'pending' ? 'primary' : 'gray'"
+          @click="filter = 'pending'"
+        >
+          En attente ({{ pendingCount }})
+        </UButton>
+        <UButton
+          :color="filter === 'published' ? 'primary' : 'gray'"
+          @click="filter = 'published'"
+        >
+          Publiés ({{ publishedCount }})
+        </UButton>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Auteur
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ville
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Statut
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="testimony in filteredTestimonies" :key="testimony.id" class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ testimony.firstName }} {{ testimony.lastName }}
+                  </div>
+                  <div class="text-sm text-gray-500">{{ testimony.email }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {{ testimony.city }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ formatDate(testimony.createdAt) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span 
+                    class="px-2 py-1 text-xs font-semibold rounded-full"
+                    :class="{
+                      'bg-orange-100 text-orange-800': testimony.moderationStatus === 'pending',
+                      'bg-green-100 text-green-800': testimony.isPublished,
+                      'bg-red-100 text-red-800': testimony.moderationStatus === 'rejected'
+                    }"
+                  >
+                    {{ getStatusLabel(testimony) }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                  <div class="flex gap-2">
+                    <UButton
+                      v-if="testimony.moderationStatus === 'pending'"
+                      color="green"
+                      size="xs"
+                      @click="publishTestimony(testimony.id)"
+                    >
+                      Publier
+                    </UButton>
+                    <UButton
+                      v-if="testimony.isPublished"
+                      color="orange"
+                      size="xs"
+                      @click="unpublishTestimony(testimony.id)"
+                    >
+                      Dépublier
+                    </UButton>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+  layout: 'admin',
+  middleware: ['admin-auth']
+})
+
+const filter = ref('all')
+
+const { data: testimoniesList, pending, refresh } = await useFetch('/api/testimonies', {
+  query: { limit: 100 }
+})
+
+const filteredTestimonies = computed(() => {
+  if (!testimoniesList.value) return []
+  
+  if (filter.value === 'pending') {
+    return testimoniesList.value.filter((t: any) => t.moderationStatus === 'pending')
+  }
+  if (filter.value === 'published') {
+    return testimoniesList.value.filter((t: any) => t.isPublished)
+  }
+  return testimoniesList.value
+})
+
+const pendingCount = computed(() => 
+  testimoniesList.value?.filter((t: any) => t.moderationStatus === 'pending').length || 0
+)
+
+const publishedCount = computed(() => 
+  testimoniesList.value?.filter((t: any) => t.isPublished).length || 0
+)
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+}
+
+function getStatusLabel(testimony: any) {
+  if (testimony.isPublished) return 'Publié'
+  if (testimony.moderationStatus === 'pending') return 'En attente'
+  if (testimony.moderationStatus === 'rejected') return 'Rejeté'
+  return testimony.moderationStatus
+}
+
+async function publishTestimony(id: string) {
+  try {
+    await $fetch(`/api/testimonies/${id}`, {
+      method: 'PATCH',
+      body: {
+        isPublished: true,
+        moderationStatus: 'approved'
+      }
+    })
+    await refresh()
+  } catch (error) {
+    console.error('Error publishing testimony:', error)
+  }
+}
+
+async function unpublishTestimony(id: string) {
+  try {
+    await $fetch(`/api/testimonies/${id}`, {
+      method: 'PATCH',
+      body: {
+        isPublished: false
+      }
+    })
+    await refresh()
+  } catch (error) {
+    console.error('Error unpublishing testimony:', error)
+  }
+}
+</script>
