@@ -18,7 +18,7 @@ const items = [{
 </script>
 
 <template>
-  <UHeader>
+  <UHeader class="relative z-50">
     <template #left>
       <NuxtLink to="/" class="flex items-center gap-3">
         <img src="/logo-adul21.svg" alt="ADUL21" class="h-10 w-auto" />

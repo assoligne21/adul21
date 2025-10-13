@@ -27,7 +27,7 @@
           <!-- Broken line with cross -->
           <div class="relative flex items-center gap-1">
             <div class="h-1 w-8 bg-white rounded"></div>
-            <div class="relative w-8 h-8 flex items-center justify-center">
+            <div class="relative w-8 h-8 flex items-center justify-center animate-shake">
               <div class="absolute w-6 h-1 bg-red-500 rounded rotate-45"></div>
               <div class="absolute w-6 h-1 bg-red-500 rounded -rotate-45"></div>
             </div>

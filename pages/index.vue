@@ -10,7 +10,7 @@
     <HomeDidYouKnow />
 
     <!-- Latest News Preview -->
-    <HomeLatestNews />
+    <!-- <HomeLatestNews /> -->
 
     <!-- Call to Action -->
     <HomeCallToAction />
