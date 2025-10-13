@@ -28,7 +28,7 @@ async function onSubmit() {
         <!-- About -->
         <div>
           <NuxtLink to="/" class="inline-block mb-4">
-            <img src="/logo-adul21.svg" alt="ADUL21" class="h-20 w-auto" />
+            <img src="/logo-adul21.svg" alt="ADUL21" class="h-40 w-auto" />
           </NuxtLink>
           <p class="text-sm text-gray-400 mb-2">
             Association de Défense des Usagers de la Ligne 21
