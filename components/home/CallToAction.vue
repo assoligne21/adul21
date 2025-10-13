@@ -5,7 +5,7 @@ const links = [{
   icon: 'i-heroicons-document-text',
   color: 'red' as const,
   size: 'xl' as const,
-  class: '!text-xl !px-12 !py-6 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(239,68,68,0.6)] hover:shadow-[0_20px_60px_rgba(239,68,68,0.8)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 border-4 border-red-600 !rounded-2xl'
+  class: '!text-xl !px-12 !py-6 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(239,68,68,0.6)] hover:shadow-[0_20px_60px_rgba(239,68,68,0.8)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 border-4 border-red-600 !rounded-2xl !text-white [&_svg]:!text-white'
 }, {
   label: 'Adhérer à l\'association',
   to: '/rejoindre/adherer',
@@ -20,7 +20,7 @@ const links = [{
   variant: 'outline' as const,
   color: 'primary' as const,
   size: 'xl' as const,
-  class: '!text-lg !px-10 !py-5 !font-bold hover:scale-105 hover:-translate-y-1 transition-all duration-300 !rounded-xl'
+  class: '!text-lg !px-10 !py-5 !font-bold hover:scale-105 hover:-translate-y-1 transition-all duration-300 !rounded-xl !bg-white !text-primary-600 [&_svg]:!text-primary-600 hover:!bg-gray-50'
 }]
 </script>
 
