@@ -26,13 +26,13 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp>
+  <div>
     <AppHeader />
 
-    <UMain>
+    <main>
       <NuxtPage />
-    </UMain>
+    </main>
 
     <AppFooter />
-  </UApp>
+  </div>
 </template>
