@@ -19,7 +19,7 @@ const documents = ref([
     formats: [
       { type: 'DOCX', url: '/CourrierMairie.docx', size: '18 Ko' }
     ],
-    downloads: 42
+    available: true
   },
   {
     id: 2,
@@ -30,7 +30,7 @@ const documents = ref([
     formats: [
       { type: 'DOCX', url: '/CourrierMetropole.docx', size: '15 Ko' }
     ],
-    downloads: 38
+    available: true
   },
   {
     id: 3,
@@ -38,11 +38,8 @@ const documents = ref([
     description: 'Modèle de recours gracieux pour contester la décision de suppression.',
     category: 'Recours',
     icon: 'i-heroicons-scale',
-    formats: [
-      { type: 'DOCX', url: '#', size: '20 Ko' },
-      { type: 'PDF', url: '#', size: '125 Ko' }
-    ],
-    downloads: 25
+    formats: [],
+    available: false
   },
   {
     id: 4,
@@ -50,10 +47,8 @@ const documents = ref([
     description: 'Comment saisir le Défenseur des droits pour faire valoir vos droits à la mobilité.',
     category: 'Guide pratique',
     icon: 'i-heroicons-book-open',
-    formats: [
-      { type: 'PDF', url: '#', size: '450 Ko' }
-    ],
-    downloads: 31
+    formats: [],
+    available: false
   },
   {
     id: 5,
@@ -61,10 +56,8 @@ const documents = ref([
     description: 'Modèle de signalement à envoyer au Préfet du Gard concernant le service public.',
     category: 'Courrier type',
     icon: 'i-heroicons-document-text',
-    formats: [
-      { type: 'DOCX', url: '#', size: '16 Ko' }
-    ],
-    downloads: 18
+    formats: [],
+    available: false
   },
   {
     id: 6,
@@ -72,10 +65,8 @@ const documents = ref([
     description: 'Tous nos arguments juridiques, chiffres et témoignages réunis en un seul document.',
     category: 'Documentation',
     icon: 'i-heroicons-folder',
-    formats: [
-      { type: 'PDF', url: '#', size: '2,3 Mo' }
-    ],
-    downloads: 52
+    formats: [],
+    available: false
   }
 ])
 
@@ -189,11 +180,8 @@ function handleDownload(doc: any, format: any) {
 
         <template #footer>
           <div class="space-y-3">
-            <div class="flex items-center justify-between text-xs text-muted">
-              <span>{{ doc.downloads }} téléchargements</span>
-            </div>
-
-            <div class="flex flex-wrap gap-2">
+            <!-- Available documents -->
+            <div v-if="doc.available" class="flex flex-wrap gap-2">
               <UButton
                 v-for="format in doc.formats"
                 :key="format.type"
@@ -202,6 +190,15 @@ function handleDownload(doc: any, format: any) {
                 size="sm"
                 variant="outline"
                 @click="handleDownload(doc, format)"
+              />
+            </div>
+
+            <!-- Unavailable documents -->
+            <div v-else class="text-center py-2">
+              <UBadge
+                label="En cours de rédaction"
+                color="orange"
+                variant="soft"
               />
             </div>
           </div>
