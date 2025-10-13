@@ -35,7 +35,11 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <Icon name="heroicons:map-pin" class="w-5 h-5" />
+            <!-- Flèche triangulaire comme dans le concept -->
+            <svg width="16" height="20" viewBox="0 0 16 20" fill="white" class="flex-shrink-0">
+              <path d="M0 4 L0 16 L16 10 Z" />
+            </svg>
+            <Icon name="heroicons:map-pin" class="w-6 h-6" />
             <span class="font-bold">GARE DE NÎMES</span>
           </div>
         </div>
@@ -54,16 +58,19 @@
           </p>
         </div>
 
-        <!-- CTA Buttons - Enhanced visibility -->
-        <div class="flex flex-wrap justify-center gap-6 pt-6">
+        <!-- CTA Buttons - MAXIMUM visibility comme dans le concept -->
+        <div class="flex flex-wrap justify-center gap-8 pt-8">
           <UButton
             to="/temoignages/nouveau"
             color="red"
             size="xl"
             icon="i-heroicons-document-text"
             label="Témoigner"
-            class="shadow-2xl hover:shadow-red-500/50 hover:scale-105 transition-all duration-300 text-lg px-10 py-6 font-bold uppercase tracking-wide"
-            :ui="{ rounded: 'rounded-xl' }"
+            class="!text-xl !px-14 !py-8 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(239,68,68,0.6)] hover:shadow-[0_20px_60px_rgba(239,68,68,0.8)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 border-4 border-red-600"
+            :ui="{
+              rounded: 'rounded-2xl',
+              icon: { size: { xl: 'h-7 w-7' } }
+            }"
           />
           <UButton
             to="/rejoindre/adherer"
@@ -71,8 +78,11 @@
             size="xl"
             icon="i-heroicons-user-plus"
             label="Adhérer"
-            class="shadow-2xl hover:shadow-white/50 hover:scale-105 transition-all duration-300 text-lg px-10 py-6 font-bold uppercase tracking-wide"
-            :ui="{ rounded: 'rounded-xl' }"
+            class="!text-xl !px-14 !py-8 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(255,255,255,0.5)] hover:shadow-[0_20px_60px_rgba(255,255,255,0.7)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 !bg-white !text-blue-900 border-4 border-white"
+            :ui="{
+              rounded: 'rounded-2xl',
+              icon: { size: { xl: 'h-7 w-7' } }
+            }"
           />
           <UButton
             to="/revendications"
@@ -81,8 +91,11 @@
             size="xl"
             trailing-icon="i-heroicons-arrow-right"
             label="Nos revendications"
-            class="hover:bg-white/10 hover:scale-105 transition-all duration-300 text-lg px-8 py-6 font-semibold border-2"
-            :ui="{ rounded: 'rounded-xl' }"
+            class="!text-xl !px-12 !py-8 !font-bold !uppercase !tracking-wider hover:bg-white/20 hover:scale-110 hover:-translate-y-2 transition-all duration-300 border-4 border-white shadow-[0_10px_40px_rgba(255,255,255,0.3)]"
+            :ui="{
+              rounded: 'rounded-2xl',
+              icon: { size: { xl: 'h-7 w-7' } }
+            }"
           />
         </div>
 
