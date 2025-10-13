@@ -29,7 +29,7 @@
                 </p>
                 <div class="bg-primary-50 border-l-4 border-primary-600 p-4">
                   <p class="text-sm text-primary-900">
-                    <strong>Pourquoi ?</strong> Les correspondances obligatoires ont multiplié les temps de trajet par 2,5 et excluent de fait les personnes à mobilité réduite, les seniors et les lycéens en filières spécialisées.
+                    <strong>Pourquoi ?</strong> Les correspondances obligatoires ont multiplié les temps de trajet par 2 et excluent de fait les personnes à mobilité réduite, les seniors et les lycéens en filières spécialisées.
                   </p>
                 </div>
               </div>
@@ -66,28 +66,6 @@
               </div>
               <div class="flex-1">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                  Indemnisation des préjudices subis
-                </h2>
-                <p class="text-gray-700 mb-4">
-                  Nous demandons une compensation financière pour les familles contraintes d'utiliser leur véhicule personnel, ainsi que pour les lycéens ayant dû abandonner leur filière.
-                </p>
-                <div class="bg-primary-50 border-l-4 border-primary-600 p-4">
-                  <p class="text-sm text-primary-900">
-                    <strong>Pourquoi ?</strong> Les surcoûts (carburant, usure véhicule) et les préjudices (abandon scolaire, perte de temps) sont directement causés par cette décision.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Revendication 4 -->
-          <div class="card p-8">
-            <div class="flex items-start">
-              <div class="w-12 h-12 bg-primary-600 text-white rounded-lg flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">
-                4
-              </div>
-              <div class="flex-1">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
                   Garantie de continuité du service public de transport
                 </h2>
                 <p class="text-gray-700 mb-4">
@@ -102,11 +80,11 @@
             </div>
           </div>
 
-          <!-- Revendication 5 -->
+          <!-- Revendication 4 -->
           <div class="card p-8">
             <div class="flex items-start">
               <div class="w-12 h-12 bg-primary-600 text-white rounded-lg flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">
-                5
+                4
               </div>
               <div class="flex-1">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">
@@ -118,6 +96,28 @@
                 <div class="bg-primary-50 border-l-4 border-primary-600 p-4">
                   <p class="text-sm text-primary-900">
                     <strong>Pourquoi ?</strong> L'absence d'étude a conduit à augmenter les émissions de CO2 de 1000 tonnes/an, en totale contradiction avec les objectifs climatiques affichés.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revendication 5 -->
+          <div class="card p-8">
+            <div class="flex items-start">
+              <div class="w-12 h-12 bg-primary-600 text-white rounded-lg flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">
+                5
+              </div>
+              <div class="flex-1">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                  Indemnisation des préjudices subis
+                </h2>
+                <p class="text-gray-700 mb-4">
+                  Nous demandons une compensation financière pour les familles contraintes d'utiliser leur véhicule personnel, ainsi que pour les lycéens ayant dû abandonner leur filière.
+                </p>
+                <div class="bg-primary-50 border-l-4 border-primary-600 p-4">
+                  <p class="text-sm text-primary-900">
+                    <strong>Pourquoi ?</strong> Les surcoûts (carburant, usure véhicule) et les préjudices (abandon scolaire, perte de temps) sont directement causés par cette décision.
                   </p>
                 </div>
               </div>
