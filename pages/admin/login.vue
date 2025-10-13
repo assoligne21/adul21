@@ -20,6 +20,7 @@
               id="email"
               v-model="email"
               type="email"
+              autocomplete="email"
               required
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               placeholder="assoligne21@gmail.com"
@@ -35,6 +36,7 @@
               id="password"
               v-model="password"
               type="password"
+              autocomplete="current-password"
               required
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               placeholder="••••••••"
