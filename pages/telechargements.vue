@@ -17,8 +17,7 @@ const documents = ref([
     category: 'Courrier type',
     icon: 'i-heroicons-document-text',
     formats: [
-      { type: 'DOCX', url: '#', size: '18 Ko' },
-      { type: 'PDF', url: '#', size: '120 Ko' }
+      { type: 'DOCX', url: '/CourrierMairie.docx', size: '18 Ko' }
     ],
     downloads: 42
   },
@@ -29,8 +28,7 @@ const documents = ref([
     category: 'Courrier type',
     icon: 'i-heroicons-document-text',
     formats: [
-      { type: 'DOCX', url: '#', size: '15 Ko' },
-      { type: 'PDF', url: '#', size: '115 Ko' }
+      { type: 'DOCX', url: '/CourrierMetropole.docx', size: '15 Ko' }
     ],
     downloads: 38
   },
@@ -96,8 +94,15 @@ const filteredDocuments = computed(() => {
 })
 
 function handleDownload(doc: any, format: any) {
-  // TODO: Implement actual download with tracking
-  console.log(`Downloading ${doc.title} - ${format.type}`)
+  // Si l'URL est définie, créer un téléchargement
+  if (format.url && format.url !== '#') {
+    const link = document.createElement('a')
+    link.href = format.url
+    link.download = `${doc.title}.${format.type.toLowerCase()}`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   // Track download (future API call)
   // await $fetch('/api/downloads/track', {

@@ -25,7 +25,7 @@ const items = [{
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-3">
-          <img src="/logo-adul21.svg" alt="ADUL21" class="h-10 w-auto" />
+          <img src="/logo-adul21.svg" alt="ADUL21" class="h-12 w-auto" />
         </NuxtLink>
 
         <!-- Desktop Navigation -->
