@@ -1,5 +1,5 @@
 <template>
-  <section class="relative bg-gradient-to-br from-blue-900 via-blue-600 to-blue-900 text-white overflow-hidden min-h-[90vh] flex items-center">
+  <section class="relative bg-gradient-to-br from-blue-900 via-blue-600 to-blue-900 text-white overflow-hidden min-h-[95vh] flex items-center">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-10">
       <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48ZyBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjEiPjxwYXRoIGQ9Ik0zNiAzNHYtNGgtMnY0aC00djJoNHY0aDJ2LTRoNHYtMmgtNHptMC0zMFYwSjMydjRoLTR2Mmg0djRoMlY2aDRWNGgtNHpNNiAzNHYtNEg0djRIMHYyaDR2NGgydi00aDR2LTJING3pNiA0VjBINHY0SDB2Mmg0djRoMlY2aDRWNEg2eiIvPjwvZz48L2c+PC9zdmc+')]"></div>
@@ -119,7 +119,7 @@
     </UContainer>
 
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
       <Icon name="heroicons:chevron-down" class="w-8 h-8 text-white/70" />
     </div>
   </section>

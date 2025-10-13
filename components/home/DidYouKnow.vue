@@ -23,7 +23,7 @@
           <div class="space-y-6">
             <div>
               <div class="flex items-baseline space-x-2 mb-2">
-                <span class="text-4xl font-bold text-gray-900">10 km</span>
+                <span class="text-4xl font-bold text-gray-900">9,2 km</span>
                 <span class="text-gray-600">aller simple jusqu'à Marguerittes</span>
               </div>
               <p class="text-sm text-gray-500">Pour rejoindre la ligne de bus</p>
@@ -34,19 +34,23 @@
               <ul class="space-y-2 text-gray-700">
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>20 km</strong> aller-retour quotidien</span>
+                  <span><strong>18,4 km</strong> aller-retour quotidien</span>
                 </li>
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>~2€</strong> de carburant par jour</span>
+                  <span><strong>~1,80€</strong> de carburant par jour</span>
                 </li>
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>5,2 kg</strong> de CO2 émis par jour</span>
+                  <span><strong>4,8 kg</strong> de CO2 émis par jour</span>
                 </li>
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>50 minutes</strong> perdues par jour minimum</span>
+                  <span><strong>22 minutes</strong> perdues par jour</span>
+                </li>
+                <li class="flex items-start">
+                  <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
+                  <span><strong>3 trajets par semaine</strong></span>
                 </li>
               </ul>
             </div>
@@ -54,9 +58,9 @@
             <div class="bg-red-50 border border-red-200 rounded-lg p-4">
               <p class="font-bold text-red-900 mb-2">Sur une année scolaire (36 semaines) :</p>
               <ul class="space-y-1 text-red-800 text-sm">
-                <li><strong>216€</strong> de surcoût carburant</li>
-                <li><strong>187 kg</strong> de CO2 supplémentaire</li>
-                <li><strong>30 heures</strong> perdues dans les trajets</li>
+                <li><strong>194€</strong> de surcoût carburant</li>
+                <li><strong>520 kg</strong> de CO2 supplémentaire</li>
+                <li><strong>40 heures</strong> perdues dans les trajets</li>
               </ul>
             </div>
           </div>
@@ -74,7 +78,7 @@
           <div class="space-y-6">
             <div>
               <div class="flex items-baseline space-x-2 mb-2">
-                <span class="text-4xl font-bold text-gray-900">6,5 km</span>
+                <span class="text-4xl font-bold text-gray-900">6 km</span>
                 <span class="text-gray-600">aller simple jusqu'à Marguerittes</span>
               </div>
               <p class="text-sm text-gray-500">Pour rejoindre la ligne de bus</p>
@@ -85,15 +89,23 @@
               <ul class="space-y-2 text-gray-700">
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>13 km</strong> aller-retour quotidien</span>
+                  <span><strong>12 km</strong> aller-retour quotidien</span>
                 </li>
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>~1,30€</strong> de carburant par jour</span>
+                  <span><strong>~1,20€</strong> de carburant par jour</span>
                 </li>
                 <li class="flex items-start">
                   <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <span><strong>~16 minutes</strong> perdues par jour minimum</span>
+                  <span><strong>3,1 kg</strong> de CO2 émis par jour</span>
+                </li>
+                <li class="flex items-start">
+                  <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
+                  <span><strong>14 minutes</strong> perdues par jour</span>
+                </li>
+                <li class="flex items-start">
+                  <Icon name="heroicons:arrow-right" class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" />
+                  <span><strong>3 trajets par semaine</strong></span>
                 </li>
               </ul>
             </div>
@@ -101,8 +113,9 @@
             <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
               <p class="font-bold text-orange-900 mb-2">Sur une année scolaire (36 semaines) :</p>
               <ul class="space-y-1 text-orange-800 text-sm">
-                <li><strong>187€</strong> de surcoût carburant</li>
-                <li><strong>10 heures</strong> perdues dans les trajets</li>
+                <li><strong>130€</strong> de surcoût carburant</li>
+                <li><strong>335 kg</strong> de CO2 supplémentaire</li>
+                <li><strong>25 heures</strong> perdues dans les trajets</li>
               </ul>
             </div>
           </div>
