@@ -1,21 +1,17 @@
-import { serverSupabaseServiceRole } from '../../utils/supabase-compat.ts'
+import { db } from '~/server/database/connection'
+import { preMembers } from '~/server/database/schema'
+import { count as drizzleCount } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   try {
-    const supabase = serverSupabaseServiceRole(event)
-
-    const { count, error } = await supabase
-      .from('pre_members')
-      .select('*', { count: 'exact', head: true })
-
-    if (error) {
-      throw error
-    }
+    const [{ value: totalCount }] = await db
+      .select({ value: drizzleCount() })
+      .from(preMembers)
 
     return {
       success: true,
       data: {
-        count: count || 0
+        count: totalCount || 0
       }
     }
   } catch (error: any) {

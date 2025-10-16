@@ -1,0 +1,22 @@
+CREATE TABLE "pre_members" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"first_name" varchar(100) NOT NULL,
+	"last_name" varchar(100) NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"phone" varchar(20) NOT NULL,
+	"city" varchar(100) NOT NULL,
+	"user_type" varchar(50) NOT NULL,
+	"wants_to_become_member" boolean DEFAULT false NOT NULL,
+	"wants_to_volunteer" boolean DEFAULT false NOT NULL,
+	"can_host_meeting" boolean DEFAULT false NOT NULL,
+	"can_distribute_flyers" boolean DEFAULT false NOT NULL,
+	"participation_areas" json,
+	"accepts_newsletter" boolean DEFAULT false NOT NULL,
+	"accepts_contact_when_created" boolean DEFAULT false NOT NULL,
+	"accepts_ag_invitation" boolean DEFAULT false NOT NULL,
+	"converted_to_member_id" uuid,
+	"converted_at" timestamp,
+	CONSTRAINT "pre_members_email_unique" UNIQUE("email")
+);

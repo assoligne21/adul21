@@ -1,5 +1,7 @@
 import { z } from 'zod'
-import { serverSupabaseServiceRole } from '../utils/supabase-compat.ts'
+import { db } from '~/server/database/connection'
+import { preMembers } from '~/server/database/schema'
+import { eq, count as drizzleCount } from 'drizzle-orm'
 
 // Validation schema
 const preMemberSchema = z.object({
@@ -25,17 +27,14 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const validatedData = preMemberSchema.parse(body)
 
-    // Get Supabase client with service role
-    const supabase = serverSupabaseServiceRole(event)
-
     // Check if email already exists
-    const { data: existingPreMember } = await supabase
-      .from('pre_members')
-      .select('id, email')
-      .eq('email', validatedData.email)
-      .single()
+    const existingPreMember = await db
+      .select()
+      .from(preMembers)
+      .where(eq(preMembers.email, validatedData.email))
+      .limit(1)
 
-    if (existingPreMember) {
+    if (existingPreMember.length > 0) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Vous êtes déjà inscrit avec cet email'
@@ -43,39 +42,27 @@ export default defineEventHandler(async (event) => {
     }
 
     // Insert pre-member
-    const { data: preMember, error } = await supabase
-      .from('pre_members')
-      .insert({
-        first_name: validatedData.firstName,
-        last_name: validatedData.lastName,
-        email: validatedData.email,
-        phone: validatedData.phone,
-        city: validatedData.city,
-        user_type: validatedData.userType,
-        wants_to_become_member: validatedData.wantsToBecomeMember,
-        wants_to_volunteer: validatedData.wantsToVolunteer,
-        can_host_meeting: validatedData.canHostMeeting,
-        can_distribute_flyers: validatedData.canDistributeFlyers,
-        participation_areas: validatedData.participationAreas,
-        accepts_newsletter: validatedData.acceptsNewsletter,
-        accepts_contact_when_created: validatedData.acceptsContactWhenCreated,
-        accepts_ag_invitation: validatedData.acceptsAgInvitation
-      })
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Supabase error:', error)
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Erreur lors de l\'enregistrement'
-      })
-    }
+    const [preMember] = await db.insert(preMembers).values({
+      firstName: validatedData.firstName,
+      lastName: validatedData.lastName,
+      email: validatedData.email,
+      phone: validatedData.phone,
+      city: validatedData.city,
+      userType: validatedData.userType,
+      wantsToBecomeMember: validatedData.wantsToBecomeMember,
+      wantsToVolunteer: validatedData.wantsToVolunteer,
+      canHostMeeting: validatedData.canHostMeeting,
+      canDistributeFlyers: validatedData.canDistributeFlyers,
+      participationAreas: validatedData.participationAreas,
+      acceptsNewsletter: validatedData.acceptsNewsletter,
+      acceptsContactWhenCreated: validatedData.acceptsContactWhenCreated,
+      acceptsAgInvitation: validatedData.acceptsAgInvitation
+    }).returning()
 
     // Get total count
-    const { count } = await supabase
-      .from('pre_members')
-      .select('*', { count: 'exact', head: true })
+    const [{ value: totalCount }] = await db
+      .select({ value: drizzleCount() })
+      .from(preMembers)
 
     // Send notification to admin
     try {
@@ -104,7 +91,7 @@ export default defineEventHandler(async (event) => {
               </div>
               <div class="content">
                 <div class="count-box">
-                  <div style="font-size: 48px; font-weight: bold; color: #065f46;">${count || 0}</div>
+                  <div style="font-size: 48px; font-weight: bold; color: #065f46;">${totalCount || 0}</div>
                   <div style="color: #065f46; margin-top: 5px; font-size: 18px;">soutiens au total</div>
                 </div>
 
@@ -192,7 +179,7 @@ export default defineEventHandler(async (event) => {
                 <p>Merci d'avoir rejoint notre combat pour le rétablissement de la ligne 21 directe.</p>
 
                 <div class="count-box">
-                  <div style="font-size: 48px; font-weight: bold; color: #065f46;">${count || 0}</div>
+                  <div style="font-size: 48px; font-weight: bold; color: #065f46;">${totalCount || 0}</div>
                   <div style="color: #065f46; margin-top: 5px;">personnes mobilisées au total</div>
                   <div style="color: #047857; margin-top: 10px; font-size: 14px;">Ensemble, nous sommes plus forts !</div>
                 </div>
@@ -251,7 +238,7 @@ Bonjour ${validatedData.firstName},
 
 Merci d'avoir rejoint notre combat pour le rétablissement de la ligne 21 directe.
 
-${count || 0} personnes mobilisées au total - Ensemble, nous sommes plus forts !
+${totalCount || 0} personnes mobilisées au total - Ensemble, nous sommes plus forts !
 
 PROCHAINES ÉTAPES :
 - Dépôt à la préfecture : Dans les prochaines semaines
@@ -282,10 +269,10 @@ Site web : https://adul21.fr
     return {
       success: true,
       message: 'Inscription enregistrée avec succès',
-      totalSupports: count || 0,
+      totalSupports: totalCount || 0,
       preMember: {
         id: preMember.id,
-        created_at: preMember.created_at
+        createdAt: preMember.createdAt
       }
     }
   } catch (error: any) {

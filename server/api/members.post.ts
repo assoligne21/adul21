@@ -1,5 +1,7 @@
 import { z } from 'zod'
-import { serverSupabaseServiceRole } from '../utils/supabase-compat.ts'
+import { db } from '~/server/database/connection'
+import { members } from '~/server/database/schema'
+import { eq } from 'drizzle-orm'
 
 // Validation schema
 const memberSchema = z.object({
@@ -50,17 +52,14 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const validatedData = memberSchema.parse(body)
 
-    // Get Supabase client with service role
-    const supabase = serverSupabaseServiceRole(event)
-
     // Check if email already exists
-    const { data: existingMember } = await supabase
-      .from('members')
-      .select('id, email')
-      .eq('email', validatedData.email)
-      .single()
+    const existingMember = await db
+      .select()
+      .from(members)
+      .where(eq(members.email, validatedData.email))
+      .limit(1)
 
-    if (existingMember) {
+    if (existingMember.length > 0) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Un adhérent avec cet email existe déjà'
@@ -73,46 +72,33 @@ export default defineEventHandler(async (event) => {
     membershipEndDate.setFullYear(membershipEndDate.getFullYear() + 1)
 
     // Insert member
-    const { data: member, error } = await supabase
-      .from('members')
-      .insert({
-        civility: validatedData.civility,
-        first_name: validatedData.firstName,
-        last_name: validatedData.lastName,
-        birth_date: validatedData.birthDate || null,
-        email: validatedData.email,
-        phone: validatedData.phone,
-        address: validatedData.address,
-        postal_code: validatedData.postalCode,
-        city: validatedData.city,
-        user_type: validatedData.userType,
-        school_name: validatedData.schoolName || null,
-        school_section: validatedData.schoolSection || null,
-        usage_before: validatedData.usageBefore || null,
-        usage_after: validatedData.usageAfter || null,
-        membership_fee: validatedData.membershipFee,
-        membership_type: validatedData.membershipType,
-        membership_status: 'pending',
-        membership_start_date: membershipStartDate.toISOString().split('T')[0],
-        membership_end_date: membershipEndDate.toISOString().split('T')[0],
-        payment_status: 'pending',
-        wants_to_participate: validatedData.wantsToParticipate,
-        participation_areas: validatedData.participationAreas,
-        accepts_newsletter: validatedData.acceptsNewsletter,
-        accepts_testimony_publication: validatedData.acceptsTestimonyPublication,
-        accepts_media_contact: validatedData.acceptsMediaContact,
-        accepts_action_solicitation: validatedData.acceptsActionSolicitation
-      })
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Supabase error:', error)
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Erreur lors de l\'enregistrement de l\'adhésion'
-      })
-    }
+    const [member] = await db.insert(members).values({
+      civility: validatedData.civility,
+      firstName: validatedData.firstName,
+      lastName: validatedData.lastName,
+      birthDate: validatedData.birthDate || null,
+      email: validatedData.email,
+      phone: validatedData.phone,
+      address: validatedData.address,
+      postalCode: validatedData.postalCode,
+      city: validatedData.city,
+      userType: validatedData.userType,
+      schoolName: validatedData.schoolName || null,
+      schoolSection: validatedData.schoolSection || null,
+      usageBefore: validatedData.usageBefore || null,
+      usageAfter: validatedData.usageAfter || null,
+      membershipFee: validatedData.membershipFee.toString(),
+      membershipType: validatedData.membershipType,
+      membershipStatus: 'pending',
+      membershipStartDate: membershipStartDate,
+      membershipEndDate: membershipEndDate,
+      wantsToParticipate: validatedData.wantsToParticipate,
+      participationAreas: validatedData.participationAreas,
+      acceptsNewsletter: validatedData.acceptsNewsletter,
+      acceptsTestimonyPublication: validatedData.acceptsTestimonyPublication,
+      acceptsMediaContact: validatedData.acceptsMediaContact,
+      acceptsActionSolicitation: validatedData.acceptsActionSolicitation
+    }).returning()
 
     // Send notification to admin
     try {
@@ -325,7 +311,7 @@ Site web : https://adul21.fr
       message: 'Votre demande d\'adhésion a été enregistrée avec succès',
       member: {
         id: member.id,
-        created_at: member.created_at
+        createdAt: member.createdAt
       }
     }
   } catch (error: any) {

@@ -456,7 +456,6 @@
                     required
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                   >
-                    <option value="">Choisir</option>
                     <option value="first_name">Avec mon prénom (ex: "Marie")</option>
                     <option value="initials">Avec mes initiales (ex: "M.D.")</option>
                     <option value="anonymous">Anonyme</option>

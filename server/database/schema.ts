@@ -259,6 +259,37 @@ export const contactMessages = pgTable('contact_messages', {
   replyNotes: text('reply_notes')
 })
 
+// Pre-Members Table (supporters before association creation)
+export const preMembers = pgTable('pre_members', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+
+  // Personal info
+  firstName: varchar('first_name', { length: 100 }).notNull(),
+  lastName: varchar('last_name', { length: 100 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  phone: varchar('phone', { length: 20 }).notNull(),
+  city: varchar('city', { length: 100 }).notNull(),
+  userType: varchar('user_type', { length: 50 }).notNull(),
+
+  // Intentions
+  wantsToBecomeMember: boolean('wants_to_become_member').notNull().default(false),
+  wantsToVolunteer: boolean('wants_to_volunteer').notNull().default(false),
+  canHostMeeting: boolean('can_host_meeting').notNull().default(false),
+  canDistributeFlyers: boolean('can_distribute_flyers').notNull().default(false),
+  participationAreas: json('participation_areas').$type<string[]>(),
+
+  // Consents
+  acceptsNewsletter: boolean('accepts_newsletter').notNull().default(false),
+  acceptsContactWhenCreated: boolean('accepts_contact_when_created').notNull().default(false),
+  acceptsAgInvitation: boolean('accepts_ag_invitation').notNull().default(false),
+
+  // Migration
+  convertedToMemberId: uuid('converted_to_member_id'),
+  convertedAt: timestamp('converted_at')
+})
+
 // Admin Users Table
 export const adminUsers = pgTable('admin_users', {
   id: uuid('id').primaryKey().defaultRandom(),
