@@ -410,13 +410,13 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Témoignage principal <span class="text-red-500">*</span>
-                  <span class="text-gray-500 text-xs">(200 à 2000 caractères)</span>
+                  <span class="text-gray-500 text-xs">(50 à 2000 caractères)</span>
                 </label>
                 <textarea
                   v-model="form.testimony_text"
                   rows="8"
                   required
-                  minlength="200"
+                  minlength="50"
                   maxlength="2000"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="Racontez comment la suppression de la ligne directe impacte votre vie quotidienne, vos études, votre travail, ou celle de vos proches..."
@@ -620,8 +620,8 @@ const submitTestimony = async () => {
     return
   }
 
-  if (form.value.testimony_text.length < 200 || form.value.testimony_text.length > 2000) {
-    submitError.value = 'Le témoignage doit contenir entre 200 et 2000 caractères.'
+  if (form.value.testimony_text.length < 50 || form.value.testimony_text.length > 2000) {
+    submitError.value = 'Le témoignage doit contenir entre 50 et 2000 caractères.'
     return
   }
 
