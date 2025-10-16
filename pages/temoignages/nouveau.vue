@@ -589,7 +589,7 @@ const form = ref({
   // Step 4: Testimony
   testimony_text: '',
   concrete_example: '',
-  publication_preference: '',
+  publication_preference: 'first_name',
   accepts_site_publication: true,
   accepts_legal_use: false,
   accepts_media_contact: false,
@@ -601,6 +601,19 @@ const submitSuccess = ref(false)
 const submitError = ref('')
 
 const nextStep = () => {
+  // Validation supplémentaire pour le step 1
+  if (currentStep.value === 1 && !form.value.usage_before_frequency) {
+    submitError.value = 'Veuillez sélectionner la fréquence d\'utilisation avant de continuer.'
+    return
+  }
+
+  // Validation supplémentaire pour le step 2
+  if (currentStep.value === 2 && !form.value.usage_after_solution) {
+    submitError.value = 'Veuillez sélectionner votre solution de transport actuelle avant de continuer.'
+    return
+  }
+
+  submitError.value = ''
   if (currentStep.value < steps.length - 1) {
     currentStep.value++
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -622,6 +635,11 @@ const submitTestimony = async () => {
 
   if (form.value.testimony_text.length < 50 || form.value.testimony_text.length > 2000) {
     submitError.value = 'Le témoignage doit contenir entre 50 et 2000 caractères.'
+    return
+  }
+
+  if (!form.value.publication_preference) {
+    submitError.value = 'Veuillez choisir comment vous souhaitez apparaître dans la publication.'
     return
   }
 
