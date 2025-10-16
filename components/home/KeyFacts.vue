@@ -44,7 +44,7 @@
             <Icon name="heroicons:academic-cap" class="w-6 h-6 text-green-600" />
           </div>
           <div class="text-3xl font-bold text-gray-900 mb-2">120+</div>
-          <p class="text-gray-600">lycéens, étudiants, apprentis et jeunes actifs</p>
+          <p class="text-gray-600">lycéens, étudiants, apprentis et jeunes actifs impactés quotidiennement</p>
         </div>
       </div>
     </div>
