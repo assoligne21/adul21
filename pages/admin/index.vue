@@ -6,9 +6,9 @@
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
     </div>
 
-    <div v-else-if="stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div v-else-if="stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Testimonies Card -->
-      <NuxtLink 
+      <NuxtLink
         to="/admin/temoignages"
         class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
       >
@@ -30,7 +30,7 @@
       </NuxtLink>
 
       <!-- Members Card -->
-      <NuxtLink 
+      <NuxtLink
         to="/admin/membres"
         class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
       >
@@ -44,8 +44,52 @@
         <p class="text-sm text-gray-500 mt-2">Total des adhésions</p>
       </NuxtLink>
 
+      <!-- Supporters Card -->
+      <NuxtLink
+        to="/admin/soutiens"
+        class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+            <Icon name="heroicons:hand-raised" class="w-6 h-6 text-indigo-600" />
+          </div>
+        </div>
+        <h3 class="text-sm font-medium text-gray-600 mb-1">Soutiens</h3>
+        <p class="text-3xl font-bold text-gray-900">{{ stats.preMembers.total }}</p>
+        <div class="mt-4 flex gap-4 text-sm">
+          <span class="text-blue-600">
+            <strong>{{ stats.preMembers.wantToBeMembers }}</strong> adhérer
+          </span>
+          <span class="text-green-600">
+            <strong>{{ stats.preMembers.wantToVolunteer }}</strong> bénévoles
+          </span>
+        </div>
+      </NuxtLink>
+
+      <!-- Newsletter Card -->
+      <NuxtLink
+        to="/admin/newsletter"
+        class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
+            <Icon name="heroicons:envelope-open" class="w-6 h-6 text-teal-600" />
+          </div>
+        </div>
+        <h3 class="text-sm font-medium text-gray-600 mb-1">Newsletter</h3>
+        <p class="text-3xl font-bold text-gray-900">{{ stats.newsletter.active }}</p>
+        <div class="mt-4 flex gap-4 text-sm">
+          <span class="text-green-600">
+            <strong>{{ stats.newsletter.active }}</strong> actifs
+          </span>
+          <span v-if="stats.newsletter.unsubscribed > 0" class="text-gray-500">
+            <strong>{{ stats.newsletter.unsubscribed }}</strong> désabonnés
+          </span>
+        </div>
+      </NuxtLink>
+
       <!-- Messages Card -->
-      <NuxtLink 
+      <NuxtLink
         to="/admin/contacts"
         class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
       >
