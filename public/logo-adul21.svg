@@ -4,8 +4,8 @@
   <!-- Ligne gauche (bleu) -->
   <line x1="40" y1="80" x2="140" y2="80" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/>
 
-  <!-- Carré orange avec "21" en blanc (style favicon) -->
-  <rect x="165" y="45" width="70" height="70" rx="10" fill="#f97316"/>
+  <!-- Carré orange avec "21" en blanc (style favicon) avec padding interne -->
+  <rect x="160" y="40" width="80" height="80" rx="10" fill="#f97316"/>
   <text x="200" y="95" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800" fill="#ffffff" text-anchor="middle">21</text>
 
   <!-- Ligne droite avec flèche (rouge) -->
@@ -18,9 +18,9 @@
     <line x1="320" y1="60" x2="280" y2="100" stroke="#ef4444" stroke-width="6" stroke-linecap="round"/>
   </g>
 
-  <!-- Texte ADUL en dessous (orange) -->
-  <text x="200" y="140" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="700" fill="#f97316" text-anchor="middle" letter-spacing="8">A D U L</text>
+  <!-- Texte ADUL en dessous (blanc) -->
+  <text x="200" y="140" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="8">A D U L</text>
 
-  <!-- Sous-titre (orange) -->
-  <text x="200" y="165" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="500" fill="#f97316" text-anchor="middle" letter-spacing="2">DÉFENSE USAGERS LIGNE 21</text>
+  <!-- Sous-titre (blanc) -->
+  <text x="200" y="165" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="500" fill="#ffffff" text-anchor="middle" letter-spacing="2">DÉFENSE USAGERS LIGNE 21</text>
 </svg>

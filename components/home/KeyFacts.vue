@@ -34,7 +34,7 @@
           <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
             <Icon name="heroicons:user-group" class="w-6 h-6 text-blue-600" />
           </div>
-          <div class="text-3xl font-bold text-gray-900 mb-2">700+</div>
+          <div class="text-3xl font-bold text-gray-900 mb-2">400+</div>
           <p class="text-gray-600">habitants privés de mobilité équitable dans les 3 villages</p>
         </div>
 
@@ -44,7 +44,7 @@
             <Icon name="heroicons:academic-cap" class="w-6 h-6 text-green-600" />
           </div>
           <div class="text-3xl font-bold text-gray-900 mb-2">120+</div>
-          <p class="text-gray-600">lycéens en filières spécialisées impactés quotidiennement</p>
+          <p class="text-gray-600">lycéens, étudiants, apprentis et jeunes actifs</p>
         </div>
       </div>
     </div>
