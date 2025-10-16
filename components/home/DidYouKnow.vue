@@ -56,11 +56,20 @@
             </div>
 
             <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p class="font-bold text-red-900 mb-2">Sur une année scolaire (36 semaines) :</p>
+              <p class="font-bold text-red-900 mb-2">Scénario 3 trajets/semaine - Sur une année scolaire (36 semaines) :</p>
               <ul class="space-y-1 text-red-800 text-sm">
                 <li><strong>194€</strong> de surcoût carburant</li>
                 <li><strong>520 kg</strong> de CO2 supplémentaire</li>
                 <li><strong>40 heures</strong> perdues dans les trajets</li>
+              </ul>
+            </div>
+
+            <div class="bg-red-100 border-2 border-red-300 rounded-lg p-4">
+              <p class="font-bold text-red-900 mb-2">Scénario 5 trajets/semaine - Sur une année scolaire (36 semaines) :</p>
+              <ul class="space-y-1 text-red-900 text-sm">
+                <li><strong>324€</strong> de surcoût carburant</li>
+                <li><strong>864 kg</strong> de CO2 supplémentaire</li>
+                <li><strong>66 heures</strong> perdues dans les trajets</li>
               </ul>
             </div>
           </div>
@@ -111,11 +120,20 @@
             </div>
 
             <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
-              <p class="font-bold text-orange-900 mb-2">Sur une année scolaire (36 semaines) :</p>
+              <p class="font-bold text-orange-900 mb-2">Scénario 3 trajets/semaine - Sur une année scolaire (36 semaines) :</p>
               <ul class="space-y-1 text-orange-800 text-sm">
                 <li><strong>130€</strong> de surcoût carburant</li>
                 <li><strong>335 kg</strong> de CO2 supplémentaire</li>
                 <li><strong>25 heures</strong> perdues dans les trajets</li>
+              </ul>
+            </div>
+
+            <div class="bg-orange-100 border-2 border-orange-300 rounded-lg p-4">
+              <p class="font-bold text-orange-900 mb-2">Scénario 5 trajets/semaine - Sur une année scolaire (36 semaines) :</p>
+              <ul class="space-y-1 text-orange-900 text-sm">
+                <li><strong>216€</strong> de surcoût carburant</li>
+                <li><strong>558 kg</strong> de CO2 supplémentaire</li>
+                <li><strong>42 heures</strong> perdues dans les trajets</li>
               </ul>
             </div>
           </div>
