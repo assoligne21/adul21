@@ -13,7 +13,7 @@
       <div class="max-w-5xl mx-auto text-center space-y-12">
         <!-- Logo -->
         <div class="flex justify-center mb-8">
-          <img src="/logo-adul21.svg" alt="ADUL21" class="h-32 md:h-40 w-auto" />
+          <img src="/logo-adul21-hero.svg" alt="ADUL21" class="h-32 md:h-40 w-auto" />
         </div>
 
         <!-- Bus Line Visualization -->
