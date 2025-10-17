@@ -55,15 +55,9 @@ COPY --from=builder --chown=nuxtjs:nodejs /app/package.json /app/package-lock.js
 COPY --from=builder --chown=nuxtjs:nodejs /app/drizzle.config.ts /app/
 COPY --from=builder --chown=nuxtjs:nodejs /app/server/database/ /app/server/database/
 
-# Copier uniquement drizzle-kit et ses dépendances depuis node_modules
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/drizzle-kit /app/node_modules/drizzle-kit
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/drizzle-orm /app/node_modules/drizzle-orm
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/postgres /app/node_modules/postgres
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/pg /app/node_modules/pg
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/dotenv /app/node_modules/dotenv
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/zod /app/node_modules/zod
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/esbuild /app/node_modules/esbuild
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/.bin /app/node_modules/.bin
+# Installer les dépendances nécessaires pour les migrations avec npm
+# npm gère mieux les dépendances natives qu'une copie sélective depuis pnpm
+RUN npm install --omit=dev drizzle-kit@0.31.5 drizzle-orm@0.44.6 postgres@3.4.7 pg@8.13.1 dotenv@17.2.3 zod@3.25.76
 
 # Copier le script de démarrage
 COPY --chown=nuxtjs:nodejs scripts/docker-start.sh /app/
