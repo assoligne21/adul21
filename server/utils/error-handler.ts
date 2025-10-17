@@ -1,8 +1,37 @@
+/**
+ * Error handling utilities for API routes
+ *
+ * Provides centralized error handling with specific handlers for:
+ * - Zod validation errors (400)
+ * - Database constraint violations (409)
+ * - Generic errors with custom status codes
+ *
+ * @module server/utils/error-handler
+ */
+
 import type { ErrorWithMessage } from '~/types/common'
 
 /**
- * Helper to handle errors in API routes
- * Converts unknown errors to ErrorWithMessage and creates appropriate HTTP errors
+ * Handle API errors and convert to appropriate HTTP errors
+ *
+ * Automatically detects error types and creates proper HTTP responses:
+ * - Zod validation errors → 400 Bad Request with validation details
+ * - Database unique constraint (23505) → 409 Conflict
+ * - Other errors → Uses error.statusCode or 500
+ *
+ * @param error - Unknown error object from catch block
+ * @param defaultMessage - Default error message if none provided
+ * @throws {H3Error} Nuxt HTTP error with appropriate status code
+ *
+ * @example
+ * ```ts
+ * try {
+ *   const data = schema.parse(body)
+ *   await db.insert(users).values(data)
+ * } catch (error) {
+ *   handleApiError(error, 'Erreur lors de la création')
+ * }
+ * ```
  */
 export function handleApiError(error: unknown, defaultMessage = 'Une erreur est survenue') {
   console.error('API Error:', error)
