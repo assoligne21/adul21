@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+.nuxt
+.output
+
+# Build artifacts
+dist
+.vercel
+.netlify
+
+# Database migrations (preserve exact formatting)
+server/database/migrations/*.sql
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+
+# Env files
+.env
+.env.*
+!.env.example
