@@ -51,14 +51,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 # Copier les fichiers nécessaires
 COPY --from=builder --chown=nuxtjs:nodejs /app/.output /app/.output
-COPY --from=builder --chown=nuxtjs:nodejs /app/package.json /app/package-lock.json* /app/
-COPY --from=builder --chown=nuxtjs:nodejs /app/drizzle.config.ts /app/
-COPY --from=builder --chown=nuxtjs:nodejs /app/server/database/ /app/server/database/
-
-# Installer les dépendances nécessaires pour les migrations avec npm
-# npm gère mieux les dépendances natives qu'une copie sélective depuis pnpm
-RUN npm install --omit=dev drizzle-kit@0.31.5 drizzle-orm@0.44.6 postgres@3.4.7 pg@8.13.1 dotenv@17.2.3 zod@3.25.76 && \
-    chown -R nuxtjs:nodejs /app/node_modules
+COPY --from=builder --chown=nuxtjs:nodejs /app/package.json /app/
 
 # Copier le script de démarrage
 COPY --chown=nuxtjs:nodejs scripts/docker-start.sh /app/
