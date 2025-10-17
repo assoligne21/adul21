@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useFocusTrap } from '@vueuse/core'
+
 const mobileMenuOpen = ref(false)
+const mobileMenuRef = ref<HTMLElement | null>(null)
 
 const items = [{
   label: 'Revendications',
@@ -17,11 +20,26 @@ const items = [{
   label: 'Contact',
   to: '/contact'
 }]
+
+// Focus trap for mobile menu accessibility
+const { activate, deactivate } = useFocusTrap(mobileMenuRef, {
+  immediate: false,
+  escapeDeactivates: true,
+  allowOutsideClick: true
+})
+
+watch(mobileMenuOpen, (isOpen) => {
+  if (isOpen) {
+    nextTick(() => activate())
+  } else {
+    deactivate()
+  }
+})
 </script>
 
 <template>
   <header class="relative z-50 bg-white border-b border-gray-200 shadow-sm">
-    <nav class="container-custom">
+    <nav id="main-navigation" class="container-custom" aria-label="Navigation principale">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-3">
@@ -51,14 +69,24 @@ const items = [{
         <button
           @click="mobileMenuOpen = !mobileMenuOpen"
           class="lg:hidden p-2 text-gray-600 hover:text-gray-900"
+          :aria-label="mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'"
+          :aria-expanded="mobileMenuOpen"
+          aria-controls="mobile-menu"
         >
-          <Icon v-if="!mobileMenuOpen" name="heroicons:bars-3" class="w-6 h-6" />
-          <Icon v-else name="heroicons:x-mark" class="w-6 h-6" />
+          <Icon v-if="!mobileMenuOpen" name="heroicons:bars-3" class="w-6 h-6" aria-hidden="true" />
+          <Icon v-else name="heroicons:x-mark" class="w-6 h-6" aria-hidden="true" />
         </button>
       </div>
 
       <!-- Mobile Navigation -->
-      <div v-if="mobileMenuOpen" class="lg:hidden py-4 border-t border-gray-200">
+      <div
+        v-if="mobileMenuOpen"
+        id="mobile-menu"
+        ref="mobileMenuRef"
+        class="lg:hidden py-4 border-t border-gray-200"
+        role="navigation"
+        aria-label="Navigation mobile"
+      >
         <div class="flex flex-col space-y-3">
           <NuxtLink
             v-for="item in items"

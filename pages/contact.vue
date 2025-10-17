@@ -59,6 +59,8 @@
                       id="civility"
                       v-model="form.civility"
                       required
+                      :aria-invalid="!form.civility && submitError ? 'true' : 'false'"
+                      aria-describedby="civility-error"
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value="">Choisir</option>
@@ -76,6 +78,9 @@
                       v-model="form.firstName"
                       type="text"
                       required
+                      :aria-invalid="!form.firstName && submitError ? 'true' : 'false'"
+                      aria-describedby="firstName-error"
+                      autocomplete="given-name"
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
@@ -88,6 +93,9 @@
                       v-model="form.lastName"
                       type="text"
                       required
+                      :aria-invalid="!form.lastName && submitError ? 'true' : 'false'"
+                      aria-describedby="lastName-error"
+                      autocomplete="family-name"
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
@@ -104,6 +112,9 @@
                       v-model="form.email"
                       type="email"
                       required
+                      :aria-invalid="!form.email && submitError ? 'true' : 'false'"
+                      aria-describedby="email-error"
+                      autocomplete="email"
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
@@ -115,6 +126,7 @@
                       id="phone"
                       v-model="form.phone"
                       type="tel"
+                      autocomplete="tel"
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
@@ -129,6 +141,8 @@
                     id="subject"
                     v-model="form.subject"
                     required
+                    :aria-invalid="!form.subject && submitError ? 'true' : 'false'"
+                    aria-describedby="subject-error"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   >
                     <option value="">Choisir un sujet</option>
@@ -151,6 +165,8 @@
                     v-model="form.message"
                     rows="6"
                     required
+                    :aria-invalid="!form.message && submitError ? 'true' : 'false'"
+                    aria-describedby="message-error"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Décrivez votre demande..."
                   ></textarea>
@@ -187,11 +203,21 @@
                   </button>
                 </div>
 
-                <!-- Success/Error Messages -->
-                <div v-if="submitSuccess" class="bg-green-50 border border-green-200 rounded-lg p-4 text-green-800">
+                <!-- Success/Error Messages with ARIA live regions -->
+                <div
+                  v-if="submitSuccess"
+                  role="status"
+                  aria-live="polite"
+                  class="bg-green-50 border border-green-200 rounded-lg p-4 text-green-800"
+                >
                   ✓ Votre message a été envoyé avec succès ! Nous vous répondrons sous 48h.
                 </div>
-                <div v-if="submitError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+                <div
+                  v-if="submitError"
+                  role="alert"
+                  aria-live="assertive"
+                  class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800"
+                >
                   ✗ Une erreur est survenue. Veuillez réessayer ou nous contacter directement par email.
                 </div>
               </form>

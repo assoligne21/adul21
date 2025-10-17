@@ -27,9 +27,10 @@ useSeoMeta({
 
 <template>
   <div>
+    <AppSkipLinks />
     <LayoutAppHeader />
 
-    <main>
+    <main id="main-content" tabindex="-1">
       <NuxtPage />
     </main>
 
