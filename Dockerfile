@@ -62,6 +62,7 @@ COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/postgres /app/node_m
 COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/pg /app/node_modules/pg
 COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/dotenv /app/node_modules/dotenv
 COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/zod /app/node_modules/zod
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/esbuild /app/node_modules/esbuild
 COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/.bin /app/node_modules/.bin
 
 # Copier le script de démarrage
