@@ -134,7 +134,8 @@
         </UButton>
         <UButton
           to="/admin/membres"
-          color="gray"
+          color="primary"
+          variant="outline"
           size="md"
           icon="i-heroicons-users"
           class="w-full sm:w-auto"
@@ -143,7 +144,8 @@
         </UButton>
         <UButton
           to="/admin/contacts"
-          color="gray"
+          color="primary"
+          variant="outline"
           size="md"
           icon="i-heroicons-envelope"
           class="w-full sm:w-auto"
