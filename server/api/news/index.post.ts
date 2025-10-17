@@ -1,8 +1,12 @@
 import { db } from '~/server/database/connection'
 import { news } from '~/server/database/schema'
 import { newsSchema } from '~/server/validation/schemas'
+import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
+  // Require admin authentication
+  await requireAuth(event)
+
   try {
     const body = await readBody(event)
     const validatedData = newsSchema.parse(body)
@@ -22,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      message: 'Actualité créée avec succès',
+      message: 'Actualitï¿½ crï¿½ï¿½e avec succï¿½s',
       data: newNews
     }
   } catch (error: any) {
@@ -31,7 +35,7 @@ export default defineEventHandler(async (event) => {
     if (error.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Données invalides',
+        statusMessage: 'Donnï¿½es invalides',
         data: error.errors
       })
     }
@@ -39,13 +43,13 @@ export default defineEventHandler(async (event) => {
     if (error.code === '23505') {
       throw createError({
         statusCode: 409,
-        statusMessage: 'Une actualité avec ce slug existe déjà'
+        statusMessage: 'Une actualitï¿½ avec ce slug existe dï¿½jï¿½'
       })
     }
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Erreur lors de la création de l\'actualité'
+      statusMessage: 'Erreur lors de la crï¿½ation de l\'actualitï¿½'
     })
   }
 })

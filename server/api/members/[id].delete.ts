@@ -1,15 +1,19 @@
 import { eq } from 'drizzle-orm'
 import { db } from '~/server/database/connection'
 import { members } from '~/server/database/schema'
+import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
+  // Require admin authentication
+  await requireAuth(event)
+
   try {
     const id = getRouterParam(event, 'id')
 
     if (!id) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'ID de l\'adhérent manquant'
+        statusMessage: 'ID de l\'adhï¿½rent manquant'
       })
     }
 
@@ -22,13 +26,13 @@ export default defineEventHandler(async (event) => {
     if (!deletedMember) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Adhérent introuvable'
+        statusMessage: 'Adhï¿½rent introuvable'
       })
     }
 
     return {
       success: true,
-      message: 'Adhérent supprimé avec succès'
+      message: 'Adhï¿½rent supprimï¿½ avec succï¿½s'
     }
   } catch (error: any) {
     console.error('Error deleting member:', error)

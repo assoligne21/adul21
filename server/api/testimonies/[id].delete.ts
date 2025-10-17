@@ -1,15 +1,19 @@
 import { eq } from 'drizzle-orm'
 import { db } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
+import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
+  // Require admin authentication
+  await requireAuth(event)
+
   try {
     const id = getRouterParam(event, 'id')
 
     if (!id) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'ID du témoignage manquant'
+        statusMessage: 'ID du tï¿½moignage manquant'
       })
     }
 
@@ -22,13 +26,13 @@ export default defineEventHandler(async (event) => {
     if (!deletedTestimony) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Témoignage introuvable'
+        statusMessage: 'Tï¿½moignage introuvable'
       })
     }
 
     return {
       success: true,
-      message: 'Témoignage supprimé avec succès'
+      message: 'Tï¿½moignage supprimï¿½ avec succï¿½s'
     }
   } catch (error: any) {
     console.error('Error deleting testimony:', error)

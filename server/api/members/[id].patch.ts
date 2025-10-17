@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { db } from '~/server/database/connection'
 import { members } from '~/server/database/schema'
+import { requireAuth } from '~/server/utils/jwt'
 import { z } from 'zod'
 
 // Partial schema for updates
@@ -14,13 +15,16 @@ const updateMemberSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  // Require admin authentication
+  await requireAuth(event)
+
   try {
     const id = getRouterParam(event, 'id')
 
     if (!id) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'ID de l\'adhérent manquant'
+        statusMessage: 'ID de l\'adhï¿½rent manquant'
       })
     }
 
@@ -66,13 +70,13 @@ export default defineEventHandler(async (event) => {
     if (!updatedMember) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Adhérent introuvable'
+        statusMessage: 'Adhï¿½rent introuvable'
       })
     }
 
     return {
       success: true,
-      message: 'Adhérent mis à jour avec succès',
+      message: 'Adhï¿½rent mis ï¿½ jour avec succï¿½s',
       data: updatedMember
     }
   } catch (error: any) {
@@ -81,14 +85,14 @@ export default defineEventHandler(async (event) => {
     if (error.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Données invalides',
+        statusMessage: 'Donnï¿½es invalides',
         data: error.errors
       })
     }
 
     throw createError({
       statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || 'Erreur lors de la mise à jour'
+      statusMessage: error.statusMessage || 'Erreur lors de la mise ï¿½ jour'
     })
   }
 })

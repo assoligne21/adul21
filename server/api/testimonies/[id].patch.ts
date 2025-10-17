@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { db } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
+import { requireAuth } from '~/server/utils/jwt'
 import { z } from 'zod'
 
 // Partial schema for updates
@@ -15,13 +16,16 @@ const updateTestimonySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  // Require admin authentication
+  await requireAuth(event)
+
   try {
     const id = getRouterParam(event, 'id')
 
     if (!id) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'ID du témoignage manquant'
+        statusMessage: 'ID du tï¿½moignage manquant'
       })
     }
 
@@ -72,13 +76,13 @@ export default defineEventHandler(async (event) => {
     if (!updatedTestimony) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Témoignage introuvable'
+        statusMessage: 'Tï¿½moignage introuvable'
       })
     }
 
     return {
       success: true,
-      message: 'Témoignage mis à jour avec succès',
+      message: 'Tï¿½moignage mis ï¿½ jour avec succï¿½s',
       data: updatedTestimony
     }
   } catch (error: any) {
@@ -87,14 +91,14 @@ export default defineEventHandler(async (event) => {
     if (error.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Données invalides',
+        statusMessage: 'Donnï¿½es invalides',
         data: error.errors
       })
     }
 
     throw createError({
       statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || 'Erreur lors de la mise à jour'
+      statusMessage: error.statusMessage || 'Erreur lors de la mise ï¿½ jour'
     })
   }
 })
