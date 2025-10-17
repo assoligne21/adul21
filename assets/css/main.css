@@ -205,6 +205,44 @@ textarea:focus-visible {
   }
 }
 
+/* Form input text and placeholder contrast (WCAG 1.4.3) */
+/* Ensure input text is dark and readable */
+input,
+select,
+textarea {
+  color: #1f2937; /* gray-800 for good contrast */
+}
+
+/* Improve placeholder contrast - WCAG AA compliant (4.5:1 minimum) */
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280; /* gray-500 - provides 4.6:1 contrast on white */
+  opacity: 1;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+/* Select dropdown text color */
+select option {
+  color: #1f2937;
+}
+
 /* Form validation states (WCAG 3.3.1) */
 input:invalid,
 select:invalid,
