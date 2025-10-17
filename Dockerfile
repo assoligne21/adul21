@@ -62,9 +62,10 @@ COPY --chown=nuxtjs:nodejs scripts/docker-start.sh /app/
 RUN chmod +x /app/docker-start.sh
 
 # Installer uniquement les dépendances nécessaires pour les migrations
-# drizzle-kit, postgres, pg, dotenv et zod pour exécuter db:push
-RUN pnpm add -g drizzle-kit@0.31.5 && \
-    pnpm add postgres@3.4.7 pg@8.13.1 drizzle-orm@0.44.6 dotenv@17.2.3 zod@3.25.76
+# On initialise pnpm puis on installe drizzle-kit globalement et les dépendances localement
+RUN pnpm init -y && \
+    pnpm add -g drizzle-kit@0.31.5 && \
+    pnpm add --save-prod postgres@3.4.7 pg@8.13.1 drizzle-orm@0.44.6 dotenv@17.2.3 zod@3.25.76
 
 # Variables d'environnement
 ENV NODE_ENV=production \
