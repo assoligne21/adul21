@@ -249,6 +249,12 @@ const submitForm = async () => {
   }
 }
 
+const { contactPageSchema, organizationSchema, addSchema } = useSchemaOrg()
+
+// Add schemas
+addSchema(contactPageSchema())
+addSchema(organizationSchema)
+
 useHead({
   title: 'Contact',
   meta: [

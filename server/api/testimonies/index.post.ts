@@ -2,12 +2,17 @@ import { db } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
 import { testimonySchema } from '~/server/validation/schemas'
 import { sanitizePlainText } from '~/server/utils/sanitize'
+import { apiLogger, logError } from '~/server/utils/logger'
 
 export default defineEventHandler(async (event) => {
+  const startTime = Date.now()
+
   try {
     // Parse and validate request body
     const body = await readBody(event)
     const validatedData = testimonySchema.parse(body)
+
+    apiLogger.debug({ city: validatedData.city, userType: validatedData.user_type }, 'New testimony submission')
 
     // Sanitize text inputs to prevent XSS attacks
     const sanitizedData = {
@@ -69,13 +74,25 @@ export default defineEventHandler(async (event) => {
       isPublished: false
     }).returning()
 
+    const duration = Date.now() - startTime
+    apiLogger.info(
+      {
+        testimonyId: newTestimony.id,
+        city: newTestimony.city,
+        userType: newTestimony.userType,
+        duration
+      },
+      'Testimony created successfully'
+    )
+
     return {
       success: true,
       message: 'Votre témoignage a été enregistré avec succès',
       data: newTestimony
     }
   } catch (error: unknown) {
-    console.error('Error creating testimony:', error)
+    const duration = Date.now() - startTime
+    logError(error, { route: '/api/testimonies', duration })
 
     if (error.name === 'ZodError') {
       throw createError({

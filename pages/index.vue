@@ -60,6 +60,12 @@
 </template>
 
 <script setup lang="ts">
+const { organizationSchema, websiteSchema, addSchema } = useSchemaOrg()
+
+// Add Organization and WebSite schemas
+addSchema(organizationSchema)
+addSchema(websiteSchema)
+
 // SEO
 useHead({
   title: 'Accueil',
