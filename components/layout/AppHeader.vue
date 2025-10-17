@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useFocusTrap } from '@vueuse/core'
-
 const mobileMenuOpen = ref(false)
 const mobileMenuRef = ref<HTMLElement | null>(null)
 
@@ -21,19 +19,30 @@ const items = [{
   to: '/contact'
 }]
 
-// Focus trap for mobile menu accessibility
-const { activate, deactivate } = useFocusTrap(mobileMenuRef, {
-  immediate: false,
-  escapeDeactivates: true,
-  allowOutsideClick: true
-})
-
+// Focus management for mobile menu accessibility
 watch(mobileMenuOpen, (isOpen) => {
   if (isOpen) {
-    nextTick(() => activate())
-  } else {
-    deactivate()
+    nextTick(() => {
+      // Focus first link in mobile menu
+      const firstLink = mobileMenuRef.value?.querySelector('a')
+      firstLink?.focus()
+    })
   }
+})
+
+// Close menu on escape key
+const handleEscape = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && mobileMenuOpen.value) {
+    mobileMenuOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', handleEscape)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleEscape)
 })
 </script>
 
