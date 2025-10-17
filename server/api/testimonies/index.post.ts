@@ -1,6 +1,7 @@
 import { db } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
 import { testimonySchema } from '~/server/validation/schemas'
+import { sanitizePlainText } from '~/server/utils/sanitize'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,40 +9,54 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const validatedData = testimonySchema.parse(body)
 
+    // Sanitize text inputs to prevent XSS attacks
+    const sanitizedData = {
+      ...validatedData,
+      first_name: sanitizePlainText(validatedData.first_name),
+      last_name: sanitizePlainText(validatedData.last_name),
+      testimony_text: sanitizePlainText(validatedData.testimony_text),
+      concrete_example: sanitizePlainText(validatedData.concrete_example),
+      school_name: sanitizePlainText(validatedData.school_name),
+      school_section: sanitizePlainText(validatedData.school_section),
+      workplace: sanitizePlainText(validatedData.workplace),
+      work_hours: sanitizePlainText(validatedData.work_hours),
+      usage_before_destination: sanitizePlainText(validatedData.usage_before_destination)
+    }
+
     // Insert testimony
     const [newTestimony] = await db.insert(testimonies).values({
-      // Personal info
-      firstName: validatedData.first_name,
-      lastName: validatedData.last_name,
-      ageRange: validatedData.age_range,
-      email: validatedData.email,
-      phone: validatedData.phone,
-      city: validatedData.city,
-      userType: validatedData.user_type,
-      schoolName: validatedData.school_name,
-      schoolSection: validatedData.school_section,
-      workplace: validatedData.workplace,
-      workHours: validatedData.work_hours,
+      // Personal info (sanitized)
+      firstName: sanitizedData.first_name,
+      lastName: sanitizedData.last_name,
+      ageRange: sanitizedData.age_range,
+      email: sanitizedData.email,
+      phone: sanitizedData.phone,
+      city: sanitizedData.city,
+      userType: sanitizedData.user_type,
+      schoolName: sanitizedData.school_name,
+      schoolSection: sanitizedData.school_section,
+      workplace: sanitizedData.workplace,
+      workHours: sanitizedData.work_hours,
 
       // Usage before
-      usageBeforeFrequency: validatedData.usage_before_frequency,
-      usageBeforeTime: validatedData.usage_before_time,
-      usageBeforeCost: validatedData.usage_before_cost?.toString(),
-      usageBeforeDestination: validatedData.usage_before_destination,
+      usageBeforeFrequency: sanitizedData.usage_before_frequency,
+      usageBeforeTime: sanitizedData.usage_before_time,
+      usageBeforeCost: sanitizedData.usage_before_cost?.toString(),
+      usageBeforeDestination: sanitizedData.usage_before_destination,
 
       // Usage after
-      usageAfterSolution: validatedData.usage_after_solution,
-      usageAfterTime: validatedData.usage_after_time,
-      usageAfterCorrespondences: validatedData.usage_after_correspondences,
-      usageAfterWaitTime: validatedData.usage_after_wait_time,
-      usageAfterCost: validatedData.usage_after_cost?.toString(),
-      usageAfterDistance: validatedData.usage_after_distance?.toString(),
-      problems: validatedData.problems,
-      missedCorrespondencesPerMonth: validatedData.missed_correspondences_per_month,
+      usageAfterSolution: sanitizedData.usage_after_solution,
+      usageAfterTime: sanitizedData.usage_after_time,
+      usageAfterCorrespondences: sanitizedData.usage_after_correspondences,
+      usageAfterWaitTime: sanitizedData.usage_after_wait_time,
+      usageAfterCost: sanitizedData.usage_after_cost?.toString(),
+      usageAfterDistance: sanitizedData.usage_after_distance?.toString(),
+      problems: sanitizedData.problems,
+      missedCorrespondencesPerMonth: sanitizedData.missed_correspondences_per_month,
 
-      // Testimony
-      testimonyText: validatedData.testimony_text,
-      concreteExample: validatedData.concrete_example,
+      // Testimony (sanitized)
+      testimonyText: sanitizedData.testimony_text,
+      concreteExample: sanitizedData.concrete_example,
       publicationPreference: validatedData.publication_preference,
       acceptsSitePublication: validatedData.accepts_site_publication,
       acceptsLegalUse: validatedData.accepts_legal_use,

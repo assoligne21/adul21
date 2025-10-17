@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { sanitizePlainText } from '~/server/utils/sanitize'
 
 // Validation schema
 const contactSchema = z.object({
@@ -32,6 +33,12 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const validatedData = contactSchema.parse(body)
 
+    // Sanitize inputs to prevent XSS in emails
+    const sanitizedFirstName = sanitizePlainText(validatedData.firstName)
+    const sanitizedLastName = sanitizePlainText(validatedData.lastName)
+    const sanitizedMessage = sanitizePlainText(validatedData.message)
+    const sanitizedPhone = validatedData.phone ? sanitizePlainText(validatedData.phone) : ''
+
     // Get config for admin email
     const config = useRuntimeConfig()
 
@@ -62,16 +69,16 @@ export default defineEventHandler(async (event) => {
               </div>
               <div class="content">
                 <div class="info-box">
-                  <p style="margin: 5px 0;"><span class="label">De :</span> ${validatedData.civility} ${validatedData.firstName} ${validatedData.lastName}</p>
+                  <p style="margin: 5px 0;"><span class="label">De :</span> ${validatedData.civility} ${sanitizedFirstName} ${sanitizedLastName}</p>
                   <p style="margin: 5px 0;"><span class="label">Email :</span> <a href="mailto:${validatedData.email}">${validatedData.email}</a></p>
-                  ${validatedData.phone ? `<p style="margin: 5px 0;"><span class="label">Téléphone :</span> ${validatedData.phone}</p>` : ''}
+                  ${sanitizedPhone ? `<p style="margin: 5px 0;"><span class="label">Téléphone :</span> ${sanitizedPhone}</p>` : ''}
                   <p style="margin: 5px 0;"><span class="label">Sujet :</span> ${getSubjectLabel(validatedData.subject)}</p>
                   <p style="margin: 5px 0;"><span class="label">Date :</span> ${new Date().toLocaleString('fr-FR')}</p>
                 </div>
 
                 <div class="message-box">
                   <h3 style="margin-top: 0; color: #1f2937;">Message :</h3>
-                  <p style="white-space: pre-wrap;">${validatedData.message}</p>
+                  <p style="white-space: pre-wrap;">${sanitizedMessage}</p>
                 </div>
 
                 <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
@@ -119,7 +126,7 @@ export default defineEventHandler(async (event) => {
               </div>
               <div class="content">
                 <h2>Message bien reçu</h2>
-                <p>Bonjour ${validatedData.firstName},</p>
+                <p>Bonjour ${sanitizedFirstName},</p>
                 <p>Nous avons bien reçu votre message concernant : <strong>${getSubjectLabel(validatedData.subject)}</strong></p>
 
                 <div class="info-box">
@@ -148,7 +155,7 @@ export default defineEventHandler(async (event) => {
         text: `
 Message bien reçu
 
-Bonjour ${validatedData.firstName},
+Bonjour ${sanitizedFirstName},
 
 Nous avons bien reçu votre message concernant : ${getSubjectLabel(validatedData.subject)}
 

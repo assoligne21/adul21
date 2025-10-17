@@ -2,6 +2,7 @@ import { db } from '~/server/database/connection'
 import { news } from '~/server/database/schema'
 import { newsSchema } from '~/server/validation/schemas'
 import { requireAuth } from '~/server/utils/jwt'
+import { sanitizePlainText, sanitizeRichHTML } from '~/server/utils/sanitize'
 
 export default defineEventHandler(async (event) => {
   // Require admin authentication
@@ -12,10 +13,10 @@ export default defineEventHandler(async (event) => {
     const validatedData = newsSchema.parse(body)
 
     const [newNews] = await db.insert(news).values({
-      title: validatedData.title,
-      slug: validatedData.slug,
-      excerpt: validatedData.excerpt,
-      content: validatedData.content,
+      title: sanitizePlainText(validatedData.title),
+      slug: validatedData.slug, // Slug is validated and safe
+      excerpt: sanitizePlainText(validatedData.excerpt),
+      content: sanitizeRichHTML(validatedData.content),
       coverImageUrl: validatedData.cover_image_url,
       authorId: validatedData.author_id,
       isPublished: validatedData.is_published || false,

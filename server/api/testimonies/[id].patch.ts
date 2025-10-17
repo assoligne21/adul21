@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm'
 import { db } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
+import { sanitizeSimpleHTML } from '~/server/utils/sanitize'
 import { z } from 'zod'
 
 // Partial schema for updates
@@ -41,7 +42,8 @@ export default defineEventHandler(async (event) => {
     }
 
     if (validatedData.moderation_notes !== undefined) {
-      updateData.moderationNotes = validatedData.moderation_notes
+      // Sanitize moderation notes (allow basic HTML for admin formatting)
+      updateData.moderationNotes = sanitizeSimpleHTML(validatedData.moderation_notes)
     }
 
     if (validatedData.is_published !== undefined) {

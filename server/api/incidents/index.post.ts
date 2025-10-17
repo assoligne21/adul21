@@ -1,6 +1,7 @@
 import { db } from '~/server/database/connection'
 import { incidents } from '~/server/database/schema'
 import { incidentSchema } from '~/server/validation/schemas'
+import { sanitizePlainText } from '~/server/utils/sanitize'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,16 +13,16 @@ export default defineEventHandler(async (event) => {
       incidentTime: validatedData.incident_time,
       incidentType: validatedData.incident_type,
       busLine: validatedData.bus_line,
-      description: validatedData.description,
+      description: sanitizePlainText(validatedData.description),
       consequence: validatedData.consequence,
-      consequenceDetails: validatedData.consequence_details,
+      consequenceDetails: sanitizePlainText(validatedData.consequence_details),
       taxiCost: validatedData.taxi_cost?.toString(),
       email: validatedData.email
     }).returning()
 
     return {
       success: true,
-      message: 'Incident signalé avec succès',
+      message: 'Incident signalï¿½ avec succï¿½s',
       data: newIncident
     }
   } catch (error: any) {
@@ -30,7 +31,7 @@ export default defineEventHandler(async (event) => {
     if (error.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Données invalides',
+        statusMessage: 'Donnï¿½es invalides',
         data: error.errors
       })
     }
