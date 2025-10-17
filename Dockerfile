@@ -43,15 +43,28 @@ RUN npm run build
 # Stage 3: Production runner
 FROM node:22-alpine AS runner
 
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
 # Créer un utilisateur non-root pour la sécurité
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nuxtjs
 
-# Copier uniquement les fichiers nécessaires
+# Copier les fichiers nécessaires
 COPY --from=builder --chown=nuxtjs:nodejs /app/.output /app/.output
 COPY --from=builder --chown=nuxtjs:nodejs /app/package.json /app/
+COPY --from=builder --chown=nuxtjs:nodejs /app/drizzle.config.ts /app/
+COPY --from=builder --chown=nuxtjs:nodejs /app/server/database/ /app/server/database/
+
+# Copier le script de démarrage
+COPY --chown=nuxtjs:nodejs scripts/docker-start.sh /app/
+RUN chmod +x /app/docker-start.sh
+
+# Installer uniquement les dépendances nécessaires pour les migrations
+# drizzle-kit, postgres, pg, dotenv et zod pour exécuter db:push
+RUN pnpm add -g drizzle-kit@0.31.5 && \
+    pnpm add postgres@3.4.7 pg@8.13.1 drizzle-orm@0.44.6 dotenv@17.2.3 zod@3.25.76
 
 # Variables d'environnement
 ENV NODE_ENV=production \
@@ -67,4 +80,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-CMD ["node", ".output/server/index.mjs"]
+CMD ["/app/docker-start.sh"]
