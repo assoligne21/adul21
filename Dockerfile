@@ -5,26 +5,16 @@
 # Stage 1: Dependencies
 FROM node:22-alpine AS deps
 
-# Installer pnpm (plus rapide que npm)
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
 WORKDIR /app
 
 # Copier UNIQUEMENT les fichiers de dépendances
-COPY package.json pnpm-lock.yaml* package-lock.json* ./
+COPY package.json package-lock.json* ./
 
-# Installer les dépendances avec cache mount (accélère les rebuilds)
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
-    if [ -f pnpm-lock.yaml ]; then \
-      pnpm install --frozen-lockfile; \
-    else \
-      npm ci; \
-    fi
+# Installer les dépendances avec npm (plus compatible que pnpm pour Docker)
+RUN npm ci --legacy-peer-deps
 
 # Stage 2: Builder
 FROM node:22-alpine AS builder
-
-RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
@@ -38,7 +28,7 @@ COPY . .
 ARG SITE_URL=https://adul21.fr
 ENV SITE_URL=${SITE_URL}
 
-# Build l'application (avec cache des fichiers .nuxt si disponible)
+# Build l'application avec npm
 RUN npm run build
 
 # Stage 3: Production runner
