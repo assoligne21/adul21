@@ -1,5 +1,6 @@
 # Dockerfile optimisé pour déploiement Nuxt 4 sur Coolify
 # Temps de build réduit de ~6min à ~2-3min
+# Build: 2025-10-17
 
 # Stage 1: Dependencies
 FROM node:22-alpine AS deps
