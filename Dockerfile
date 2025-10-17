@@ -54,7 +54,15 @@ COPY --from=builder --chown=nuxtjs:nodejs /app/.output /app/.output
 COPY --from=builder --chown=nuxtjs:nodejs /app/package.json /app/package-lock.json* /app/
 COPY --from=builder --chown=nuxtjs:nodejs /app/drizzle.config.ts /app/
 COPY --from=builder --chown=nuxtjs:nodejs /app/server/database/ /app/server/database/
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules /app/node_modules
+
+# Copier uniquement drizzle-kit et ses dépendances depuis node_modules
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/drizzle-kit /app/node_modules/drizzle-kit
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/drizzle-orm /app/node_modules/drizzle-orm
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/postgres /app/node_modules/postgres
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/pg /app/node_modules/pg
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/dotenv /app/node_modules/dotenv
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/zod /app/node_modules/zod
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/.bin /app/node_modules/.bin
 
 # Copier le script de démarrage
 COPY --chown=nuxtjs:nodejs scripts/docker-start.sh /app/
