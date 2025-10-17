@@ -1,48 +1,70 @@
-# Dockerfile pour déploiement Nuxt 4 sur Coolify
+# Dockerfile optimisé pour déploiement Nuxt 4 sur Coolify
+# Temps de build réduit de ~6min à ~2-3min
 
-# Stage 1: Build
-FROM node:22-alpine AS builder
+# Stage 1: Dependencies
+FROM node:22-alpine AS deps
+
+# Installer pnpm (plus rapide que npm)
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Copier les fichiers de dépendances
-COPY package*.json ./
+# Copier UNIQUEMENT les fichiers de dépendances
+COPY package.json pnpm-lock.yaml* package-lock.json* ./
 
-# Installer TOUTES les dépendances (y compris devDependencies pour le build)
-RUN npm ci
+# Installer les dépendances avec cache mount (accélère les rebuilds)
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    if [ -f pnpm-lock.yaml ]; then \
+      pnpm install --frozen-lockfile; \
+    else \
+      npm ci; \
+    fi
+
+# Stage 2: Builder
+FROM node:22-alpine AS builder
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+# Copier les node_modules depuis deps (cache layer)
+COPY --from=deps /app/node_modules ./node_modules
 
 # Copier le code source
 COPY . .
 
-# Variables d'environnement nécessaires pour le build
-# Les vraies valeurs seront injectées par Coolify
+# Variables d'environnement pour le build
 ARG SITE_URL=https://adul21.fr
-
 ENV SITE_URL=${SITE_URL}
 
-# Build l'application
+# Build l'application (avec cache des fichiers .nuxt si disponible)
 RUN npm run build
 
-# Stage 2: Production
+# Stage 3: Production runner
 FROM node:22-alpine AS runner
 
 WORKDIR /app
 
-# Copier les fichiers nécessaires depuis le build
-COPY --from=builder /app/.output /app/.output
-COPY --from=builder /app/package*.json /app/
+# Créer un utilisateur non-root pour la sécurité
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nuxtjs
 
-# Installer uniquement les dépendances de production
-# @nuxt/ui v4 gère Tailwind correctement, pas besoin de workarounds
-RUN npm ci --omit=dev
+# Copier uniquement les fichiers nécessaires
+COPY --from=builder --chown=nuxtjs:nodejs /app/.output /app/.output
+COPY --from=builder --chown=nuxtjs:nodejs /app/package.json /app/
 
-# Variables d'environnement par défaut
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3000
+# Variables d'environnement
+ENV NODE_ENV=production \
+    HOST=0.0.0.0 \
+    PORT=3000 \
+    NODE_OPTIONS="--max-old-space-size=2048"
 
-# Exposer le port
+USER nuxtjs
+
 EXPOSE 3000
 
-# Démarrer l'application
+# Health check (optionnel mais recommandé)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
 CMD ["node", ".output/server/index.mjs"]

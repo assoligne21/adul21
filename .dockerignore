@@ -31,13 +31,28 @@ dist
 Thumbs.db
 
 # Documentation
-README.md
+docs/
 *.md
 !package.json
+ROADMAP.md
+RELEASE-*.md
+DEPLOYMENT.md
+GMAIL_SMTP_GUIDE.md
+GITHUB_ACCESS_GUIDE.md
 
 # Tests
 coverage
 .nyc_output
+tests/
+playwright-report/
+test-results/
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+vitest.config.ts
+vitest.integration.config.ts
+playwright.config.ts
 
 # Misc
 *.log
