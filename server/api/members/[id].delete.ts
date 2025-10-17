@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
       success: true,
       message: 'Adh�rent supprim� avec succ�s'
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting member:', error)
     throw createError({
       statusCode: error.statusCode || 500,

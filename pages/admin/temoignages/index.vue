@@ -121,20 +121,20 @@ const filteredTestimonies = computed(() => {
   if (!testimoniesList.value) return []
   
   if (filter.value === 'pending') {
-    return testimoniesList.value.filter((t: any) => t.moderationStatus === 'pending')
+    return testimoniesList.value.filter((t) => t.moderationStatus === 'pending')
   }
   if (filter.value === 'published') {
-    return testimoniesList.value.filter((t: any) => t.isPublished)
+    return testimoniesList.value.filter((t) => t.isPublished)
   }
   return testimoniesList.value
 })
 
 const pendingCount = computed(() => 
-  testimoniesList.value?.filter((t: any) => t.moderationStatus === 'pending').length || 0
+  testimoniesList.value?.filter((t) => t.moderationStatus === 'pending').length || 0
 )
 
 const publishedCount = computed(() => 
-  testimoniesList.value?.filter((t: any) => t.isPublished).length || 0
+  testimoniesList.value?.filter((t) => t.isPublished).length || 0
 )
 
 function formatDate(date: string) {
@@ -145,7 +145,7 @@ function formatDate(date: string) {
   })
 }
 
-function getStatusLabel(testimony: any) {
+function getStatusLabel(testimony) {
   if (testimony.isPublished) return 'Publié'
   if (testimony.moderationStatus === 'pending') return 'En attente'
   if (testimony.moderationStatus === 'rejected') return 'Rejeté'

@@ -280,7 +280,7 @@ Action requise : Vérifier le paiement et activer l'adhésion dans le tableau de
         email: member.email
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing membership:', error)
 
     if (error.name === 'ZodError') {

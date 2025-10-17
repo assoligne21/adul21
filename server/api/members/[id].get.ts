@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
       success: true,
       data: member
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching member:', error)
     throw createError({
       statusCode: error.statusCode || 500,

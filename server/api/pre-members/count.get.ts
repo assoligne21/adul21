@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
         count: totalCount || 0
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching pre-members count:', error)
 
     return {

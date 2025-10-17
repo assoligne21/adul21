@@ -104,16 +104,16 @@ const filteredMessages = computed(() => {
   if (!contactsList.value) return []
   
   if (filter.value === 'new') {
-    return contactsList.value.filter((m: any) => m.status === 'new')
+    return contactsList.value.filter((m) => m.status === 'new')
   }
   if (filter.value === 'read') {
-    return contactsList.value.filter((m: any) => m.status === 'read')
+    return contactsList.value.filter((m) => m.status === 'read')
   }
   return contactsList.value
 })
 
 const newCount = computed(() => 
-  contactsList.value?.filter((m: any) => m.status === 'new').length || 0
+  contactsList.value?.filter((m) => m.status === 'new').length || 0
 )
 
 function formatDate(date: string) {

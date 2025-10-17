@@ -1,4 +1,5 @@
 import pg from 'pg'
+import type { QueryParam } from '~/types/common'
 
 const { Pool } = pg
 
@@ -18,7 +19,7 @@ export const getDb = () => {
 }
 
 // Helper pour les requêtes simples
-export const query = async (text: string, params?: any[]) => {
+export const query = async (text: string, params?: QueryParam[]) => {
   const pool = getDb()
   return pool.query(text, params)
 }

@@ -179,7 +179,7 @@ Site web : https://adul21.fr
       success: true,
       message: 'Votre message a été envoyé avec succès'
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing contact form:', error)
 
     if (error.name === 'ZodError') {

@@ -173,7 +173,7 @@ const filteredSubscribers = computed(() => {
   // Search filter
   const query = searchQuery.value.toLowerCase()
   if (query) {
-    filtered = filtered.filter((s: any) =>
+    filtered = filtered.filter((s) =>
       s.email.toLowerCase().includes(query) ||
       (s.firstName && s.firstName.toLowerCase().includes(query)) ||
       (s.lastName && s.lastName.toLowerCase().includes(query))
@@ -182,14 +182,14 @@ const filteredSubscribers = computed(() => {
 
   // Status filter
   if (filterStatus.value === 'active') {
-    filtered = filtered.filter((s: any) => s.isActive)
+    filtered = filtered.filter((s) => s.isActive)
   } else if (filterStatus.value === 'unsubscribed') {
-    filtered = filtered.filter((s: any) => !s.isActive)
+    filtered = filtered.filter((s) => !s.isActive)
   }
 
   // Source filter
   if (filterSource.value) {
-    filtered = filtered.filter((s: any) => s.source === filterSource.value)
+    filtered = filtered.filter((s) => s.source === filterSource.value)
   }
 
   return filtered
@@ -216,7 +216,7 @@ function getSourceLabel(source: string) {
 function exportToCSV() {
   const headers = ['Email', 'Prénom', 'Nom', 'Source', 'Statut', 'Date inscription', 'Date désabonnement']
 
-  const rows = filteredSubscribers.value.map((s: any) => [
+  const rows = filteredSubscribers.value.map((s) => [
     s.email,
     s.firstName || '',
     s.lastName || '',

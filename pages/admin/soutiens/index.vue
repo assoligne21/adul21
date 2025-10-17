@@ -212,7 +212,7 @@ const filteredSupporters = computed(() => {
   // Search filter
   const query = searchQuery.value.toLowerCase()
   if (query) {
-    filtered = filtered.filter((s: any) =>
+    filtered = filtered.filter((s) =>
       s.firstName.toLowerCase().includes(query) ||
       s.lastName.toLowerCase().includes(query) ||
       s.email.toLowerCase().includes(query) ||
@@ -222,19 +222,19 @@ const filteredSupporters = computed(() => {
 
   // City filter
   if (filterCity.value) {
-    filtered = filtered.filter((s: any) => s.city === filterCity.value)
+    filtered = filtered.filter((s) => s.city === filterCity.value)
   }
 
   // Wants to become member filter
   if (filterWantsToBecomeMember.value) {
     const wantsMember = filterWantsToBecomeMember.value === 'true'
-    filtered = filtered.filter((s: any) => s.wantsToBecomeMember === wantsMember)
+    filtered = filtered.filter((s) => s.wantsToBecomeMember === wantsMember)
   }
 
   // Wants to volunteer filter
   if (filterWantsToVolunteer.value) {
     const wantsVolunteer = filterWantsToVolunteer.value === 'true'
-    filtered = filtered.filter((s: any) => s.wantsToVolunteer === wantsVolunteer)
+    filtered = filtered.filter((s) => s.wantsToVolunteer === wantsVolunteer)
   }
 
   return filtered
@@ -275,7 +275,7 @@ function getParticipationAreaLabel(area: string) {
 function exportToCSV() {
   const headers = ['Prénom', 'Nom', 'Email', 'Téléphone', 'Ville', 'Type', 'Veut adhérer', 'Veut être bénévole', 'Peut héberger', 'Peut distribuer', 'Domaines participation', 'Newsletter', 'Contact création', 'Invitation AG', 'Date inscription']
 
-  const rows = filteredSupporters.value.map((s: any) => [
+  const rows = filteredSupporters.value.map((s) => [
     s.firstName,
     s.lastName,
     s.email,

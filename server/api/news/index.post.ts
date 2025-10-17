@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
       message: 'Actualit� cr��e avec succ�s',
       data: newNews
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating news:', error)
 
     if (error.name === 'ZodError') {

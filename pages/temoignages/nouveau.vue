@@ -662,7 +662,7 @@ const submitTestimony = async () => {
     setTimeout(() => {
       navigateTo('/temoignages')
     }, 3000)
-  } catch (error: any) {
+  } catch (error: unknown) {
     submitError.value = error.message || 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer.'
   } finally {
     isSubmitting.value = false

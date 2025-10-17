@@ -1,4 +1,20 @@
 <script setup lang="ts">
+interface DocumentFormat {
+  type: string
+  url: string
+  size: string
+}
+
+interface Document {
+  id: number
+  title: string
+  description: string
+  category: string
+  icon: string
+  formats: DocumentFormat[]
+  available: boolean
+}
+
 useHead({
   title: 'Téléchargements',
   meta: [
@@ -9,7 +25,7 @@ useHead({
   ]
 })
 
-const documents = ref([
+const documents = ref<Document[]>([
   {
     id: 1,
     title: 'Courrier au maire',
@@ -84,7 +100,7 @@ const filteredDocuments = computed(() => {
   return documents.value.filter(d => d.category === selectedCategory.value)
 })
 
-function handleDownload(doc: any, format: any) {
+function handleDownload(doc: Document, format: DocumentFormat) {
   // Si l'URL est définie, créer un téléchargement
   if (format.url && format.url !== '#') {
     const link = document.createElement('a')

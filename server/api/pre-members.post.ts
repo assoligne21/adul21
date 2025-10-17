@@ -275,7 +275,7 @@ Site web : https://adul21.fr
         createdAt: preMember.createdAt
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing pre-membership:', error)
 
     if (error.name === 'ZodError') {

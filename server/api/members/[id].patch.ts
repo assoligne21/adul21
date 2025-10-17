@@ -4,6 +4,7 @@ import { members } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 import { sanitizeSimpleHTML } from '~/server/utils/sanitize'
 import { z } from 'zod'
+import type { ErrorWithMessage } from '~/types/common'
 
 // Partial schema for updates
 const updateMemberSchema = z.object({
@@ -33,7 +34,7 @@ export default defineEventHandler(async (event) => {
     const validatedData = updateMemberSchema.parse(body)
 
     // Build update object
-    const updateData: any = {}
+    const updateData: Partial<typeof members.$inferInsert> = {}
 
     if (validatedData.membership_status !== undefined) {
       updateData.membershipStatus = validatedData.membership_status
@@ -81,20 +82,22 @@ export default defineEventHandler(async (event) => {
       message: 'Adh�rent mis � jour avec succ�s',
       data: updatedMember
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating member:', error)
 
-    if (error.name === 'ZodError') {
+    const err = error as ErrorWithMessage
+
+    if (err.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Donn�es invalides',
-        data: error.errors
+        statusMessage: 'Données invalides',
+        data: err.errors
       })
     }
 
     throw createError({
-      statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || 'Erreur lors de la mise � jour'
+      statusCode: err.statusCode || 500,
+      statusMessage: err.statusMessage || 'Erreur lors de la mise à jour'
     })
   }
 })

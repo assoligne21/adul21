@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
       message: 'Votre témoignage a été enregistré avec succès',
       data: newTestimony
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating testimony:', error)
 
     if (error.name === 'ZodError') {

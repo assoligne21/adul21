@@ -626,7 +626,7 @@ const handleSubmit = async () => {
 
     submitSuccess.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  } catch (error: any) {
+  } catch (error: unknown) {
     submitError.value = error.data?.message || 'Une erreur est survenue. Veuillez réessayer.'
   } finally {
     isSubmitting.value = false

@@ -209,7 +209,7 @@ const fetchTestimony = async () => {
       // Silently fail - views count is not critical
       console.error('Failed to increment views:', e)
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('Error fetching testimony:', e)
     error.value = e.message || 'Impossible de charger le témoignage'
   } finally {

@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       message: 'Inscription à la newsletter réussie',
       data: newSubscriber
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error subscribing to newsletter:', error)
 
     if (error.name === 'ZodError') {

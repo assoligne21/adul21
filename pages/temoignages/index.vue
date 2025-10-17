@@ -242,7 +242,7 @@ const fetchTestimonies = async () => {
     if (fetchError) throw fetchError
 
     testimonies.value = data || []
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('Error fetching testimonies:', e)
     error.value = 'Impossible de charger les témoignages. Veuillez réessayer.'
   } finally {

@@ -3,11 +3,13 @@
  * This replaces the previous Supabase client implementation
  */
 
+import type { QueryParam } from '~/types/common'
+
 // Simple query builder for client-side API calls
 class ClientQueryBuilder {
   private endpoint: string
   private selectFields: string = '*'
-  private filters: Record<string, any> = {}
+  private filters: Record<string, QueryParam> = {}
   private orderByField: string | null = null
   private orderAscending: boolean = true
   private limitValue: number | null = null
@@ -22,7 +24,7 @@ class ClientQueryBuilder {
     return this
   }
 
-  eq(field: string, value: any) {
+  eq(field: string, value: QueryParam) {
     this.filters[field] = value
     return this
   }
@@ -43,12 +45,17 @@ class ClientQueryBuilder {
     return this
   }
 
-  async then(resolve: any, reject?: any) {
+  async then<T>(
+    resolve: (value: { data: T | null; error: string | null }) => void,
+    reject?: (error: { data: null; error: string }) => void
+  ) {
     try {
       // Build query params
       const params = new URLSearchParams()
       Object.entries(this.filters).forEach(([key, value]) => {
-        params.append(key, String(value))
+        if (value !== null && value !== undefined) {
+          params.append(key, String(value))
+        }
       })
 
       if (this.orderByField) {
@@ -61,18 +68,19 @@ class ClientQueryBuilder {
       }
 
       const url = params.toString() ? `${this.endpoint}?${params}` : this.endpoint
-      const response = await $fetch(url)
+      const response = await $fetch<{ data: T }>(url)
 
       if (this.singleRow && response?.data) {
-        resolve({ data: response.data[0] || null, error: null })
+        resolve({ data: (response.data as T[])[0] || null, error: null })
       } else {
         resolve({ data: response?.data || null, error: null })
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue'
       if (reject) {
-        reject({ data: null, error: error.message })
+        reject({ data: null, error: errorMessage })
       } else {
-        resolve({ data: null, error: error.message })
+        resolve({ data: null, error: errorMessage })
       }
     }
   }

@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
       message: 'Adhésion enregistrée avec succès',
       data: newMember
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating member:', error)
 
     if (error.name === 'ZodError') {

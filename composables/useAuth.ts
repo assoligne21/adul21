@@ -17,7 +17,7 @@ export const useAuth = () => {
 
       user.value = response.user
       return { success: true }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error)
       return {
         success: false,

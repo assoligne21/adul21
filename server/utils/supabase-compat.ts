@@ -4,11 +4,12 @@
  */
 
 import { query } from './db'
+import type { QueryParam, WhereCondition } from '~/types/common'
 
 class PostgresQueryBuilder {
   private tableName: string
   private selectFields: string = '*'
-  private whereConditions: { field: string; value: any; operator?: string }[] = []
+  private whereConditions: WhereCondition[] = []
   private orderByClause: { column: string; ascending: boolean }[] = []
   private limitValue: number | null = null
   private singleRow: boolean = false
@@ -22,7 +23,7 @@ class PostgresQueryBuilder {
     return this
   }
 
-  eq(field: string, value: any) {
+  eq(field: string, value: QueryParam) {
     this.whereConditions.push({ field, value, operator: '=' })
     return this
   }
@@ -45,7 +46,7 @@ class PostgresQueryBuilder {
 
   async execute() {
     let sql = `SELECT ${this.selectFields} FROM ${this.tableName}`
-    const params: any[] = []
+    const params: QueryParam[] = []
     let paramIndex = 1
 
     // WHERE clause
@@ -85,7 +86,7 @@ class PostgresQueryBuilder {
         error: null,
         count: result.rowCount
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         data: null,
         error: error.message,
@@ -97,9 +98,9 @@ class PostgresQueryBuilder {
 
 class PostgresInsertBuilder {
   private tableName: string
-  private insertData: any
+  private insertData: Record<string, QueryParam>
 
-  constructor(table: string, data: any) {
+  constructor(table: string, data: Record<string, QueryParam>) {
     this.tableName = table
     this.insertData = data
   }
@@ -129,7 +130,7 @@ class PostgresInsertBuilder {
         data: result.rows[0] || null,
         error: null
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         data: null,
         error: error.message
@@ -140,15 +141,15 @@ class PostgresInsertBuilder {
 
 class PostgresUpdateBuilder {
   private tableName: string
-  private updateData: any
-  private whereConditions: { field: string; value: any }[] = []
+  private updateData: Record<string, QueryParam>
+  private whereConditions: { field: string; value: QueryParam }[] = []
 
-  constructor(table: string, data: any) {
+  constructor(table: string, data: Record<string, QueryParam>) {
     this.tableName = table
     this.updateData = data
   }
 
-  eq(field: string, value: any) {
+  eq(field: string, value: QueryParam) {
     this.whereConditions.push({ field, value })
     return this
   }
@@ -183,7 +184,7 @@ class PostgresUpdateBuilder {
         data: result.rows,
         error: null
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         data: null,
         error: error.message
@@ -198,22 +199,33 @@ class PostgresClient {
     return {
       select: (fields?: string) => {
         const builder = new PostgresQueryBuilder(table)
-        if (fields) builder.select(fields)
+        if (fields) {
+          builder.select(fields)
+        }
         // Return builder with execute method aliased to common Supabase patterns
-        const executeObj = builder as any
-        executeObj.then = (resolve: any) => builder.execute().then(resolve)
+        const executeObj = builder as PostgresQueryBuilder & {
+          then: <T>(resolve: (value: unknown) => T) => Promise<T>
+        }
+        executeObj.then = <T>(resolve: (value: unknown) => T) =>
+          builder.execute().then(resolve)
         return executeObj
       },
-      insert: (data: any) => {
+      insert: (data: Record<string, QueryParam>) => {
         const builder = new PostgresInsertBuilder(table, data)
-        const executeObj = builder as any
-        executeObj.then = (resolve: any) => builder.execute().then(resolve)
+        const executeObj = builder as PostgresInsertBuilder & {
+          then: <T>(resolve: (value: unknown) => T) => Promise<T>
+        }
+        executeObj.then = <T>(resolve: (value: unknown) => T) =>
+          builder.execute().then(resolve)
         return executeObj
       },
-      update: (data: any) => {
+      update: (data: Record<string, QueryParam>) => {
         const builder = new PostgresUpdateBuilder(table, data)
-        const executeObj = builder as any
-        executeObj.then = (resolve: any) => builder.execute().then(resolve)
+        const executeObj = builder as PostgresUpdateBuilder & {
+          then: <T>(resolve: (value: unknown) => T) => Promise<T>
+        }
+        executeObj.then = <T>(resolve: (value: unknown) => T) =>
+          builder.execute().then(resolve)
         return executeObj
       }
     }
@@ -221,7 +233,7 @@ class PostgresClient {
 }
 
 // Export compatibility functions
-export const serverSupabaseServiceRole = (event?: any) => {
+export const serverSupabaseServiceRole = () => {
   return new PostgresClient()
 }
 

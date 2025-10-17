@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
       message: 'Don enregistré avec succès',
       data: newDonation
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating donation:', error)
 
     if (error.name === 'ZodError') {

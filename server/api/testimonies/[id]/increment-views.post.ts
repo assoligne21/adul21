@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
       success: true,
       views_count: testimony.views_count + 1
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error incrementing views:', error)
     throw createError({
       statusCode: error.statusCode || 500,

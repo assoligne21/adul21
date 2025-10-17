@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
       message: 'Incident signal� avec succ�s',
       data: newIncident
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating incident:', error)
 
     if (error.name === 'ZodError') {

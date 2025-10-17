@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       success: true,
       data: testimony
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching testimony:', error)
     throw createError({
       statusCode: error.statusCode || 500,

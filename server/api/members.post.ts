@@ -314,7 +314,7 @@ Site web : https://adul21.fr
         createdAt: member.createdAt
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing membership:', error)
 
     if (error.name === 'ZodError') {
