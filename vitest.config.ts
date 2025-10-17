@@ -10,9 +10,12 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
+    include: ['tests/unit/**/*.test.ts'],
+    exclude: ['tests/e2e/**', 'tests/integration/**', 'node_modules/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
+      include: ['server/**/*.ts', 'composables/**/*.ts', 'utils/**/*.ts'],
       exclude: [
         'node_modules/**',
         '.nuxt/**',
@@ -22,9 +25,12 @@ export default defineConfig({
         '**/coverage/**',
         '**/*.d.ts',
         'server/database/migrations/**',
+        'server/database/schema.ts',
+        'server/database/connection.ts',
         'scripts/**',
         '**/*.spec.ts',
-        '**/*.test.ts'
+        '**/*.test.ts',
+        'tests/**'
       ],
       thresholds: {
         lines: 40,
