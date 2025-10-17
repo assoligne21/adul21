@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Dashboard</h1>
 
     <div v-if="pending" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
     </div>
 
-    <div v-else-if="stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-else-if="stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       <!-- Testimonies Card -->
       <NuxtLink
         to="/admin/temoignages"
@@ -120,30 +120,33 @@
     </div>
 
     <!-- Quick actions -->
-    <div class="mt-8">
-      <h2 class="text-xl font-bold text-gray-900 mb-4">Actions rapides</h2>
-      <div class="flex flex-wrap gap-4">
-        <UButton 
-          to="/admin/temoignages" 
-          color="primary" 
-          size="lg"
+    <div class="mt-6 sm:mt-8">
+      <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-4">Actions rapides</h2>
+      <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
+        <UButton
+          to="/admin/temoignages"
+          color="primary"
+          size="md"
           icon="i-heroicons-chat-bubble-left-right"
+          class="w-full sm:w-auto"
         >
           Modérer les témoignages
         </UButton>
-        <UButton 
-          to="/admin/membres" 
-          color="gray" 
-          size="lg"
+        <UButton
+          to="/admin/membres"
+          color="gray"
+          size="md"
           icon="i-heroicons-users"
+          class="w-full sm:w-auto"
         >
           Voir les membres
         </UButton>
-        <UButton 
-          to="/admin/contacts" 
-          color="gray" 
-          size="lg"
+        <UButton
+          to="/admin/contacts"
+          color="gray"
+          size="md"
           icon="i-heroicons-envelope"
+          class="w-full sm:w-auto"
         >
           Lire les messages
         </UButton>

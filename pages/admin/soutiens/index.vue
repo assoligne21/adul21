@@ -1,13 +1,15 @@
 <template>
   <div>
-    <div class="flex items-center justify-between mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Soutiens (Pré-adhésions)</h1>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Soutiens</h1>
       <UButton
         color="primary"
         icon="i-heroicons-arrow-down-tray"
         @click="exportToCSV"
+        size="sm"
       >
-        Export CSV
+        <span class="hidden sm:inline">Export CSV</span>
+        <span class="sm:hidden">Export</span>
       </UButton>
     </div>
 
@@ -78,8 +80,8 @@
         </div>
       </div>
 
-      <!-- Supporters table -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <!-- Supporters table (desktop) -->
+      <div class="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -181,6 +183,80 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Supporters cards (mobile) -->
+      <div class="md:hidden space-y-4">
+        <div
+          v-for="supporter in filteredSupporters"
+          :key="supporter.id"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+        >
+          <div class="mb-3">
+            <h3 class="font-semibold text-gray-900">
+              {{ supporter.firstName }} {{ supporter.lastName }}
+            </h3>
+            <p class="text-sm text-gray-600">{{ getUserTypeLabel(supporter.userType) }}</p>
+          </div>
+
+          <div class="space-y-2 text-sm mb-3">
+            <a :href="`mailto:${supporter.email}`" class="block text-primary-600 hover:underline truncate">
+              📧 {{ supporter.email }}
+            </a>
+            <p class="text-gray-600" v-if="supporter.phone">📞 {{ supporter.phone }}</p>
+            <p class="text-gray-600">📍 {{ supporter.city }}</p>
+            <p class="text-gray-500">🕐 {{ formatDate(supporter.createdAt) }}</p>
+          </div>
+
+          <div v-if="supporter.wantsToBecomeMember || supporter.wantsToVolunteer || supporter.canHostMeeting || supporter.canDistributeFlyers || supporter.acceptsNewsletter" class="mb-3">
+            <p class="text-xs font-medium text-gray-500 mb-2">Intentions:</p>
+            <div class="flex flex-wrap gap-1">
+              <span
+                v-if="supporter.wantsToBecomeMember"
+                class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800"
+              >
+                Adhérer
+              </span>
+              <span
+                v-if="supporter.wantsToVolunteer"
+                class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800"
+              >
+                Bénévole
+              </span>
+              <span
+                v-if="supporter.canHostMeeting"
+                class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800"
+              >
+                Héberger
+              </span>
+              <span
+                v-if="supporter.canDistributeFlyers"
+                class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800"
+              >
+                Distribuer
+              </span>
+              <span
+                v-if="supporter.acceptsNewsletter"
+                class="px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800"
+              >
+                Newsletter
+              </span>
+            </div>
+          </div>
+
+          <div v-if="supporter.participationAreas && supporter.participationAreas.length > 0">
+            <p class="text-xs font-medium text-gray-500 mb-2">Domaines:</p>
+            <div class="flex flex-wrap gap-1">
+              <span
+                v-for="area in supporter.participationAreas"
+                :key="area"
+                class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700"
+              >
+                {{ getParticipationAreaLabel(area) }}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 

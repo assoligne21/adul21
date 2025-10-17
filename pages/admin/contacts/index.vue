@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Messages de contact</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Messages de contact</h1>
 
     <div v-if="pending" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
     </div>
 
     <div v-else>
-      <div class="mb-6 flex gap-4">
+      <div class="mb-6 flex flex-wrap gap-2 sm:gap-4">
         <UButton
           :color="filter === 'all' ? 'primary' : 'gray'"
           @click="filter = 'all'"
@@ -32,26 +32,26 @@
         <div
           v-for="message in filteredMessages"
           :key="message.id"
-          class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+          class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow"
         >
-          <div class="flex items-start justify-between mb-4">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0 mb-4">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h3 class="text-lg font-bold text-gray-900">{{ message.name }}</h3>
+                <h3 class="text-base sm:text-lg font-bold text-gray-900">{{ message.name }}</h3>
                 <span
                   v-if="message.status === 'new'"
-                  class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800"
+                  class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap"
                 >
                   Nouveau
                 </span>
               </div>
-              <div class="flex items-center gap-4 text-sm text-gray-600">
-                <span>📧 {{ message.email }}</span>
+              <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                <span class="truncate">📧 {{ message.email }}</span>
                 <span v-if="message.phone">📞 {{ message.phone }}</span>
                 <span>🕐 {{ formatDate(message.createdAt) }}</span>
               </div>
             </div>
-            <div class="flex gap-2">
+            <div class="flex flex-wrap gap-2">
               <UButton
                 v-if="message.status === 'new'"
                 color="primary"
