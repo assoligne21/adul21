@@ -1,8 +1,12 @@
 import { eq, and, like, or, desc } from 'drizzle-orm'
 import { db } from '~/server/database/connection'
 import { members } from '~/server/database/schema'
+import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
+  // Require admin authentication
+  await requireAuth(event)
+
   try {
     const query = getQuery(event)
 
@@ -65,15 +69,13 @@ export default defineEventHandler(async (event) => {
     // Execute query
     const result = await queryBuilder
 
-    return {
-      success: true,
-      data: result
-    }
+    // Return array directly (not wrapped in object) for easier consumption
+    return result
   } catch (error) {
     console.error('Error fetching members:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Erreur lors de la récupération des adhérents'
+      statusMessage: 'Erreur lors de la rï¿½cupï¿½ration des adhï¿½rents'
     })
   }
 })
