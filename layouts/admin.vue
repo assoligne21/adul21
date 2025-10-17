@@ -92,5 +92,14 @@
 </template>
 
 <script setup lang="ts">
+// Ensure auth composable is available
 const { user, logout } = useAuth()
+
+// Make sure user is loaded on mount
+onMounted(async () => {
+  if (!user.value) {
+    const { checkAuth } = useAuth()
+    await checkAuth()
+  }
+})
 </script>
