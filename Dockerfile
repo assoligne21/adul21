@@ -43,8 +43,6 @@ RUN npm run build
 # Stage 3: Production runner
 FROM node:22-alpine AS runner
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
 WORKDIR /app
 
 # Créer un utilisateur non-root pour la sécurité
@@ -61,11 +59,10 @@ COPY --from=builder --chown=nuxtjs:nodejs /app/server/database/ /app/server/data
 COPY --chown=nuxtjs:nodejs scripts/docker-start.sh /app/
 RUN chmod +x /app/docker-start.sh
 
-# Installer uniquement les dépendances nécessaires pour les migrations
-# On initialise pnpm puis on installe drizzle-kit globalement et les dépendances localement
-RUN pnpm init -y && \
-    pnpm add -g drizzle-kit@0.31.5 && \
-    pnpm add --save-prod postgres@3.4.7 pg@8.13.1 drizzle-orm@0.44.6 dotenv@17.2.3 zod@3.25.76
+# Installer uniquement les dépendances nécessaires pour les migrations avec npm
+# npm est plus simple que pnpm pour les installations dans un container minimal
+RUN npm install -g drizzle-kit@0.31.5 && \
+    npm install --omit=dev postgres@3.4.7 pg@8.13.1 drizzle-orm@0.44.6 dotenv@17.2.3 zod@3.25.76
 
 # Variables d'environnement
 ENV NODE_ENV=production \
