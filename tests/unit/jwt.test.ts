@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createToken, verifyToken } from '~/server/utils/jwt'
+import { createToken, verifyToken, getTokenFromCookie, setTokenCookie, clearTokenCookie, requireAuth } from '~/server/utils/jwt'
 import type { JWTPayload } from '~/server/utils/jwt'
+import type { H3Event } from 'h3'
 
 describe('JWT Utils', () => {
   const validPayload: JWTPayload = {
@@ -207,6 +208,124 @@ describe('JWT Utils', () => {
       expect(verifyToken('header.payload')).toBeNull()
       expect(verifyToken('header')).toBeNull()
       expect(verifyToken('header.payload.signature.extra')).toBeNull()
+    })
+  })
+
+  describe('Cookie operations', () => {
+    it('should get token from cookie', () => {
+      const token = createToken(validPayload)
+      const mockEvent = {
+        node: {
+          req: {
+            headers: {
+              cookie: `admin_token=${token}`
+            }
+          }
+        }
+      } as unknown as H3Event
+
+      const extractedToken = getTokenFromCookie(mockEvent)
+      expect(extractedToken).toBe(token)
+    })
+
+    it('should return null when no cookie present', () => {
+      const mockEvent = {
+        node: {
+          req: {
+            headers: {}
+          }
+        }
+      } as unknown as H3Event
+
+      const token = getTokenFromCookie(mockEvent)
+      expect(token).toBeNull()
+    })
+
+    it('should set token cookie', () => {
+      const token = createToken(validPayload)
+      const cookies: string[] = []
+      const mockEvent = {
+        node: {
+          res: {
+            setHeader: (name: string, value: string) => {
+              if (name.toLowerCase() === 'set-cookie') {
+                cookies.push(value)
+              }
+            },
+            getHeader: () => undefined
+          }
+        }
+      } as unknown as H3Event
+
+      setTokenCookie(mockEvent, token)
+      expect(cookies.length).toBeGreaterThan(0)
+      expect(cookies[0]).toContain('admin_token=')
+      expect(cookies[0]).toContain('HttpOnly')
+    })
+
+    it('should clear token cookie', () => {
+      const cookies: string[] = []
+      const mockEvent = {
+        node: {
+          res: {
+            setHeader: (name: string, value: string) => {
+              if (name.toLowerCase() === 'set-cookie') {
+                cookies.push(value)
+              }
+            },
+            getHeader: () => undefined
+          }
+        }
+      } as unknown as H3Event
+
+      clearTokenCookie(mockEvent)
+      expect(cookies.length).toBeGreaterThan(0)
+      expect(cookies[0]).toContain('admin_token=')
+      expect(cookies[0]).toContain('Max-Age=0')
+    })
+  })
+
+  describe('requireAuth', () => {
+    it('should return payload for valid token', async () => {
+      const token = createToken(validPayload)
+      const mockEvent = {
+        node: {
+          req: {
+            headers: {
+              cookie: `admin_token=${token}`
+            }
+          }
+        }
+      } as unknown as H3Event
+
+      const payload = await requireAuth(mockEvent)
+      expect(payload).toMatchObject(validPayload)
+    })
+
+    it('should throw 401 when no token present', async () => {
+      const mockEvent = {
+        node: {
+          req: {
+            headers: {}
+          }
+        }
+      } as unknown as H3Event
+
+      await expect(requireAuth(mockEvent)).rejects.toThrow('Non authentifié')
+    })
+
+    it('should throw 401 for invalid token', async () => {
+      const mockEvent = {
+        node: {
+          req: {
+            headers: {
+              cookie: 'admin_token=invalid.token.here'
+            }
+          }
+        }
+      } as unknown as H3Event
+
+      await expect(requireAuth(mockEvent)).rejects.toThrow('Token invalide ou expiré')
     })
   })
 })
