@@ -73,8 +73,7 @@ async function onSubmit() {
               required
               placeholder="Votre email"
               :disabled="loading"
-              class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-white placeholder-gray-400 disabled:opacity-50"
-              style="color: white !important;"
+              class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-gray-500 disabled:opacity-50"
             />
             <button
               type="submit"
