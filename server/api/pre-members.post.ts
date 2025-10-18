@@ -8,7 +8,10 @@ const preMemberSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.string().optional().transform(val => !val || val === '' ? undefined : val),
+  phone: z.preprocess(
+    (val) => !val || val === '' ? undefined : val,
+    z.string().min(10).max(20).optional()
+  ),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   userType: z.enum(['student', 'parent', 'worker', 'senior', 'pmr', 'other']),
   wantsToBecomeMember: z.boolean(),
@@ -19,15 +22,6 @@ const preMemberSchema = z.object({
   acceptsNewsletter: z.boolean(),
   acceptsContactWhenCreated: z.boolean(),
   acceptsAgInvitation: z.boolean()
-}).refine((data) => {
-  // Si phone est fourni et non vide, il doit faire entre 10 et 20 caractères
-  if (data.phone && data.phone !== '' && (data.phone.length < 10 || data.phone.length > 20)) {
-    return false
-  }
-  return true
-}, {
-  message: 'Le numéro de téléphone doit contenir entre 10 et 20 caractères',
-  path: ['phone']
 })
 
 export default defineEventHandler(async (event) => {
