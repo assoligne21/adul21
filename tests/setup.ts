@@ -8,6 +8,15 @@ process.env.GMAIL_USER = 'test@example.com'
 process.env.GMAIL_APP_PASSWORD = 'test-password'
 process.env.EMAIL_FROM = 'Test <test@example.com>'
 
+// Mock useRuntimeConfig (Nuxt auto-import)
+global.useRuntimeConfig = vi.fn(() => ({
+  gmailUser: 'test@gmail.com',
+  gmailAppPassword: 'test-app-password',
+  emailFrom: 'ADUL21 <test@gmail.com>',
+  jwtSecret: 'test-secret-key-for-vitest',
+  public: {}
+}))
+
 // Mock global functions if needed
 global.console = {
   ...console,

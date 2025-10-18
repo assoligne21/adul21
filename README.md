@@ -329,12 +329,22 @@ Le projet est configuré pour un déploiement via Coolify sur serveur OVH.
 
 ## 📊 Métriques Qualité (v1.2.0)
 
-- ✅ **258 tests** (13 suites, 100% passing)
+- ✅ **291 tests** (16 suites, 100% passing)
 - ✅ **4 suites E2E** Playwright (homepage, contact, testimony, admin-auth)
-- ✅ **Coverage**: 85.96% ✅ (objectif 80% atteint)
+- ✅ **Coverage**: 92.44% ✅ (objectif 80% largement dépassé)
 - ✅ **WCAG 2.1 AA**: ~95% conformité accessibilité
 - ✅ **ESLint + Prettier**: Configurés et fonctionnels
 - ✅ **JSDoc**: 56% documentation (5/9 utils)
+
+### Détail de la couverture de tests
+
+- **email.ts**: 96.77% (templates et fonctions d'envoi)
+- **hash.ts**: 100% (hachage de mots de passe)
+- **sanitize.ts**: 100% (nettoyage des données)
+- **error-handler.ts**: 100% (gestion d'erreurs)
+- **logger.ts**: 100% (logging)
+- **schemas.ts**: 100% (validation Zod)
+- **jwt.ts**: 33.33% (cookie functions testées en intégration)
 
 ---
 
