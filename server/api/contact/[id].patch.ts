@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { contactMessages } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 
@@ -12,6 +12,7 @@ const updateContactSchema = z.object({
 export default defineEventHandler(async (event) => {
   // Require admin authentication
   await requireAuth(event)
+  const db = getDb(event)
 
   // Get message ID from URL
   const id = getRouterParam(event, 'id')

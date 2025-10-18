@@ -1,9 +1,11 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { incidents } from '~/server/database/schema'
 import { incidentSchema } from '~/server/validation/schemas'
 import { sanitizePlainText } from '~/server/utils/sanitize'
 
 export default defineEventHandler(async (event) => {
+  const db = getDb(event)
+
   try {
     const body = await readBody(event)
     const validatedData = incidentSchema.parse(body)

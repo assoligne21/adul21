@@ -1,8 +1,10 @@
 import { eq, and, desc } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { news } from '~/server/database/schema'
 
 export default defineEventHandler(async (event) => {
+  const db = getDb(event)
+
   try {
     const query = getQuery(event)
 
@@ -40,7 +42,7 @@ export default defineEventHandler(async (event) => {
     console.error('Error fetching news:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Erreur lors de la récupération des actualités'
+      statusMessage: 'Erreur lors de la rï¿½cupï¿½ration des actualitï¿½s'
     })
   }
 })

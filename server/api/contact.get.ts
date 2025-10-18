@@ -1,11 +1,12 @@
 import { desc, eq } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { contactMessages } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
   // Require admin authentication
   await requireAuth(event)
+  const db = getDb(event)
 
   // Get pagination parameters
   const query = getQuery(event)

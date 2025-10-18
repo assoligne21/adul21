@@ -1,4 +1,4 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { newsletterSubscribers } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 import { desc } from 'drizzle-orm'
@@ -6,6 +6,7 @@ import { desc } from 'drizzle-orm'
 export default defineEventHandler(async (event) => {
   // Require authentication
   await requireAuth(event)
+  const db = getDb(event)
 
   const query = getQuery(event)
   const limit = parseInt(query.limit as string) || 1000

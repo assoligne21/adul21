@@ -1,11 +1,14 @@
 import { eq, count } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { testimonies, members, contactMessages, news, preMembers, newsletterSubscribers } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
   // Require authentication
   await requireAuth(event)
+
+  // Get database connection
+  const db = getDb(event)
 
   // Count testimonies by status
   const [totalTestimonies] = await db.select({ count: count() }).from(testimonies)

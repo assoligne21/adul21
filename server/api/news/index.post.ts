@@ -1,4 +1,4 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { news } from '~/server/database/schema'
 import { newsSchema } from '~/server/validation/schemas'
 import { requireAuth } from '~/server/utils/jwt'
@@ -7,6 +7,7 @@ import { sanitizePlainText, sanitizeRichHTML } from '~/server/utils/sanitize'
 export default defineEventHandler(async (event) => {
   // Require admin authentication
   await requireAuth(event)
+  const db = getDb(event)
 
   try {
     const body = await readBody(event)

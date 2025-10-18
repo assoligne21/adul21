@@ -1,11 +1,12 @@
 import { eq } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
   // Require admin authentication
   await requireAuth(event)
+  const db = getDb(event)
 
   try {
     const id = getRouterParam(event, 'id')

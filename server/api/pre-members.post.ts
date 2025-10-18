@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { preMembers } from '~/server/database/schema'
 import { eq, count as drizzleCount } from 'drizzle-orm'
 
@@ -22,6 +22,8 @@ const preMemberSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  const db = getDb(event)
+
   try {
     // Parse and validate request body
     const body = await readBody(event)

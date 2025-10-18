@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { adminUsers } from '~/server/database/schema'
 import { verifyPassword } from '~/server/utils/hash'
 import { createToken, setTokenCookie } from '~/server/utils/jwt'
@@ -19,6 +19,9 @@ export default defineEventHandler(async (event) => {
         message: 'Email et mot de passe requis'
       })
     }
+
+    // Get database connection
+    const db = getDb(event)
 
     // Find admin user
     const [admin] = await db

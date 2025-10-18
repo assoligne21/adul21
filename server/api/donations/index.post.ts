@@ -1,8 +1,10 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { donations } from '~/server/database/schema'
 import { donationSchema } from '~/server/validation/schemas'
 
 export default defineEventHandler(async (event) => {
+  const db = getDb(event)
+
   try {
     const body = await readBody(event)
     const validatedData = donationSchema.parse(body)
@@ -20,7 +22,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      message: 'Don enregistré avec succès',
+      message: 'Don enregistrï¿½ avec succï¿½s',
       data: newDonation
     }
   } catch (error: unknown) {
@@ -29,7 +31,7 @@ export default defineEventHandler(async (event) => {
     if (error.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Données invalides',
+        statusMessage: 'Donnï¿½es invalides',
         data: error.errors
       })
     }
