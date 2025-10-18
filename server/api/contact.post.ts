@@ -7,7 +7,7 @@ const contactSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.string().max(20).optional(),
+  phone: z.string().nullable().transform(val => !val || val === '' ? null : val),
   subject: z.enum(['testimony', 'membership', 'volunteering', 'press', 'legal', 'other']),
   message: z.string().min(10).max(5000),
   acceptsProcessing: z.boolean().refine(val => val === true, {

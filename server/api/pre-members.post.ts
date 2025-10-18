@@ -8,9 +8,9 @@ const preMemberSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.preprocess(
-    (val) => !val || val === '' ? undefined : val,
-    z.string().min(10).max(20).optional()
+  phone: z.string().nullable().transform(val => !val || val === '' ? null : val).refine(
+    val => val === null || (val.length >= 10 && val.length <= 20),
+    { message: 'Le téléphone doit contenir entre 10 et 20 caractères' }
   ),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   userType: z.enum(['student', 'parent', 'worker', 'senior', 'pmr', 'other']),
@@ -30,9 +30,7 @@ export default defineEventHandler(async (event) => {
   try {
     // Parse and validate request body
     const body = await readBody(event)
-    console.log('[PRE-MEMBERS] Received body:', JSON.stringify(body, null, 2))
     const validatedData = preMemberSchema.parse(body)
-    console.log('[PRE-MEMBERS] Validated data:', JSON.stringify(validatedData, null, 2))
 
     // Check if email already exists
     const existingPreMember = await db
@@ -283,13 +281,9 @@ Site web : https://adul21.fr
       }
     }
   } catch (error: unknown) {
-    console.error('[PRE-MEMBERS] Error processing pre-membership:', error)
-    console.error('[PRE-MEMBERS] Error name:', error?.name)
-    console.error('[PRE-MEMBERS] Error message:', error?.message)
-    console.error('[PRE-MEMBERS] Error stack:', error?.stack)
+    console.error('Error processing pre-membership:', error)
 
     if (error.name === 'ZodError') {
-      console.error('[PRE-MEMBERS] Zod validation errors:', JSON.stringify(error.errors, null, 2))
       throw createError({
         statusCode: 400,
         statusMessage: 'Données invalides',
