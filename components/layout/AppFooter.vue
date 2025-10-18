@@ -11,9 +11,18 @@ async function onSubmit() {
       body: { email: email.value, source: 'footer' }
     })
     email.value = ''
-    alert('Inscription confirmée ! Vous recevrez nos actualités par email.')
-  } catch (error) {
-    alert('Erreur lors de l\'inscription. Veuillez réessayer.')
+    alert('✅ Inscription confirmée ! Vous recevrez nos actualités par email.')
+  } catch (error: any) {
+    // Afficher le message d'erreur spécifique du serveur
+    const errorMessage = error?.data?.statusMessage || error?.statusMessage || error?.message
+
+    if (error?.statusCode === 409 || errorMessage?.includes('déjà inscrit')) {
+      alert('ℹ️ Cet email est déjà inscrit à la newsletter.')
+    } else if (error?.statusCode === 400) {
+      alert('⚠️ Email invalide. Veuillez vérifier votre adresse.')
+    } else {
+      alert('❌ Erreur lors de l\'inscription. Veuillez réessayer plus tard.')
+    }
   } finally {
     loading.value = false
   }
