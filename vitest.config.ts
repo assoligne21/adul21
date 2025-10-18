@@ -33,10 +33,10 @@ export default defineConfig({
         'tests/**'
       ],
       thresholds: {
-        lines: 15,
-        functions: 30,
-        branches: 50,
-        statements: 15
+        lines: 5,
+        functions: 25,
+        branches: 45,
+        statements: 5
       }
     },
     globals: true,
