@@ -596,7 +596,7 @@ const form = ref({
   concrete_example: '',
   publication_preference: 'first_name',
   accepts_site_publication: true,
-  accepts_legal_use: false,
+  accepts_legal_use: true,
   accepts_media_contact: false,
   accepts_oral_testimony: false,
   accepts_association_contact: false
