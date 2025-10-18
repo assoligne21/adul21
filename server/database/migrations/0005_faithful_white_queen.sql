@@ -1,0 +1,1 @@
+ALTER TABLE "pre_members" ALTER COLUMN "phone" DROP NOT NULL;

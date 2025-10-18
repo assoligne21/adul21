@@ -472,7 +472,7 @@
                   <label class="flex items-start">
                     <input v-model="form.accepts_legal_use" type="checkbox" class="mt-1 mr-3" />
                     <span class="text-sm text-gray-700">
-                      J'accepte que mon témoignage soit utilisé dans le cadre des démarches juridiques
+                      J'accepte que mon témoignage soit utilisé dans le cadre des démarches juridiques <span class="text-red-500">*</span>
                     </span>
                   </label>
                   <label class="flex items-start">
@@ -485,6 +485,12 @@
                     <input v-model="form.accepts_oral_testimony" type="checkbox" class="mt-1 mr-3" />
                     <span class="text-sm text-gray-700">
                       Je suis prêt(e) à témoigner oralement si besoin
+                    </span>
+                  </label>
+                  <label class="flex items-start">
+                    <input v-model="form.accepts_association_contact" type="checkbox" class="mt-1 mr-3" />
+                    <span class="text-sm text-gray-700">
+                      J'accepte d'être contacté(e) par l'association pour des actions futures
                     </span>
                   </label>
                 </div>
@@ -516,7 +522,7 @@
                 v-else
                 type="button"
                 @click="submitTestimony"
-                :disabled="isSubmitting || !form.accepts_site_publication"
+                :disabled="isSubmitting || !form.accepts_site_publication || !form.accepts_legal_use"
                 class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Icon v-if="!isSubmitting" name="heroicons:paper-airplane" class="w-5 h-5 mr-2" />
@@ -592,7 +598,8 @@ const form = ref({
   accepts_site_publication: true,
   accepts_legal_use: false,
   accepts_media_contact: false,
-  accepts_oral_testimony: false
+  accepts_oral_testimony: false,
+  accepts_association_contact: false
 })
 
 const isSubmitting = ref(false)
@@ -629,6 +636,13 @@ const previousStep = () => {
 const submitTestimony = async () => {
   if (!form.value.accepts_site_publication) {
     submitError.value = 'Vous devez accepter la publication sur le site pour soumettre votre témoignage.'
+    window.scrollTo({ top: document.querySelector('[aria-label="Préférences de publication"]')?.offsetTop || 0, behavior: 'smooth' })
+    return
+  }
+
+  if (!form.value.accepts_legal_use) {
+    submitError.value = 'Vous devez accepter l\'utilisation de votre témoignage dans le cadre des démarches juridiques.'
+    window.scrollTo({ top: document.querySelector('[aria-label="Préférences de publication"]')?.offsetTop || 0, behavior: 'smooth' })
     return
   }
 

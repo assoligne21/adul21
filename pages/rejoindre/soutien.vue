@@ -115,13 +115,12 @@
             </div>
             <div>
               <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                Téléphone <span class="text-red-500">*</span>
+                Téléphone <span class="text-gray-500">(optionnel)</span>
               </label>
               <input
                 id="phone"
                 v-model="form.phone"
                 type="tel"
-                required
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               />
             </div>

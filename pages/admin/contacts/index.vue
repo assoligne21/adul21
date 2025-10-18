@@ -67,6 +67,15 @@
                 <Icon name="heroicons:envelope" class="w-4 h-4" />
                 Répondre
               </a>
+              <UButton
+                color="red"
+                size="sm"
+                icon="i-heroicons-trash"
+                @click="confirmDelete(message.id, message.name)"
+                aria-label="Supprimer le message"
+              >
+                Supprimer
+              </UButton>
             </div>
           </div>
 
@@ -136,6 +145,24 @@ async function markAsRead(id: string) {
     await refresh()
   } catch (error) {
     console.error('Error marking as read:', error)
+  }
+}
+
+async function deleteMessage(id: string) {
+  try {
+    await $fetch(`/api/contact/${id}`, {
+      method: 'DELETE'
+    })
+    await refresh()
+  } catch (error) {
+    console.error('Error deleting message:', error)
+    alert('Erreur lors de la suppression du message')
+  }
+}
+
+function confirmDelete(id: string, name: string) {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer le message de ${name} ? Cette action est irréversible.`)) {
+    deleteMessage(id)
   }
 }
 </script>

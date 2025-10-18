@@ -36,6 +36,13 @@
       "when": 1760796892317,
       "tag": "0004_yellow_revanche",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1760819054024,
+      "tag": "0005_faithful_white_queen",
+      "breakpoints": true
     }
   ]
 }

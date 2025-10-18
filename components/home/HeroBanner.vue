@@ -59,17 +59,17 @@
         </div>
 
         <!-- CTA Buttons - MAXIMUM visibility comme dans le concept -->
-        <div class="flex flex-wrap justify-center gap-8 pt-8">
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 pt-8 px-4">
           <UButton
             to="/temoignages/nouveau"
             color="red"
             size="xl"
             icon="i-heroicons-document-text"
             label="Témoigner"
-            class="!text-xl !px-14 !py-8 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(239,68,68,0.6)] hover:shadow-[0_20px_60px_rgba(239,68,68,0.8)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 border-4 border-red-600"
+            class="!text-base sm:!text-lg md:!text-xl !px-6 sm:!px-10 md:!px-14 !py-4 sm:!py-6 md:!py-8 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(239,68,68,0.6)] hover:shadow-[0_20px_60px_rgba(239,68,68,0.8)] hover:scale-105 md:hover:scale-110 hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-300 border-2 md:border-4 border-red-600 w-full sm:w-auto"
             :ui="{
               rounded: 'rounded-2xl',
-              icon: { size: { xl: 'h-7 w-7' } }
+              icon: { size: { xl: 'h-5 sm:h-6 md:h-7 w-5 sm:w-6 md:w-7' } }
             }"
           />
           <UButton
@@ -78,10 +78,10 @@
             size="xl"
             icon="i-heroicons-user-plus"
             label="Adhérer"
-            class="!text-xl !px-14 !py-8 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(255,255,255,0.5)] hover:shadow-[0_20px_60px_rgba(255,255,255,0.7)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 !bg-white !text-blue-900 border-4 border-white"
+            class="!text-base sm:!text-lg md:!text-xl !px-6 sm:!px-10 md:!px-14 !py-4 sm:!py-6 md:!py-8 !font-black !uppercase !tracking-wider shadow-[0_15px_50px_rgba(255,255,255,0.5)] hover:shadow-[0_20px_60px_rgba(255,255,255,0.7)] hover:scale-105 md:hover:scale-110 hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-300 !bg-white !text-blue-900 border-2 md:border-4 border-white w-full sm:w-auto"
             :ui="{
               rounded: 'rounded-2xl',
-              icon: { size: { xl: 'h-7 w-7' } }
+              icon: { size: { xl: 'h-5 sm:h-6 md:h-7 w-5 sm:w-6 md:w-7' } }
             }"
           />
           <UButton
@@ -91,10 +91,10 @@
             size="xl"
             trailing-icon="i-heroicons-arrow-right"
             label="Nos revendications"
-            class="!text-xl !px-12 !py-8 !font-bold !uppercase !tracking-wider hover:bg-white/20 hover:scale-110 hover:-translate-y-2 transition-all duration-300 border-4 border-white shadow-[0_10px_40px_rgba(255,255,255,0.3)]"
+            class="!text-base sm:!text-lg md:!text-xl !px-6 sm:!px-10 md:!px-12 !py-4 sm:!py-6 md:!py-8 !font-bold !uppercase !tracking-wider hover:bg-white/20 hover:scale-105 md:hover:scale-110 hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-300 border-2 md:border-4 border-white shadow-[0_10px_40px_rgba(255,255,255,0.3)] w-full sm:w-auto"
             :ui="{
               rounded: 'rounded-2xl',
-              icon: { size: { xl: 'h-7 w-7' } }
+              icon: { size: { xl: 'h-5 sm:h-6 md:h-7 w-5 sm:w-6 md:w-7' } }
             }"
           />
         </div>

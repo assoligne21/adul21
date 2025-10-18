@@ -8,7 +8,7 @@ const preMemberSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.string().min(10).max(20),
+  phone: z.string().min(10).max(20).optional(),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   userType: z.enum(['student', 'parent', 'worker', 'senior', 'pmr', 'other']),
   wantsToBecomeMember: z.boolean(),
@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
                   <h3 style="margin-top: 0; color: #059669;">Informations</h3>
                   <p style="margin: 5px 0;"><span class="label">Nom :</span> ${validatedData.firstName} ${validatedData.lastName}</p>
                   <p style="margin: 5px 0;"><span class="label">Email :</span> <a href="mailto:${validatedData.email}">${validatedData.email}</a></p>
-                  <p style="margin: 5px 0;"><span class="label">Téléphone :</span> ${validatedData.phone}</p>
+                  <p style="margin: 5px 0;"><span class="label">Téléphone :</span> ${validatedData.phone || 'Non fourni'}</p>
                   <p style="margin: 5px 0;"><span class="label">Commune :</span> ${validatedData.city}</p>
                   <p style="margin: 5px 0;"><span class="label">Profil :</span> ${validatedData.userType}</p>
                 </div>

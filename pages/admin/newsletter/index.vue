@@ -88,6 +88,9 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date désabo
                 </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -140,6 +143,17 @@
                   </span>
                   <span v-else class="text-gray-400">-</span>
                 </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                  <UButton
+                    color="red"
+                    size="xs"
+                    icon="i-heroicons-trash"
+                    @click="confirmDelete(subscriber.id, subscriber.email)"
+                    aria-label="Supprimer l'abonné"
+                  >
+                    Supprimer
+                  </UButton>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -163,7 +177,7 @@ const searchQuery = ref('')
 const filterStatus = ref('')
 const filterSource = ref('')
 
-const { data: subscribersList, pending } = await useFetch('/api/admin/newsletter')
+const { data: subscribersList, pending, refresh } = await useFetch('/api/admin/newsletter')
 
 const filteredSubscribers = computed(() => {
   if (!subscribersList.value) return []
@@ -240,5 +254,23 @@ function exportToCSV() {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
+}
+
+async function deleteSubscriber(id: string) {
+  try {
+    await $fetch(`/api/admin/newsletter/${id}`, {
+      method: 'DELETE'
+    })
+    await refresh()
+  } catch (error) {
+    console.error('Error deleting subscriber:', error)
+    alert('Erreur lors de la suppression de l\'abonné')
+  }
+}
+
+function confirmDelete(id: string, email: string) {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer l'abonné ${email} ? Cette action est irréversible.`)) {
+    deleteSubscriber(id)
+  }
 }
 </script>

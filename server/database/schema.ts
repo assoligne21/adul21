@@ -269,7 +269,7 @@ export const preMembers = pgTable('pre_members', {
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }).notNull(),
   email: varchar('email', { length: 90 }).notNull().unique(),
-  phone: varchar('phone', { length: 20 }).notNull(),
+  phone: varchar('phone', { length: 20 }),
   city: varchar('city', { length: 100 }).notNull(),
   userType: varchar('user_type', { length: 50 }).notNull(),
 

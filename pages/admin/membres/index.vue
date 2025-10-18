@@ -95,14 +95,18 @@
                       v-if="member.membershipStatus === 'pending'"
                       color="green"
                       size="xs"
+                      icon="i-heroicons-check-circle"
                       @click="activateMember(member.id)"
+                      aria-label="Activer le membre"
                     >
                       Activer
                     </UButton>
                     <UButton
                       color="red"
                       size="xs"
+                      icon="i-heroicons-trash"
                       @click="confirmDelete(member.id, `${member.firstName} ${member.lastName}`)"
+                      aria-label="Supprimer le membre"
                     >
                       Supprimer
                     </UButton>
@@ -163,7 +167,9 @@
               color="green"
               size="xs"
               class="flex-1"
+              icon="i-heroicons-check-circle"
               @click="activateMember(member.id)"
+              aria-label="Activer le membre"
             >
               Activer
             </UButton>
@@ -171,7 +177,9 @@
               color="red"
               size="xs"
               class="flex-1"
+              icon="i-heroicons-trash"
               @click="confirmDelete(member.id, `${member.firstName} ${member.lastName}`)"
+              aria-label="Supprimer le membre"
             >
               Supprimer
             </UButton>

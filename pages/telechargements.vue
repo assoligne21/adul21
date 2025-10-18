@@ -3,6 +3,7 @@ interface DocumentFormat {
   type: string
   url: string
   size: string
+  version?: number
 }
 
 interface Document {
@@ -33,7 +34,7 @@ const documents = ref<Document[]>([
     category: 'Courrier type',
     icon: 'i-heroicons-document-text',
     formats: [
-      { type: 'DOCX', url: '/CourrierMairie.docx', size: '18 Ko' }
+      { type: 'DOCX', url: '/CourrierMairie.docx', size: '18 Ko', version: 2 }
     ],
     available: true
   },
@@ -44,7 +45,7 @@ const documents = ref<Document[]>([
     category: 'Courrier type',
     icon: 'i-heroicons-document-text',
     formats: [
-      { type: 'DOCX', url: '/CourrierMetropole.docx', size: '15 Ko' }
+      { type: 'DOCX', url: '/CourrierMetropole.docx', size: '15 Ko', version: 2 }
     ],
     available: true
   },
@@ -104,7 +105,9 @@ function handleDownload(doc: Document, format: DocumentFormat) {
   // Si l'URL est définie, créer un téléchargement
   if (format.url && format.url !== '#') {
     const link = document.createElement('a')
-    link.href = format.url
+    // Ajouter le paramètre de version pour éviter le cache
+    const version = format.version || 1
+    link.href = `${format.url}?v=${version}`
     link.download = `${doc.title}.${format.type.toLowerCase()}`
     document.body.appendChild(link)
     link.click()

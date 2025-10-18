@@ -82,7 +82,9 @@
                       v-if="testimony.moderationStatus === 'pending'"
                       color="green"
                       size="xs"
+                      icon="i-heroicons-eye"
                       @click="publishTestimony(testimony.id)"
+                      aria-label="Publier le témoignage"
                     >
                       Publier
                     </UButton>
@@ -90,9 +92,20 @@
                       v-if="testimony.isPublished"
                       color="orange"
                       size="xs"
+                      icon="i-heroicons-eye-slash"
                       @click="unpublishTestimony(testimony.id)"
+                      aria-label="Dépublier le témoignage"
                     >
                       Dépublier
+                    </UButton>
+                    <UButton
+                      color="red"
+                      size="xs"
+                      icon="i-heroicons-trash"
+                      @click="confirmDelete(testimony.id, `${testimony.firstName} ${testimony.lastName}`)"
+                      aria-label="Supprimer le témoignage"
+                    >
+                      Supprimer
                     </UButton>
                   </div>
                 </td>
@@ -184,6 +197,24 @@ async function unpublishTestimony(id: string) {
     await refresh()
   } catch (error) {
     console.error('Error unpublishing testimony:', error)
+  }
+}
+
+async function deleteTestimony(id: string) {
+  try {
+    await $fetch(`/api/testimonies/${id}`, {
+      method: 'DELETE'
+    })
+    await refresh()
+  } catch (error) {
+    console.error('Error deleting testimony:', error)
+    alert('Erreur lors de la suppression du témoignage')
+  }
+}
+
+function confirmDelete(id: string, name: string) {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer le témoignage de ${name} ? Cette action est irréversible.`)) {
+    deleteTestimony(id)
   }
 }
 </script>
