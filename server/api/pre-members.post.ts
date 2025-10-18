@@ -30,7 +30,9 @@ export default defineEventHandler(async (event) => {
   try {
     // Parse and validate request body
     const body = await readBody(event)
+    console.log('[PRE-MEMBERS] Received body:', JSON.stringify(body, null, 2))
     const validatedData = preMemberSchema.parse(body)
+    console.log('[PRE-MEMBERS] Validated data:', JSON.stringify(validatedData, null, 2))
 
     // Check if email already exists
     const existingPreMember = await db
@@ -281,9 +283,13 @@ Site web : https://adul21.fr
       }
     }
   } catch (error: unknown) {
-    console.error('Error processing pre-membership:', error)
+    console.error('[PRE-MEMBERS] Error processing pre-membership:', error)
+    console.error('[PRE-MEMBERS] Error name:', error?.name)
+    console.error('[PRE-MEMBERS] Error message:', error?.message)
+    console.error('[PRE-MEMBERS] Error stack:', error?.stack)
 
     if (error.name === 'ZodError') {
+      console.error('[PRE-MEMBERS] Zod validation errors:', JSON.stringify(error.errors, null, 2))
       throw createError({
         statusCode: 400,
         statusMessage: 'Données invalides',
