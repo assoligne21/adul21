@@ -8,7 +8,10 @@ const preMemberSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.string().min(10).max(20).optional(),
+  phone: z.union([
+    z.string().min(10).max(20),
+    z.literal('')
+  ]).transform(val => val === '' ? undefined : val).optional(),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   userType: z.enum(['student', 'parent', 'worker', 'senior', 'pmr', 'other']),
   wantsToBecomeMember: z.boolean(),
