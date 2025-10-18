@@ -22,6 +22,20 @@
       "when": 1760650147354,
       "tag": "0002_cloudy_nekra",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1760796036966,
+      "tag": "0003_flawless_annihilus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1760796892317,
+      "tag": "0004_yellow_revanche",
+      "breakpoints": true
     }
   ]
 }

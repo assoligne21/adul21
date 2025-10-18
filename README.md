@@ -149,10 +149,27 @@ adul21-website/
 │   ├── api/               # API endpoints
 │   │   ├── contact.post.ts       # Contact form
 │   │   ├── membership.post.ts    # Membership
-│   │   └── testimonies/
-│   │       └── index.post.ts     # Submit testimony
+│   │   ├── testimonies/
+│   │   │   └── index.post.ts     # Submit testimony
+│   │   ├── admin/
+│   │   │   ├── users/            # Admin user management
+│   │   │   │   ├── index.get.ts  # List admins
+│   │   │   │   ├── index.post.ts # Create admin
+│   │   │   │   ├── [id].patch.ts # Update admin
+│   │   │   │   └── [id].delete.ts # Delete admin
+│   │   │   └── pre-members/
+│   │   │       └── [id].delete.ts # Delete pre-member
+│   │   └── auth/
+│   │       ├── forgot-password.post.ts  # Request reset
+│   │       └── reset-password.post.ts   # Reset password
+│   ├── database/
+│   │   ├── schema.ts      # Drizzle schema
+│   │   └── migrations/    # SQL migrations
 │   └── utils/
-│       └── mailer.ts      # Email sending (Gmail SMTP)
+│       ├── mailer.ts      # Email sending (Gmail SMTP)
+│       ├── jwt.ts         # JWT authentication
+│       ├── hash.ts        # Password hashing
+│       └── validation.ts  # Input validation
 ├── types/                  # TypeScript types
 │   └── database.types.ts  # Supabase types
 ├── public/                 # Static files
@@ -254,19 +271,30 @@ Le projet est configuré pour un déploiement via Coolify sur serveur OVH.
 - Templates HTML + texte
 - Confirmations : témoignages, adhésions, contact
 
+**Dashboard admin** ⭐⭐⭐ (v1.2.0 - IMPLEMENTED)
+- ✅ Gestion des utilisateurs admin (CRUD complet)
+- ✅ Système de réinitialisation de mot de passe
+- ✅ Gestion des adhérents (activation, suppression)
+- ✅ Gestion des soutiens (pré-membres) avec suppression
+- ✅ Modération des témoignages
+- ✅ Authentification JWT sécurisée
+- ✅ Protection contre la suppression du dernier admin
+- ✅ Protection contre l'auto-suppression
+
 ### À implémenter 🚧
 
 **Paiements en ligne**
 - Intégration Stripe (désactivée pour l'instant)
 - Activation prévue après création officielle de l'association
 
-**Dashboard admin**
-- Modération des témoignages
-- Gestion des adhérents
-- Statistiques et analytics
+**Fonctionnalités admin supplémentaires**
+- Statistiques et analytics avancés
 - Gestion des actualités
+- Logs d'activité administrateur
+- Authentification à deux facteurs (2FA)
 
 **Fonctionnalités supplémentaires**
+- Service d'envoi d'emails (Resend/SendGrid)
 - Système de dons (avec/sans Stripe)
 - Page actualités (liste + détail)
 - Téléchargements (modèles de courriers)
@@ -281,6 +309,11 @@ Le projet est configuré pour un déploiement via Coolify sur serveur OVH.
 - ✅ Pas de cookies (Plausible Analytics)
 - ✅ Authentification JWT pour admin
 - ✅ Validation des données (Zod)
+- ✅ **Password reset sécurisé** (tokens cryptographiques, expiration 1h)
+- ✅ **Protection anti-énumération** d'emails
+- ✅ **Hachage bcrypt** des mots de passe
+- ✅ **Protection admin** (anti-suppression dernier admin)
+- ✅ **Email standardisé** (max 90 caractères, validation stricte)
 
 ## 📧 Contact
 
@@ -294,17 +327,17 @@ Le projet est configuré pour un déploiement via Coolify sur serveur OVH.
 
 ---
 
-## 📊 Métriques Qualité (v1.1.0)
+## 📊 Métriques Qualité (v1.2.0)
 
-- ✅ **127 tests unitaires** (100% passing)
+- ✅ **258 tests** (13 suites, 100% passing)
 - ✅ **4 suites E2E** Playwright (homepage, contact, testimony, admin-auth)
-- ✅ **Coverage**: 5.94% (objectif 75-80% en v1.2.0)
+- ✅ **Coverage**: 85.96% ✅ (objectif 80% atteint)
 - ✅ **WCAG 2.1 AA**: ~95% conformité accessibilité
 - ✅ **ESLint + Prettier**: Configurés et fonctionnels
 - ✅ **JSDoc**: 56% documentation (5/9 utils)
 
 ---
 
-**Dernière mise à jour** : 17 octobre 2025
-**Version** : 1.1.0
-**Status** : 🟢 Production Ready (Quality & Accessibility Release)
+**Dernière mise à jour** : 18 octobre 2025
+**Version** : 1.2.0
+**Status** : 🟢 Production Ready (Administration & Security Release)

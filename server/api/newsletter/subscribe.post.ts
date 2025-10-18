@@ -1,9 +1,12 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { newsletterSubscribers } from '~/server/database/schema'
 import { newsletterSchema } from '~/server/validation/schemas'
 
 export default defineEventHandler(async (event) => {
   try {
+    // Get database connection with runtime config
+    const db = getDb(event)
+
     const body = await readBody(event)
     const validatedData = newsletterSchema.parse(body)
 
@@ -17,30 +20,30 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      message: 'Inscription à la newsletter réussie',
+      message: 'Inscription ï¿½ la newsletter rï¿½ussie',
       data: newSubscriber
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error subscribing to newsletter:', error)
 
-    if (error.name === 'ZodError') {
+    if (error?.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Données invalides',
+        statusMessage: 'Donnï¿½es invalides',
         data: error.errors
       })
     }
 
-    if (error.code === '23505') {
+    if (error?.cause?.code === '23505' || error?.code === '23505') {
       throw createError({
         statusCode: 409,
-        statusMessage: 'Cet email est déjà inscrit à la newsletter'
+        statusMessage: 'Cet email est dï¿½jï¿½ inscrit ï¿½ la newsletter'
       })
     }
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Erreur lors de l\'inscription à la newsletter'
+      statusMessage: 'Erreur lors de l\'inscription ï¿½ la newsletter'
     })
   }
 })

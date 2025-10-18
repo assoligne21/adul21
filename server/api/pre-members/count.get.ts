@@ -1,8 +1,11 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { preMembers } from '~/server/database/schema'
 import { count as drizzleCount } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
+  // Get database connection with runtime config
+  const db = getDb(event)
+
   try {
     const [{ value: totalCount }] = await db
       .select({ value: drizzleCount() })

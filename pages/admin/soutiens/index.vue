@@ -107,6 +107,9 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -179,6 +182,15 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ formatDate(supporter.createdAt) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                  <UButton
+                    color="red"
+                    size="xs"
+                    @click="confirmDelete(supporter.id, `${supporter.firstName} ${supporter.lastName}`)"
+                  >
+                    Supprimer
+                  </UButton>
                 </td>
               </tr>
             </tbody>
@@ -257,6 +269,16 @@
               </span>
             </div>
           </div>
+          <div class="mt-3 pt-3 border-t border-gray-200">
+            <UButton
+              color="red"
+              size="xs"
+              class="w-full"
+              @click="confirmDelete(supporter.id, `${supporter.firstName} ${supporter.lastName}`)"
+            >
+              Supprimer
+            </UButton>
+          </div>
         </div>
       </div>
 
@@ -278,7 +300,7 @@ const filterCity = ref('')
 const filterWantsToBecomeMember = ref('')
 const filterWantsToVolunteer = ref('')
 
-const { data: supportersList, pending } = await useFetch('/api/admin/pre-members')
+const { data: supportersList, pending, refresh } = await useFetch('/api/admin/pre-members')
 
 const filteredSupporters = computed(() => {
   if (!supportersList.value) return []
@@ -346,6 +368,26 @@ function getParticipationAreaLabel(area: string) {
     admin: 'Administratif'
   }
   return labels[area] || area
+}
+
+async function deleteSupporter(id: string) {
+  try {
+    await $fetch(`/api/admin/pre-members/${id}`, {
+      method: 'DELETE'
+    })
+
+    // Refresh the list
+    await refresh()
+  } catch (error) {
+    console.error('Error deleting supporter:', error)
+    alert('Erreur lors de la suppression du soutien')
+  }
+}
+
+function confirmDelete(id: string, name: string) {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer le soutien ${name} ? Cette action est irréversible.`)) {
+    deleteSupporter(id)
+  }
 }
 
 function exportToCSV() {

@@ -213,6 +213,15 @@ describe('sanitize.ts', () => {
       expect(result).toEqual(['<b>Bold</b>', '<i>Italic</i>'])
     })
 
+    it('should sanitize with rich HTML type', () => {
+      const arr = ['<h1>Title</h1>', '<p>Paragraph</p>', '<a href="https://example.com">Link</a>']
+      const result = sanitizeArray(arr, 'rich')
+      expect(result).toHaveLength(3)
+      expect(result[0]).toContain('<h1>Title</h1>')
+      expect(result[1]).toContain('<p>Paragraph</p>')
+      expect(result[2]).toContain('<a')
+    })
+
     it('should filter out null and undefined', () => {
       const arr = ['Text', null, undefined, '<b>Bold</b>']
       const result = sanitizeArray(arr)

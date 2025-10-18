@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { setup, $fetch } from '@nuxt/test-utils'
+import { $fetch } from '../setup-integration'
 
-describe('Authentication API', async () => {
-  await setup()
+describe('Authentication API', () => {
 
   describe('/api/auth/login', () => {
     it('should require email and password', async () => {

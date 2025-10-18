@@ -113,13 +113,19 @@ definePageMeta({
 
 const filter = ref('all')
 
-const { data: testimoniesList, pending, refresh } = await useFetch('/api/testimonies', {
-  query: { limit: 100 }
+const { data: testimoniesResponse, pending, refresh } = await useFetch('/api/testimonies', {
+  query: {
+    limit: 500,
+    moderation_status: '', // Tous les statuts de modération
+    published: '' // Tous (publiés et non publiés)
+  }
 })
+
+const testimoniesList = computed(() => testimoniesResponse.value?.data || [])
 
 const filteredTestimonies = computed(() => {
   if (!testimoniesList.value) return []
-  
+
   if (filter.value === 'pending') {
     return testimoniesList.value.filter((t) => t.moderationStatus === 'pending')
   }
@@ -129,11 +135,11 @@ const filteredTestimonies = computed(() => {
   return testimoniesList.value
 })
 
-const pendingCount = computed(() => 
+const pendingCount = computed(() =>
   testimoniesList.value?.filter((t) => t.moderationStatus === 'pending').length || 0
 )
 
-const publishedCount = computed(() => 
+const publishedCount = computed(() =>
   testimoniesList.value?.filter((t) => t.isPublished).length || 0
 )
 

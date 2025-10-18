@@ -211,6 +211,6 @@ describe('JWT Utils', () => {
     })
   })
 
-  // Cookie and requireAuth tests require H3 runtime context
-  // These are better tested in integration tests with full Nuxt environment
+  // Cookie and requireAuth tests require H3 runtime context with auto-imports
+  // These are tested in integration tests where the full Nuxt environment is available
 })

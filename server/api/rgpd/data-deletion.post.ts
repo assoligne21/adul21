@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { testimonies, members, newsletterSubscribers } from '~/server/database/schema'
 import { apiLogger, logError } from '~/server/utils/logger'
 
@@ -16,6 +16,9 @@ export default defineEventHandler(async (event) => {
   const startTime = Date.now()
 
   try {
+    // Get database connection with runtime config
+    const db = getDb(event)
+
     // Validate request
     const body = await readBody(event)
     const { email, reason } = dataDeletionSchema.parse(body)
@@ -74,11 +77,11 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const duration = Date.now() - startTime
     logError(error, { route: '/api/rgpd/data-deletion', duration })
 
-    if (error.name === 'ZodError') {
+    if (error?.name === 'ZodError') {
       throw createError({
         statusCode: 400,
         statusMessage: 'Données invalides',

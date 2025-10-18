@@ -9,7 +9,7 @@ export const testimonies = pgTable('testimonies', {
   // Author
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }),
-  email: varchar('email', { length: 255 }).notNull(),
+  email: varchar('email', { length: 90 }).notNull(),
   phone: varchar('phone', { length: 20 }),
   city: varchar('city', { length: 100 }).notNull(),
   ageRange: varchar('age_range', { length: 50 }).notNull(),
@@ -81,7 +81,7 @@ export const members = pgTable('members', {
   birthDate: varchar('birth_date', { length: 10 }),
 
   // Contact
-  email: varchar('email', { length: 255 }).notNull().unique(),
+  email: varchar('email', { length: 90 }).notNull().unique(),
   phone: varchar('phone', { length: 20 }),
   address: text('address').notNull(),
   postalCode: varchar('postal_code', { length: 10 }).notNull(),
@@ -146,7 +146,7 @@ export const donations = pgTable('donations', {
   id: uuid('id').primaryKey().defaultRandom(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 
-  email: varchar('email', { length: 255 }).notNull(),
+  email: varchar('email', { length: 90 }).notNull(),
   firstName: varchar('first_name', { length: 100 }),
   lastName: varchar('last_name', { length: 100 }),
 
@@ -173,7 +173,7 @@ export const subscriptions = pgTable('subscriptions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 
-  email: varchar('email', { length: 255 }).notNull(),
+  email: varchar('email', { length: 90 }).notNull(),
   firstName: varchar('first_name', { length: 100 }),
   lastName: varchar('last_name', { length: 100 }),
 
@@ -208,7 +208,7 @@ export const incidents = pgTable('incidents', {
   consequenceDetails: text('consequence_details'),
   taxiCost: decimal('taxi_cost', { precision: 10, scale: 2 }),
 
-  email: varchar('email', { length: 255 })
+  email: varchar('email', { length: 90 })
 })
 
 // Downloads Table
@@ -231,7 +231,7 @@ export const newsletterSubscribers = pgTable('newsletter_subscribers', {
   id: uuid('id').primaryKey().defaultRandom(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 
-  email: varchar('email', { length: 255 }).notNull().unique(),
+  email: varchar('email', { length: 90 }).notNull().unique(),
   firstName: varchar('first_name', { length: 100 }),
   lastName: varchar('last_name', { length: 100 }),
 
@@ -247,7 +247,7 @@ export const contactMessages = pgTable('contact_messages', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 
   name: varchar('name', { length: 100 }).notNull(),
-  email: varchar('email', { length: 255 }).notNull(),
+  email: varchar('email', { length: 90 }).notNull(),
   phone: varchar('phone', { length: 20 }),
   subject: varchar('subject', { length: 255 }).notNull(),
   message: text('message').notNull(),
@@ -268,7 +268,7 @@ export const preMembers = pgTable('pre_members', {
   // Personal info
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }).notNull(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
+  email: varchar('email', { length: 90 }).notNull().unique(),
   phone: varchar('phone', { length: 20 }).notNull(),
   city: varchar('city', { length: 100 }).notNull(),
   userType: varchar('user_type', { length: 50 }).notNull(),
@@ -296,10 +296,14 @@ export const adminUsers = pgTable('admin_users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 
-  email: varchar('email', { length: 255 }).notNull().unique(),
+  email: varchar('email', { length: 90 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   name: varchar('name', { length: 100 }).notNull(),
 
   lastLoginAt: timestamp('last_login_at'),
-  isActive: boolean('is_active').notNull().default(true)
+  isActive: boolean('is_active').notNull().default(true),
+
+  // Password reset
+  resetToken: varchar('reset_token', { length: 255 }),
+  resetTokenExpiresAt: timestamp('reset_token_expires_at')
 })

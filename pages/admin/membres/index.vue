@@ -1,6 +1,17 @@
 <template>
   <div>
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Gestion des membres</h1>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Gestion des membres</h1>
+      <UButton
+        color="primary"
+        icon="i-heroicons-arrow-down-tray"
+        @click="exportToCSV"
+        size="sm"
+      >
+        <span class="hidden sm:inline">Export CSV</span>
+        <span class="sm:hidden">Export</span>
+      </UButton>
+    </div>
 
     <div v-if="pending" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -41,6 +52,9 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -74,6 +88,25 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ formatDate(member.createdAt) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                  <div class="flex gap-2">
+                    <UButton
+                      v-if="member.membershipStatus === 'pending'"
+                      color="green"
+                      size="xs"
+                      @click="activateMember(member.id)"
+                    >
+                      Activer
+                    </UButton>
+                    <UButton
+                      color="red"
+                      size="xs"
+                      @click="confirmDelete(member.id, `${member.firstName} ${member.lastName}`)"
+                    >
+                      Supprimer
+                    </UButton>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -124,6 +157,25 @@
               <span class="text-gray-600">{{ formatDate(member.createdAt) }}</span>
             </div>
           </div>
+          <div class="flex gap-2 mt-3 pt-3 border-t border-gray-200">
+            <UButton
+              v-if="member.membershipStatus === 'pending'"
+              color="green"
+              size="xs"
+              class="flex-1"
+              @click="activateMember(member.id)"
+            >
+              Activer
+            </UButton>
+            <UButton
+              color="red"
+              size="xs"
+              class="flex-1"
+              @click="confirmDelete(member.id, `${member.firstName} ${member.lastName}`)"
+            >
+              Supprimer
+            </UButton>
+          </div>
         </div>
       </div>
 
@@ -142,7 +194,7 @@ definePageMeta({
 
 const searchQuery = ref('')
 
-const { data: membersList, pending } = await useFetch('/api/members', {
+const { data: membersList, pending, refresh } = await useFetch('/api/members', {
   query: { limit: 500 }
 })
 
@@ -187,5 +239,90 @@ function getStatusLabel(status: string) {
     expired: 'Expiré'
   }
   return labels[status] || status
+}
+
+async function activateMember(id: string) {
+  try {
+    await $fetch(`/api/members/${id}`, {
+      method: 'PATCH',
+      body: {
+        membership_status: 'active',
+        membership_end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
+      }
+    })
+
+    // Refresh the list
+    await refresh()
+  } catch (error) {
+    console.error('Error activating member:', error)
+    alert('Erreur lors de l\'activation du membre')
+  }
+}
+
+async function deleteMember(id: string) {
+  try {
+    await $fetch(`/api/members/${id}`, {
+      method: 'DELETE'
+    })
+
+    // Refresh the list
+    await refresh()
+  } catch (error) {
+    console.error('Error deleting member:', error)
+    alert('Erreur lors de la suppression du membre')
+  }
+}
+
+function confirmDelete(id: string, name: string) {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer le membre ${name} ? Cette action est irréversible.`)) {
+    deleteMember(id)
+  }
+}
+
+function exportToCSV() {
+  const headers = [
+    'Civilité', 'Prénom', 'Nom', 'Email', 'Téléphone', 'Adresse', 'Code postal', 'Ville',
+    'Type', 'Type d\'adhésion', 'Cotisation (€)', 'Statut adhésion',
+    'Souhaite participer', 'Domaines de participation',
+    'Newsletter', 'Publication témoignage', 'Contact média', 'Sollicitation actions',
+    'Date d\'inscription'
+  ]
+
+  const rows = filteredMembers.value.map((m) => [
+    m.civility,
+    m.firstName,
+    m.lastName,
+    m.email,
+    m.phone || '',
+    m.address,
+    m.postalCode,
+    m.city,
+    getUserTypeLabel(m.userType),
+    m.membershipType,
+    m.membershipFee,
+    getStatusLabel(m.membershipStatus),
+    m.wantsToParticipate ? 'Oui' : 'Non',
+    Array.isArray(m.participationAreas) ? m.participationAreas.join(', ') : '',
+    m.acceptsNewsletter ? 'Oui' : 'Non',
+    m.acceptsTestimonyPublication ? 'Oui' : 'Non',
+    m.acceptsMediaContact ? 'Oui' : 'Non',
+    m.acceptsActionSolicitation ? 'Oui' : 'Non',
+    formatDate(m.createdAt)
+  ])
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+  ].join('\n')
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  link.setAttribute('href', url)
+  link.setAttribute('download', `membres-adul21-${new Date().toISOString().split('T')[0]}.csv`)
+  link.style.visibility = 'hidden'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
 </script>

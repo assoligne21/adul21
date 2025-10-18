@@ -1,27 +1,32 @@
 import { eq, and, like, or, desc } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
 
 export default defineEventHandler(async (event) => {
   try {
+    // Get database connection with runtime config
+    const db = getDb(event)
+
     const query = getQuery(event)
 
     // Build where conditions
     const conditions = []
 
-    // Filter by moderation status (default: approved)
-    if (query.moderation_status) {
+    // Filter by moderation status
+    // Empty string means "all", undefined/null means default filter
+    if (query.moderation_status !== undefined && query.moderation_status !== '') {
       conditions.push(eq(testimonies.moderationStatus, query.moderation_status as string))
-    } else {
-      // Default to approved testimonies for public
+    } else if (query.moderation_status === undefined) {
+      // Default to approved testimonies for public (only when param not provided at all)
       conditions.push(eq(testimonies.moderationStatus, 'approved'))
     }
 
     // Filter by published status
-    if (query.published !== undefined) {
+    // Empty string means "all", undefined/null means default filter
+    if (query.published !== undefined && query.published !== '') {
       conditions.push(eq(testimonies.isPublished, query.published === 'true'))
-    } else {
-      // Default to published testimonies for public
+    } else if (query.published === undefined) {
+      // Default to published testimonies for public (only when param not provided at all)
       conditions.push(eq(testimonies.isPublished, true))
     }
 

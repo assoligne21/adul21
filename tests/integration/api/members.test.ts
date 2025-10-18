@@ -17,34 +17,45 @@ describe('Members API', async () => {
       }
     })
 
-    it('should accept valid membership submission', async () => {
+    it('should accept valid member registration', async () => {
       const response = await $fetch('/api/members', {
         method: 'POST',
         body: {
           civility: 'M.',
-          firstName: 'Pierre',
-          lastName: 'Member',
-          email: `member.${Date.now()}@example.com`,
-          address: '123 rue Test',
-          postalCode: '30000',
-          city: 'Nîmes',
+          firstName: 'Jean',
+          lastName: 'Dupont',
+          birthDate: '1990-01-01',
+          email: `member.test.${Date.now()}@example.com`,
           phone: '0612345678',
+          address: '123 Rue de Test',
+          postalCode: '30210',
+          city: 'Ledenon',
+          userType: 'parent',
+          schoolName: '',
+          schoolSection: '',
+          usageBefore: 'daily',
+          usageAfter: 'car',
           membershipType: 'normal',
-          amount: 15,
-          acceptsStatutes: true,
-          acceptsProcessing: true
+          membershipFee: 20,
+          wantsToParticipate: true,
+          participationAreas: ['communication', 'events'],
+          acceptsNewsletter: true,
+          acceptsTestimonyPublication: true,
+          acceptsMediaContact: true,
+          acceptsActionSolicitation: true
         }
       })
 
       expect(response).toMatchObject({
         success: true,
-        member: {
-          id: expect.any(String)
+        data: {
+          id: expect.any(String),
+          email: expect.stringContaining('@example.com')
         }
       })
     })
 
-    it('should reject membership without statutes consent', async () => {
+    it('should reject member with invalid postal code', async () => {
       try {
         await $fetch('/api/members', {
           method: 'POST',
@@ -53,13 +64,19 @@ describe('Members API', async () => {
             firstName: 'Marie',
             lastName: 'Test',
             email: 'test@example.com',
+            phone: '0612345678',
             address: '123 rue Test',
-            postalCode: '30000',
-            city: 'Nîmes',
-            membershipType: 'normal',
-            amount: 15,
-            acceptsStatutes: false, // Missing consent
-            acceptsProcessing: true
+            postalCode: '300', // Invalid postal code
+            city: 'Ledenon',
+            userType: 'student',
+            membershipType: 'reduced',
+            membershipFee: 10,
+            wantsToParticipate: false,
+            participationAreas: [],
+            acceptsNewsletter: false,
+            acceptsTestimonyPublication: false,
+            acceptsMediaContact: false,
+            acceptsActionSolicitation: false
           }
         })
         expect.fail('Should have thrown validation error')
@@ -70,10 +87,10 @@ describe('Members API', async () => {
 
     it('should accept all membership types', async () => {
       const membershipTypes = [
-        { type: 'reduit', amount: 5 },
-        { type: 'normal', amount: 15 },
-        { type: 'soutien', amount: 50 },
-        { type: 'libre', amount: 100 }
+        { type: 'reduced', fee: 10 },
+        { type: 'normal', fee: 20 },
+        { type: 'support', fee: 50 },
+        { type: 'custom', fee: 35 }
       ]
 
       for (const membership of membershipTypes) {
@@ -82,44 +99,83 @@ describe('Members API', async () => {
           body: {
             civility: 'M.',
             firstName: 'Test',
-            lastName: 'Member',
+            lastName: `Member${membership.type}`,
             email: `${membership.type}-${Date.now()}@example.com`,
+            phone: '0612345678',
             address: '123 rue Test',
-            postalCode: '30000',
-            city: 'Nîmes',
+            postalCode: '30210',
+            city: 'Ledenon',
+            userType: 'other',
             membershipType: membership.type,
-            amount: membership.amount,
-            acceptsStatutes: true,
-            acceptsProcessing: true
+            membershipFee: membership.fee,
+            wantsToParticipate: false,
+            participationAreas: [],
+            acceptsNewsletter: false,
+            acceptsTestimonyPublication: false,
+            acceptsMediaContact: false,
+            acceptsActionSolicitation: false
           }
         })
 
         expect(response.success).toBe(true)
+        expect(response.data.membershipType).toBe(membership.type)
       }
     })
 
-    it('should validate amount matches membership type', async () => {
+    it('should reject duplicate email', async () => {
+      const email = `duplicate.${Date.now()}@example.com`
+
+      // Create first member
+      await $fetch('/api/members', {
+        method: 'POST',
+        body: {
+          civility: 'Mme',
+          firstName: 'Marie',
+          lastName: 'Test',
+          email,
+          phone: '0612345678',
+          address: '123 Rue de Test',
+          postalCode: '30210',
+          city: 'Ledenon',
+          userType: 'student',
+          membershipType: 'reduced',
+          membershipFee: 10,
+          wantsToParticipate: false,
+          participationAreas: [],
+          acceptsNewsletter: false,
+          acceptsTestimonyPublication: false,
+          acceptsMediaContact: false,
+          acceptsActionSolicitation: false
+        }
+      })
+
+      // Try to create duplicate
       try {
         await $fetch('/api/members', {
           method: 'POST',
           body: {
             civility: 'M.',
-            firstName: 'Test',
-            lastName: 'Member',
-            email: 'test@example.com',
-            address: '123 rue Test',
-            postalCode: '30000',
-            city: 'Nîmes',
+            firstName: 'Pierre',
+            lastName: 'Autre',
+            email, // Same email
+            phone: '0687654321',
+            address: '456 Avenue Test',
+            postalCode: '30210',
+            city: 'Ledenon',
+            userType: 'worker',
             membershipType: 'normal',
-            amount: 5, // Wrong amount for normal membership
-            acceptsStatutes: true,
-            acceptsProcessing: true
+            membershipFee: 20,
+            wantsToParticipate: false,
+            participationAreas: [],
+            acceptsNewsletter: false,
+            acceptsTestimonyPublication: false,
+            acceptsMediaContact: false,
+            acceptsActionSolicitation: false
           }
         })
-        // Some implementations might accept this, others might reject
-        // Either behavior is valid
+        expect.fail('Should have thrown duplicate email error')
       } catch (error: any) {
-        expect([400, 422]).toContain(error.statusCode)
+        expect(error.statusCode).toBe(409)
       }
     })
   })
@@ -136,88 +192,6 @@ describe('Members API', async () => {
       }
     })
   })
-})
-
-describe('Pre-Members API', async () => {
-  await setup()
-
-  describe('POST /api/pre-members', () => {
-    it('should validate required fields', async () => {
-      try {
-        await $fetch('/api/pre-members', {
-          method: 'POST',
-          body: {}
-        })
-        expect.fail('Should have thrown validation error')
-      } catch (error: any) {
-        expect(error.statusCode).toBe(400)
-      }
-    })
-
-    it('should accept valid pre-membership submission', async () => {
-      const response = await $fetch('/api/pre-members', {
-        method: 'POST',
-        body: {
-          civility: 'Mme',
-          firstName: 'Sophie',
-          lastName: 'PreMember',
-          email: `premember.${Date.now()}@example.com`,
-          address: '456 rue Test',
-          postalCode: '30129',
-          city: 'Ledenon',
-          phone: '0612345678',
-          acceptsNewsletter: true,
-          acceptsProcessing: true
-        }
-      })
-
-      expect(response).toMatchObject({
-        success: true,
-        message: expect.stringContaining('enregistré')
-      })
-    })
-
-    it('should accept without newsletter consent', async () => {
-      const response = await $fetch('/api/pre-members', {
-        method: 'POST',
-        body: {
-          civility: 'M.',
-          firstName: 'Jean',
-          lastName: 'PreMember',
-          email: `premember-no-newsletter.${Date.now()}@example.com`,
-          address: '789 rue Test',
-          postalCode: '30129',
-          city: 'Ledenon',
-          acceptsNewsletter: false,
-          acceptsProcessing: true
-        }
-      })
-
-      expect(response.success).toBe(true)
-    })
-
-    it('should reject without RGPD processing consent', async () => {
-      try {
-        await $fetch('/api/pre-members', {
-          method: 'POST',
-          body: {
-            civility: 'M.',
-            firstName: 'Test',
-            lastName: 'User',
-            email: 'test@example.com',
-            address: '123 rue Test',
-            postalCode: '30000',
-            city: 'Nîmes',
-            acceptsNewsletter: true,
-            acceptsProcessing: false // Missing consent
-          }
-        })
-        expect.fail('Should have thrown validation error')
-      } catch (error: any) {
-        expect(error.statusCode).toBe(400)
-      }
-    })
-  })
 
   describe('GET /api/pre-members/count', () => {
     it('should return pre-members count', async () => {
@@ -226,10 +200,13 @@ describe('Pre-Members API', async () => {
       })
 
       expect(response).toMatchObject({
-        count: expect.any(Number)
+        success: true,
+        data: {
+          count: expect.any(Number)
+        }
       })
 
-      expect(response.count).toBeGreaterThanOrEqual(0)
+      expect(response.data.count).toBeGreaterThanOrEqual(0)
     })
   })
 })

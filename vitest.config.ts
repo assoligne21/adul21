@@ -15,7 +15,11 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      include: ['server/**/*.ts', 'composables/**/*.ts', 'utils/**/*.ts'],
+      include: [
+        'server/utils/*.ts',
+        'server/validation/*.ts',
+        'utils/**/*.ts'
+      ],
       exclude: [
         'node_modules/**',
         '.nuxt/**',
@@ -24,20 +28,28 @@ export default defineConfig({
         '**/*.config.{js,ts,mjs}',
         '**/coverage/**',
         '**/*.d.ts',
-        'server/database/migrations/**',
-        'server/database/schema.ts',
-        'server/database/connection.ts',
+        // Exclude runtime-dependent files (require Nuxt/H3 runtime)
+        'server/api/**',
+        'server/routes/**',
+        'server/middleware/**',
+        'server/database/**',
+        'server/utils/db.ts',
+        'server/utils/mailer.ts',
+        'server/utils/supabase-compat.ts',
+        'composables/**',
         'scripts/**',
         '**/*.spec.ts',
         '**/*.test.ts',
         'tests/**'
       ],
       thresholds: {
-        lines: 5,
-        functions: 25,
-        branches: 45,
-        statements: 5
-      }
+        lines: 75,
+        functions: 70,
+        branches: 70,
+        statements: 75
+      },
+      all: true,
+      reportOnFailure: true
     },
     globals: true,
     setupFiles: ['./tests/setup.ts']

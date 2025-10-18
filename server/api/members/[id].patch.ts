@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { members } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 import { sanitizeSimpleHTML } from '~/server/utils/sanitize'
@@ -19,6 +19,9 @@ const updateMemberSchema = z.object({
 export default defineEventHandler(async (event) => {
   // Require admin authentication
   await requireAuth(event)
+
+  // Get database connection with runtime config
+  const db = getDb(event)
 
   try {
     const id = getRouterParam(event, 'id')

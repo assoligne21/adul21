@@ -1,15 +1,18 @@
 import { eq } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { members } from '~/server/database/schema'
 
 export default defineEventHandler(async (event) => {
+  // Get database connection with runtime config
+  const db = getDb(event)
+
   try {
     const id = getRouterParam(event, 'id')
 
     if (!id) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'ID de l\'adhérent manquant'
+        statusMessage: 'ID de l\'adhï¿½rent manquant'
       })
     }
 
@@ -23,7 +26,7 @@ export default defineEventHandler(async (event) => {
     if (!member) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Adhérent introuvable'
+        statusMessage: 'Adhï¿½rent introuvable'
       })
     }
 

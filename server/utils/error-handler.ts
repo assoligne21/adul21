@@ -9,6 +9,7 @@
  * @module server/utils/error-handler
  */
 
+import { createError } from 'h3'
 import type { ErrorWithMessage } from '~/types/common'
 
 /**
@@ -59,5 +60,61 @@ export function handleApiError(error: unknown, defaultMessage = 'Une erreur est 
   throw createError({
     statusCode: err.statusCode || 500,
     statusMessage: err.statusMessage || defaultMessage
+  })
+}
+
+/**
+ * Create a validation error (400 Bad Request)
+ *
+ * @param message - Error message
+ * @param data - Optional validation details
+ * @returns H3Error with status 400
+ *
+ * @example
+ * ```ts
+ * throw createValidationError('Email invalide', { field: 'email' })
+ * ```
+ */
+export function createValidationError(message: string, data?: any) {
+  return createError({
+    statusCode: 400,
+    statusMessage: message,
+    data
+  })
+}
+
+/**
+ * Create a not found error (404 Not Found)
+ *
+ * @param message - Error message (default: 'Ressource non trouvée')
+ * @returns H3Error with status 404
+ *
+ * @example
+ * ```ts
+ * throw createNotFoundError('Membre non trouvé')
+ * ```
+ */
+export function createNotFoundError(message = 'Ressource non trouvée') {
+  return createError({
+    statusCode: 404,
+    statusMessage: message
+  })
+}
+
+/**
+ * Create an unauthorized error (401 Unauthorized)
+ *
+ * @param message - Error message (default: 'Non authentifié')
+ * @returns H3Error with status 401
+ *
+ * @example
+ * ```ts
+ * throw createUnauthorizedError('Token invalide')
+ * ```
+ */
+export function createUnauthorizedError(message = 'Non authentifié') {
+  return createError({
+    statusCode: 401,
+    statusMessage: message
   })
 }

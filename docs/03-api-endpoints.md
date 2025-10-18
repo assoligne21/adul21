@@ -4,6 +4,8 @@
 
 1. [Vue d'ensemble](#vue-densemble)
 2. [Authentification](#authentification)
+   - [Login / Logout / Me](#authentification)
+   - [Password Reset (v1.2.0)](#post-apiauthforgot-password)
 3. [Endpoints publics](#endpoints-publics)
    - [Testimonies (Témoignages)](#testimonies)
    - [Members (Adhérents)](#members)
@@ -14,6 +16,9 @@
    - [Donations](#donations)
    - [Newsletter](#newsletter)
 4. [Endpoints protégés (Admin)](#endpoints-protégés-admin)
+   - [Admin Users CRUD (v1.2.0)](#admin-users-v120)
+   - [Pre-Members Delete (v1.2.0)](#pre-members-delete-v120)
+   - [Stats / Newsletter / Pre-Members](#get-apiadminstats)
 5. [Schémas de validation](#schémas-de-validation)
 6. [Codes d'erreur](#codes-derreur)
 
@@ -109,6 +114,81 @@ Récupère les informations de l'utilisateur connecté.
 
 **Erreurs** :
 - `401` - Token manquant ou invalide
+
+---
+
+### POST /api/auth/forgot-password
+
+Demande de réinitialisation de mot de passe.
+
+**Auth requise** : Non
+
+**Body** :
+```json
+{
+  "email": "admin@adul21.fr"
+}
+```
+
+**Réponse (200)** :
+```json
+{
+  "success": true,
+  "message": "Si cet email existe, un lien de réinitialisation a été envoyé",
+  "token": "a1b2c3...xyz" // Uniquement en mode développement
+}
+```
+
+**Erreurs** :
+- `400` - Email invalide
+- `500` - Erreur serveur
+
+**Notes** :
+- Génère un token de 32 bytes (64 caractères hex)
+- Token valide pendant 1 heure (3600000ms)
+- Retourne toujours success (prévention énumération d'emails)
+- N'envoie pas de token si l'utilisateur est inactif
+- En développement, retourne le token dans la réponse pour tests
+
+---
+
+### POST /api/auth/reset-password
+
+Réinitialise le mot de passe avec un token.
+
+**Auth requise** : Non
+
+**Body** :
+```json
+{
+  "token": "a1b2c3d4e5f6...xyz",
+  "password": "NewSecureP@ss123"
+}
+```
+
+**Validation** :
+- `token` : string non vide
+- `password` : minimum 8 caractères
+
+**Réponse (200)** :
+```json
+{
+  "success": true,
+  "message": "Mot de passe réinitialisé avec succès"
+}
+```
+
+**Erreurs** :
+- `400` - Token ou mot de passe invalide/manquant
+  - `"Token invalide ou expiré"` - Token n'existe pas ou a expiré
+  - `"Le mot de passe doit contenir au moins 8 caractères"` - Mot de passe trop court
+- `500` - Erreur serveur
+
+**Notes** :
+- Vérifie que le token existe et n'est pas expiré
+- Hash le nouveau mot de passe avec bcrypt
+- Supprime le token après utilisation (single-use)
+- Met à jour `updatedAt`
 
 ---
 
@@ -888,6 +968,202 @@ Inscription à la newsletter.
 
 ## Endpoints protégés (Admin)
 
+### Admin Users (v1.2.0)
+
+#### GET /api/admin/users
+
+Liste tous les utilisateurs administrateurs.
+
+**Auth requise** : Oui (JWT)
+
+**Query params** : Aucun
+
+**Réponse (200)** :
+```json
+{
+  "success": true,
+  "users": [
+    {
+      "id": "uuid",
+      "email": "admin@adul21.fr",
+      "name": "Admin Name",
+      "isActive": true,
+      "createdAt": "2024-01-15T10:30:00Z",
+      "lastLoginAt": "2024-01-15T14:20:00Z"
+    }
+  ]
+}
+```
+
+**Erreurs** :
+- `401` - Non authentifié
+- `500` - Erreur serveur
+
+**Notes** :
+- Ne retourne pas les hachages de mots de passe
+- Tri par date de création décroissante
+
+---
+
+#### POST /api/admin/users
+
+Crée un nouvel utilisateur administrateur.
+
+**Auth requise** : Oui (JWT)
+
+**Body** :
+```json
+{
+  "email": "newadmin@adul21.fr",
+  "name": "New Admin",
+  "password": "SecureP@ss123"
+}
+```
+
+**Validation** :
+- `email` : email valide, max 90 caractères
+- `name` : min 2 caractères
+- `password` : min 8 caractères
+
+**Réponse (200)** :
+```json
+{
+  "success": true,
+  "message": "Administrateur créé avec succès",
+  "user": {
+    "id": "uuid",
+    "email": "newadmin@adul21.fr",
+    "name": "New Admin",
+    "isActive": true,
+    "createdAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**Erreurs** :
+- `400` - Données invalides ou email déjà existant
+- `401` - Non authentifié
+- `500` - Erreur serveur
+
+**Notes** :
+- Hash le mot de passe avec bcrypt
+- Vérifie l'unicité de l'email
+- `isActive` défini à `true` par défaut
+
+---
+
+#### PATCH /api/admin/users/[id]
+
+Met à jour un utilisateur administrateur.
+
+**Auth requise** : Oui (JWT)
+
+**Params URL** : `id` (UUID)
+
+**Body** (tous les champs optionnels) :
+```json
+{
+  "email": "updated@adul21.fr",
+  "name": "Updated Name",
+  "password": "NewP@ssw0rd",
+  "isActive": false
+}
+```
+
+**Validation** :
+- `email` : email valide, max 90 caractères (si fourni)
+- `name` : min 2 caractères (si fourni)
+- `password` : min 8 caractères (si fourni)
+- `isActive` : boolean (si fourni)
+
+**Réponse (200)** :
+```json
+{
+  "success": true,
+  "message": "Administrateur mis à jour avec succès",
+  "user": {
+    "id": "uuid",
+    "email": "updated@adul21.fr",
+    "name": "Updated Name",
+    "isActive": false,
+    "updatedAt": "2024-01-15T11:00:00Z"
+  }
+}
+```
+
+**Erreurs** :
+- `400` - ID manquant ou données invalides
+- `401` - Non authentifié
+- `404` - Administrateur introuvable
+- `500` - Erreur serveur
+
+**Notes** :
+- Si le mot de passe est fourni, il est haché avec bcrypt
+- Met à jour `updatedAt` automatiquement
+
+---
+
+#### DELETE /api/admin/users/[id]
+
+Supprime un utilisateur administrateur.
+
+**Auth requise** : Oui (JWT)
+
+**Params URL** : `id` (UUID)
+
+**Réponse (200)** :
+```json
+{
+  "success": true,
+  "message": "Administrateur supprimé avec succès"
+}
+```
+
+**Erreurs** :
+- `400` - ID manquant
+  - `"Impossible de supprimer votre propre compte"` - Auto-suppression interdite
+  - `"Impossible de supprimer le dernier administrateur actif"` - Protection du dernier admin
+- `401` - Non authentifié
+- `404` - Administrateur introuvable
+- `500` - Erreur serveur
+
+**Notes** :
+- **Protection anti-suppression** : ne peut pas supprimer son propre compte
+- **Protection dernier admin** : ne peut pas supprimer le dernier administrateur actif
+- Suppression définitive (pas de soft delete)
+
+---
+
+### Pre-Members Delete (v1.2.0)
+
+#### DELETE /api/admin/pre-members/[id]
+
+Supprime un soutien (pre-member).
+
+**Auth requise** : Oui (JWT)
+
+**Params URL** : `id` (UUID)
+
+**Réponse (200)** :
+```json
+{
+  "success": true,
+  "message": "Soutien supprimé avec succès"
+}
+```
+
+**Erreurs** :
+- `400` - ID manquant (`"ID du soutien manquant"`)
+- `401` - Non authentifié
+- `404` - Soutien introuvable (`"Soutien introuvable"`)
+- `500` - Erreur serveur
+
+**Notes** :
+- Suppression définitive du soutien
+- Utilisé pour nettoyer les doublons ou erreurs d'inscription
+
+---
+
 ### GET /api/admin/stats
 
 Récupère les statistiques globales.
@@ -1189,7 +1465,14 @@ Fichiers vides à implémenter :
 
 ---
 
-**Documentation générée le** : 2024-01-15
-**Version de l'API** : 1.0
+**Documentation mise à jour le** : 2025-10-18
+**Version de l'API** : 1.2.0
 **Base de données** : PostgreSQL + Drizzle ORM
-**Framework** : Nuxt 3
+**Framework** : Nuxt 4
+
+**Nouveautés v1.2.0** :
+- Endpoints admin users CRUD (GET, POST, PATCH, DELETE)
+- Password reset sécurisé (forgot-password, reset-password)
+- Suppression de pre-members (DELETE /api/admin/pre-members/[id])
+- Limite email standardisée à 90 caractères dans tous les schémas
+- Protections admin (anti-suppression dernier admin, anti-auto-suppression)

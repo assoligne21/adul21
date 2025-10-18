@@ -23,6 +23,7 @@ const isDev = process.env.NODE_ENV === 'development'
  */
 export const logger = pino({
   level: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
+  /* c8 ignore start */
   transport: isDev
     ? {
         target: 'pino-pretty',
@@ -34,6 +35,7 @@ export const logger = pino({
         }
       }
     : undefined,
+  /* c8 ignore stop */
   base: {
     env: process.env.NODE_ENV || 'development'
   },

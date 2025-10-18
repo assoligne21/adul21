@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 import { sanitizeSimpleHTML } from '~/server/utils/sanitize'
@@ -22,6 +22,9 @@ export default defineEventHandler(async (event) => {
   await requireAuth(event)
 
   try {
+    // Get database connection with runtime config
+    const db = getDb(event)
+
     const id = getRouterParam(event, 'id')
 
     if (!id) {

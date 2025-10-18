@@ -21,22 +21,26 @@ describe('Testimonies API', async () => {
       const response = await $fetch('/api/testimonies', {
         method: 'POST',
         body: {
-          civility: 'M.',
-          firstName: 'Jean',
-          lastName: 'Test',
+          first_name: 'Jean',
+          last_name: 'Test',
+          age_range: '30-50',
           email: 'jean.test.' + Date.now() + '@example.com',
-          userType: 'parent',
-          impactDescription: 'La suppression de la ligne directe a considérablement compliqué nos déplacements quotidiens.',
-          currentSituation: 'Nous devons maintenant prendre 2 bus au lieu d\'1 seul',
-          acceptsContact: true,
-          acceptsPublication: true,
-          acceptsProcessing: true
+          city: 'Ledenon',
+          user_type: 'parent',
+          usage_after_solution: 'car',
+          problems: [],
+          testimony_text: 'La suppression de la ligne directe a considérablement compliqué nos déplacements quotidiens et nous devons maintenant prendre 2 bus.',
+          publication_preference: 'first_name',
+          accepts_site_publication: true,
+          accepts_legal_use: true,
+          accepts_media_contact: true,
+          accepts_oral_testimony: true
         }
       })
 
       expect(response).toMatchObject({
         success: true,
-        testimony: {
+        data: {
           id: expect.any(String)
         }
       })
@@ -47,16 +51,20 @@ describe('Testimonies API', async () => {
         await $fetch('/api/testimonies', {
           method: 'POST',
           body: {
-            civility: 'Mme',
-            firstName: 'Marie',
-            lastName: 'Test',
+            first_name: 'Marie',
+            last_name: 'Test',
+            age_range: '18-30',
             email: 'marie.test@example.com',
-            userType: 'lyceen',
-            impactDescription: 'Impact description',
-            currentSituation: 'Current situation',
-            acceptsContact: true,
-            acceptsPublication: true,
-            acceptsProcessing: false // Missing consent
+            city: 'Ledenon',
+            user_type: 'student',
+            usage_after_solution: 'car',
+            problems: [],
+            testimony_text: 'Impact description suffisamment longue pour passer la validation du formulaire',
+            publication_preference: 'first_name',
+            accepts_site_publication: true,
+            accepts_legal_use: false, // Missing consent
+            accepts_media_contact: true,
+            accepts_oral_testimony: true
           }
         })
         expect.fail('Should have thrown validation error')
@@ -69,16 +77,20 @@ describe('Testimonies API', async () => {
       const response = await $fetch('/api/testimonies', {
         method: 'POST',
         body: {
-          civility: 'M.',
-          firstName: '<script>alert("XSS")</script>Jean',
-          lastName: 'Test',
+          first_name: '<script>alert("XSS")</script>Jean',
+          last_name: 'Test',
+          age_range: '30-50',
           email: 'xss.test.' + Date.now() + '@example.com',
-          userType: 'parent',
-          impactDescription: '<img src=x onerror=alert(1)>Impact with XSS attempt',
-          currentSituation: 'Normal situation',
-          acceptsContact: true,
-          acceptsPublication: true,
-          acceptsProcessing: true
+          city: 'Ledenon',
+          user_type: 'parent',
+          usage_after_solution: 'car',
+          problems: [],
+          testimony_text: '<img src=x onerror=alert(1)>Impact with XSS attempt - description suffisamment longue pour la validation',
+          publication_preference: 'first_name',
+          accepts_site_publication: true,
+          accepts_legal_use: true,
+          accepts_media_contact: true,
+          accepts_oral_testimony: true
         }
       })
 
@@ -87,22 +99,26 @@ describe('Testimonies API', async () => {
     })
 
     it('should accept all valid user types', async () => {
-      const userTypes = ['parent', 'lyceen', 'etudiant', 'travailleur', 'senior', 'autre']
+      const userTypes = ['student', 'parent', 'senior', 'pmr', 'worker', 'other']
 
       for (const userType of userTypes) {
         const response = await $fetch('/api/testimonies', {
           method: 'POST',
           body: {
-            civility: 'M.',
-            firstName: 'Test',
-            lastName: 'User',
+            first_name: 'Test',
+            last_name: 'User',
+            age_range: '30-50',
             email: `test-${userType}-${Date.now()}@example.com`,
-            userType,
-            impactDescription: 'Test impact description with sufficient length',
-            currentSituation: 'Test current situation',
-            acceptsContact: true,
-            acceptsPublication: true,
-            acceptsProcessing: true
+            city: 'Ledenon',
+            user_type: userType,
+            usage_after_solution: 'car',
+            problems: [],
+            testimony_text: 'Test impact description with sufficient length for validation to pass successfully',
+            publication_preference: 'first_name',
+            accepts_site_publication: true,
+            accepts_legal_use: true,
+            accepts_media_contact: true,
+            accepts_oral_testimony: true
           }
         })
 
@@ -117,29 +133,31 @@ describe('Testimonies API', async () => {
         method: 'GET'
       })
 
-      expect(response).toMatchObject({
-        testimonies: expect.any(Array)
-      })
+      expect(response).toHaveProperty('success')
+      expect(response.success).toBe(true)
+      expect(response).toHaveProperty('data')
+      expect(Array.isArray(response.data)).toBe(true)
 
       // If there are testimonies, check structure
-      if (response.testimonies.length > 0) {
-        expect(response.testimonies[0]).toHaveProperty('id')
-        expect(response.testimonies[0]).toHaveProperty('userType')
-        expect(response.testimonies[0]).toHaveProperty('impactDescription')
+      if (response.data.length > 0) {
+        expect(response.data[0]).toHaveProperty('id')
+        expect(response.data[0]).toHaveProperty('userType')
       }
     })
 
     it('should support filtering by user type', async () => {
-      const response = await $fetch('/api/testimonies?userType=parent', {
+      const response = await $fetch('/api/testimonies?user_type=parent', {
         method: 'GET'
       })
 
-      expect(response).toHaveProperty('testimonies')
-      expect(Array.isArray(response.testimonies)).toBe(true)
+      expect(response).toHaveProperty('success')
+      expect(response.success).toBe(true)
+      expect(response).toHaveProperty('data')
+      expect(Array.isArray(response.data)).toBe(true)
 
       // If there are results, they should all be of type 'parent'
-      if (response.testimonies.length > 0) {
-        response.testimonies.forEach((t: any) => {
+      if (response.data.length > 0) {
+        response.data.forEach((t: any) => {
           expect(t.userType).toBe('parent')
         })
       }
@@ -155,20 +173,24 @@ describe('Testimonies API', async () => {
         const createResponse = await $fetch('/api/testimonies', {
           method: 'POST',
           body: {
-            civility: 'M.',
-            firstName: 'View',
-            lastName: 'Test',
+            first_name: 'View',
+            last_name: 'Test',
+            age_range: '30-50',
             email: `view.test.${Date.now()}@example.com`,
-            userType: 'parent',
-            impactDescription: 'Test impact for view counting',
-            currentSituation: 'Test situation',
-            acceptsContact: true,
-            acceptsPublication: true,
-            acceptsProcessing: true
+            city: 'Ledenon',
+            user_type: 'parent',
+            usage_after_solution: 'car',
+            problems: [],
+            testimony_text: 'Test impact for view counting with sufficient length for validation',
+            publication_preference: 'first_name',
+            accepts_site_publication: true,
+            accepts_legal_use: true,
+            accepts_media_contact: true,
+            accepts_oral_testimony: true
           }
         })
 
-        testimonyId = createResponse.testimony.id
+        testimonyId = createResponse.data.id
 
         // Increment views
         const viewResponse = await $fetch(`/api/testimonies/${testimonyId}/increment-views`, {

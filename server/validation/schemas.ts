@@ -6,7 +6,7 @@ export const testimonySchema = z.object({
   first_name: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
   last_name: z.string().optional(),
   age_range: z.enum(['under_18', '18-30', '30-50', '50-70', 'over_70']),
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
   phone: z.string().optional(),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   user_type: z.enum(['student', 'parent', 'senior', 'pmr', 'worker', 'other']),
@@ -40,7 +40,19 @@ export const testimonySchema = z.object({
   accepts_media_contact: z.boolean(),
   accepts_oral_testimony: z.boolean(),
   accepts_association_contact: z.boolean().optional().default(false)
-})
+}).refine(
+  (data) => data.accepts_legal_use === true,
+  {
+    message: 'Vous devez accepter l\'utilisation de votre témoignage conformément au RGPD',
+    path: ['accepts_legal_use']
+  }
+).refine(
+  (data) => data.accepts_site_publication === true,
+  {
+    message: 'Vous devez accepter la publication de votre témoignage sur le site',
+    path: ['accepts_site_publication']
+  }
+)
 
 export type TestimonyInput = z.infer<typeof testimonySchema>
 
@@ -51,7 +63,7 @@ export const memberSchema = z.object({
   firstName: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
   lastName: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
   birthDate: z.string().optional(),
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
   phone: z.string().min(10, 'Numéro de téléphone invalide'),
   address: z.string().min(5, 'L\'adresse doit contenir au moins 5 caractères'),
   postalCode: z.string().regex(/^\d{5}$/, 'Code postal invalide'),
@@ -82,7 +94,7 @@ export type MemberInput = z.infer<typeof memberSchema>
 // Contact Form Validation Schema
 export const contactSchema = z.object({
   name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
   phone: z.string().optional(),
   subject: z.string().min(5, 'Le sujet doit contenir au moins 5 caractères'),
   message: z.string().min(20, 'Le message doit contenir au moins 20 caractères'),
@@ -101,7 +113,7 @@ export const incidentSchema = z.object({
   consequence: z.enum(['late_work', 'missed_appointment', 'taxi_cost', 'abandoned_trip', 'other']).optional(),
   consequence_details: z.string().optional(),
   taxi_cost: z.number().positive().optional(),
-  email: z.string().email('Email invalide').optional()
+  email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)').optional()
 })
 
 export type IncidentInput = z.infer<typeof incidentSchema>
@@ -124,7 +136,7 @@ export type NewsInput = z.infer<typeof newsSchema>
 
 // Donation Validation Schema
 export const donationSchema = z.object({
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
   first_name: z.string().optional(),
   last_name: z.string().optional(),
   amount: z.number().positive('Le montant doit être positif').min(1, 'Le montant minimum est de 1€'),
@@ -137,7 +149,7 @@ export type DonationInput = z.infer<typeof donationSchema>
 
 // Newsletter Subscription Validation Schema
 export const newsletterSchema = z.object({
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
   first_name: z.string().optional(),
   last_name: z.string().optional(),
   source: z.string().default('footer')

@@ -1,11 +1,14 @@
 import { eq, and, like, or, desc } from 'drizzle-orm'
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { members } from '~/server/database/schema'
 import { requireAuth } from '~/server/utils/jwt'
 
 export default defineEventHandler(async (event) => {
   // Require admin authentication
   await requireAuth(event)
+
+  // Get database connection with runtime config
+  const db = getDb(event)
 
   try {
     const query = getQuery(event)

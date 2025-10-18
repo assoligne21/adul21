@@ -1,4 +1,4 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { testimonies } from '~/server/database/schema'
 import { testimonySchema } from '~/server/validation/schemas'
 import { sanitizePlainText } from '~/server/utils/sanitize'
@@ -8,6 +8,9 @@ export default defineEventHandler(async (event) => {
   const startTime = Date.now()
 
   try {
+    // Get database connection with runtime config
+    const db = getDb(event)
+
     // Parse and validate request body
     const body = await readBody(event)
     const validatedData = testimonySchema.parse(body)

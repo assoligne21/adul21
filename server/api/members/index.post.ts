@@ -1,9 +1,12 @@
-import { db } from '~/server/database/connection'
+import { getDb } from '~/server/database/connection'
 import { members } from '~/server/database/schema'
 import { memberSchema } from '~/server/validation/schemas'
 
 export default defineEventHandler(async (event) => {
   try {
+    // Get database connection with runtime config
+    const db = getDb(event)
+
     const body = await readBody(event)
     const validatedData = memberSchema.parse(body)
 
@@ -50,30 +53,30 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      message: 'Adhésion enregistrée avec succès',
+      message: 'Adhï¿½sion enregistrï¿½e avec succï¿½s',
       data: newMember
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error creating member:', error)
 
-    if (error.name === 'ZodError') {
+    if (error?.name === 'ZodError') {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Données invalides',
+        statusMessage: 'Donnï¿½es invalides',
         data: error.errors
       })
     }
 
-    if (error.code === '23505') { // Unique constraint violation
+    if (error?.cause?.code === '23505' || error?.code === '23505') { // Unique constraint violation
       throw createError({
         statusCode: 409,
-        statusMessage: 'Un compte avec cet email existe déjà'
+        statusMessage: 'Un compte avec cet email existe dï¿½jï¿½'
       })
     }
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Erreur lors de l\'enregistrement de l\'adhésion'
+      statusMessage: 'Erreur lors de l\'enregistrement de l\'adhï¿½sion'
     })
   }
 })
