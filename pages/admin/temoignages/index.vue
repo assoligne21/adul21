@@ -156,8 +156,11 @@ const publishedCount = computed(() =>
   testimoniesList.value?.filter((t) => t.isPublished).length || 0
 )
 
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('fr-FR', {
+function formatDate(date: string | Date | null | undefined) {
+  if (!date) return '-'
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(dateObj.getTime())) return '-'
+  return dateObj.toLocaleDateString('fr-FR', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
