@@ -176,13 +176,15 @@ async function publishTestimony(id: string) {
     await $fetch(`/api/testimonies/${id}`, {
       method: 'PATCH',
       body: {
-        isPublished: true,
-        moderationStatus: 'approved'
+        is_published: true,
+        moderation_status: 'approved'
       }
     })
     await refresh()
+    alert('✅ Témoignage publié avec succès')
   } catch (error) {
     console.error('Error publishing testimony:', error)
+    alert('❌ Erreur lors de la publication du témoignage')
   }
 }
 
@@ -191,12 +193,14 @@ async function unpublishTestimony(id: string) {
     await $fetch(`/api/testimonies/${id}`, {
       method: 'PATCH',
       body: {
-        isPublished: false
+        is_published: false
       }
     })
     await refresh()
+    alert('✅ Témoignage dépublié avec succès')
   } catch (error) {
     console.error('Error unpublishing testimony:', error)
+    alert('❌ Erreur lors de la dépublication du témoignage')
   }
 }
 
