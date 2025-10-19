@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
       firstName: validatedData.firstName,
       lastName: validatedData.lastName,
       email: validatedData.email,
-      phone: validatedData.phone || null,
+      phone: validatedData.phone || '',
       city: validatedData.city,
       userType: validatedData.userType,
       wantsToBecomeMember: validatedData.wantsToBecomeMember,
