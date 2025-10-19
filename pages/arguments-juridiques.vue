@@ -59,7 +59,7 @@
               <div>
                 <h3 class="font-bold text-gray-900 mb-2">Application au cas présent</h3>
                 <p class="text-gray-700 mb-3">
-                  La suppression de la liaison directe et l'obligation de correspondance à Marguerittes portent atteinte à ce droit fondamental pour les habitants de Ledenon, Cabrières et Saint-Gervasy. Les temps de trajet multipliés par 2,5 et l'inaccessibilité effective du service pour les personnes à mobilité réduite constituent une restriction disproportionnée de la liberté d'aller et venir.
+                  La suppression de la liaison directe et l'obligation de correspondance à Paloma portent atteinte à ce droit fondamental pour les habitants de Ledenon, Cabrières et Saint-Gervasy. Les temps de trajet multipliés par 2,5 et l'inaccessibilité effective du service pour les personnes à mobilité réduite constituent une restriction disproportionnée de la liberté d'aller et venir.
                 </p>
               </div>
 
