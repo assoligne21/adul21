@@ -170,29 +170,31 @@
 
     <!-- Create/Edit Modal -->
     <UModal v-model="showModal">
-      <div class="p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">
-          {{ editingUser ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}
-        </h2>
+      <UCard>
+        <template #header>
+          <h2 class="text-xl font-bold text-gray-900">
+            {{ editingUser ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}
+          </h2>
+        </template>
 
         <form @submit.prevent="saveUser" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-            <input
+            <UInput
               v-model="formData.name"
               type="text"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              placeholder="Nom complet"
             />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
+            <UInput
               v-model="formData.email"
               type="email"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              placeholder="email@example.com"
             />
           </div>
 
@@ -200,24 +202,21 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Mot de passe {{ editingUser ? '(laisser vide pour ne pas modifier)' : '' }}
             </label>
-            <input
+            <UInput
               v-model="formData.password"
               type="password"
               :required="!editingUser"
-              minlength="8"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              placeholder="Minimum 8 caractères"
             />
             <p class="text-xs text-gray-500 mt-1">Minimum 8 caractères</p>
           </div>
 
-          <div class="flex items-center">
-            <input
+          <div class="flex items-center gap-2">
+            <UCheckbox
               v-model="formData.isActive"
-              type="checkbox"
               id="isActive"
-              class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
             />
-            <label for="isActive" class="ml-2 block text-sm text-gray-700">
+            <label for="isActive" class="text-sm text-gray-700">
               Compte actif
             </label>
           </div>
@@ -234,6 +233,7 @@
             <UButton
               type="button"
               color="gray"
+              variant="outline"
               @click="closeModal"
               class="flex-1"
             >
@@ -241,7 +241,7 @@
             </UButton>
           </div>
         </form>
-      </div>
+      </UCard>
     </UModal>
   </div>
 </template>
