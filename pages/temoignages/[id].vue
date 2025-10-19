@@ -88,7 +88,7 @@
                   <li><strong>Solution adoptée :</strong> {{ getSolutionLabel(testimony.usage_after_solution) }}</li>
                   <li v-if="testimony.usage_after_distance"><strong>Distance parcourue :</strong> {{ testimony.usage_after_distance }} km</li>
                   <li v-if="testimony.usage_after_cost"><strong>Surcoût :</strong> {{ testimony.usage_after_cost }}€</li>
-                  <li v-if="testimony.usage_after_num_correspondences"><strong>Correspondances :</strong> {{ testimony.usage_after_num_correspondences }}</li>
+                  <li v-if="testimony.usage_after_correspondences"><strong>Correspondances :</strong> {{ testimony.usage_after_correspondences }}</li>
                   <li v-if="testimony.usage_after_wait_time"><strong>Temps d'attente :</strong> {{ testimony.usage_after_wait_time }} min</li>
                 </ul>
               </div>
@@ -101,25 +101,9 @@
                 Difficultés rencontrées
               </h3>
               <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-orange-800">
-                <li v-if="testimony.has_missed_correspondences" class="flex items-center">
+                <li v-for="problem in getProblemsArray(testimony)" :key="problem" class="flex items-center">
                   <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 text-orange-600" />
-                  Correspondances ratées
-                </li>
-                <li v-if="testimony.has_delays" class="flex items-center">
-                  <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 text-orange-600" />
-                  Retards fréquents
-                </li>
-                <li v-if="testimony.has_physical_difficulty" class="flex items-center">
-                  <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 text-orange-600" />
-                  Difficulté physique
-                </li>
-                <li v-if="testimony.has_fear" class="flex items-center">
-                  <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 text-orange-600" />
-                  Peur de rater les correspondances
-                </li>
-                <li v-if="testimony.has_extra_cost" class="flex items-center">
-                  <Icon name="heroicons:check-circle" class="w-5 h-5 mr-2 text-orange-600" />
-                  Surcoût financier
+                  {{ getProblemLabel(problem) }}
                 </li>
               </ul>
             </div>
@@ -266,7 +250,11 @@ const getSolutionLabel = (solution: string): string => {
 }
 
 const formatDate = (dateString: string): string => {
+  if (!dateString) return '-'
+
   const date = new Date(dateString)
+  if (isNaN(date.getTime())) return '-'
+
   const now = new Date()
   const diffInMs = now.getTime() - date.getTime()
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
@@ -279,14 +267,26 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+const getProblemsArray = (testimony: Testimony): string[] => {
+  return Array.isArray(testimony.problems) ? testimony.problems : []
+}
+
+const getProblemLabel = (problem: string): string => {
+  const labels: Record<string, string> = {
+    missed_correspondences: 'Correspondances ratées',
+    delays: 'Retards fréquents',
+    physical_difficulty: 'Difficulté physique',
+    fear: 'Peur de rater les correspondances',
+    extra_cost: 'Surcoût financier',
+    inconvenience: 'Désagrément général',
+    lost_time: 'Perte de temps',
+    stress: 'Stress accru'
+  }
+  return labels[problem] || problem
+}
+
 const hasProblems = (testimony: Testimony): boolean => {
-  return !!(
-    testimony.has_missed_correspondences ||
-    testimony.has_delays ||
-    testimony.has_physical_difficulty ||
-    testimony.has_fear ||
-    testimony.has_extra_cost
-  )
+  return getProblemsArray(testimony).length > 0
 }
 
 // SEO

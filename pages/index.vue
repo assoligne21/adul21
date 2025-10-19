@@ -27,22 +27,42 @@
           </p>
         </div>
 
-        <!-- Testimonies Grid (placeholder - will be populated with real data) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div v-for="i in 2" :key="i" class="card p-6">
+        <!-- Loading state -->
+        <div v-if="testimoniesLoading" class="text-center py-12">
+          <Icon name="heroicons:arrow-path" class="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
+        </div>
+
+        <!-- Testimonies Grid -->
+        <div v-else-if="recentTestimonies.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div
+            v-for="testimony in recentTestimonies"
+            :key="testimony.id"
+            class="card p-6 hover:shadow-xl transition-shadow cursor-pointer"
+            @click="navigateTo(`/temoignages/${testimony.id}`)"
+          >
             <div class="flex items-start mb-4">
               <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
                 <Icon name="heroicons:user" class="w-6 h-6 text-primary-600" />
               </div>
-              <div>
-                <div class="font-bold text-gray-900">Témoignage {{ i }}</div>
-                <div class="text-sm text-gray-500">{{ i === 1 ? 'Ledenon' : 'Cabrières' }} • {{ i === 1 ? 'Parent' : 'Lycéen' }}</div>
+              <div class="flex-1 min-w-0">
+                <div class="font-bold text-gray-900 truncate">
+                  {{ getDisplayName(testimony) }}
+                </div>
+                <div class="text-sm text-gray-500">
+                  {{ testimony.city }} • {{ getUserTypeLabel(testimony.user_type) }}
+                </div>
               </div>
             </div>
-            <p class="text-gray-700 italic">
-              "Les témoignages des habitants apparaîtront ici pour illustrer concrètement l'impact de la suppression de la ligne directe..."
+            <p class="text-gray-700 italic line-clamp-3">
+              "{{ testimony.testimony_text }}"
             </p>
           </div>
+        </div>
+
+        <!-- Empty state -->
+        <div v-else class="text-center py-12">
+          <Icon name="heroicons:document-text" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p class="text-gray-600 mb-6">Aucun témoignage pour le moment</p>
         </div>
 
         <div class="text-center">
@@ -60,11 +80,65 @@
 </template>
 
 <script setup lang="ts">
+import type { Testimony } from '~/types/database.types'
+
 const { organizationSchema, websiteSchema, addSchema } = useSchemaOrg()
 
 // Add Organization and WebSite schemas
 addSchema(organizationSchema)
 addSchema(websiteSchema)
+
+// Fetch recent testimonies
+const testimoniesLoading = ref(true)
+const recentTestimonies = ref<Testimony[]>([])
+
+const fetchRecentTestimonies = async () => {
+  try {
+    const { supabase } = useSupabase()
+    const { data, error } = await supabase
+      .from('testimonies')
+      .select('*')
+      .eq('is_published', true)
+      .eq('moderation_status', 'approved')
+      .order('created_at', { ascending: false })
+      .limit(2)
+
+    if (error) throw error
+    recentTestimonies.value = data || []
+  } catch (e) {
+    console.error('Error fetching testimonies:', e)
+  } finally {
+    testimoniesLoading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchRecentTestimonies()
+})
+
+// Helper functions
+const getDisplayName = (testimony: Testimony): string => {
+  if (testimony.publication_preference === 'anonymous') {
+    return 'Anonyme'
+  } else if (testimony.publication_preference === 'initials') {
+    const firstInitial = testimony.first_name.charAt(0).toUpperCase()
+    const lastInitial = testimony.last_name ? testimony.last_name.charAt(0).toUpperCase() : ''
+    return lastInitial ? `${firstInitial}. ${lastInitial}.` : `${firstInitial}.`
+  } else {
+    return testimony.last_name ? `${testimony.first_name} ${testimony.last_name.charAt(0)}.` : testimony.first_name
+  }
+}
+
+const getUserTypeLabel = (type: string): string => {
+  const labels: Record<string, string> = {
+    student: 'Lycéen',
+    parent: 'Parent',
+    worker: 'Actif',
+    retired: 'Retraité',
+    other: 'Autre'
+  }
+  return labels[type] || type
+}
 
 // SEO
 useHead({
