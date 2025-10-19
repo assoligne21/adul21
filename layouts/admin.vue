@@ -83,6 +83,15 @@
           </NuxtLink>
 
           <NuxtLink
+            to="/admin/utilisateurs"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+            active-class="bg-primary-50 text-primary-600 font-semibold"
+          >
+            <Icon name="heroicons:user-group" class="w-5 h-5" />
+            Utilisateurs
+          </NuxtLink>
+
+          <NuxtLink
             to="/admin/contacts"
             class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
             active-class="bg-primary-50 text-primary-600 font-semibold"
@@ -170,6 +179,16 @@
             >
               <Icon name="heroicons:envelope-open" class="w-5 h-5" />
               Newsletter
+            </NuxtLink>
+
+            <NuxtLink
+              to="/admin/utilisateurs"
+              class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+              active-class="bg-primary-50 text-primary-600 font-semibold"
+              @click="mobileMenuOpen = false"
+            >
+              <Icon name="heroicons:user-group" class="w-5 h-5" />
+              Utilisateurs
             </NuxtLink>
 
             <NuxtLink
