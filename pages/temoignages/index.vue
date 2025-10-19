@@ -334,7 +334,11 @@ const getUserTypeLabel = (type: string): string => {
 }
 
 const formatDate = (dateString: string): string => {
+  if (!dateString) return '-'
+
   const date = new Date(dateString)
+  if (isNaN(date.getTime())) return '-'
+
   const now = new Date()
   const diffInMs = now.getTime() - date.getTime()
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
