@@ -17,7 +17,7 @@
 
     <div v-else>
       <!-- Filters and search -->
-      <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <input
           v-model="searchQuery"
           type="text"
@@ -45,7 +45,7 @@
       </div>
 
       <!-- Stats summary -->
-      <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div class="text-2xl font-bold text-gray-900">{{ filteredSubscribers.length }}</div>
           <div class="text-sm text-gray-600">Total affiché</div>
@@ -64,8 +64,8 @@
         </div>
       </div>
 
-      <!-- Subscribers table -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <!-- Desktop Table -->
+      <div class="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -157,6 +157,73 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="md:hidden space-y-4">
+        <div
+          v-for="subscriber in filteredSubscribers"
+          :key="subscriber.id"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+        >
+          <div class="mb-3">
+            <a
+              :href="`mailto:${subscriber.email}`"
+              class="font-semibold text-primary-600 hover:underline block truncate"
+            >
+              {{ subscriber.email }}
+            </a>
+            <p class="text-sm text-gray-600 mt-1" v-if="subscriber.firstName || subscriber.lastName">
+              {{ subscriber.firstName }} {{ subscriber.lastName }}
+            </p>
+          </div>
+
+          <div class="space-y-2 text-sm mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-500">Source:</span>
+              <span
+                class="px-2 py-1 text-xs font-semibold rounded-full"
+                :class="{
+                  'bg-blue-100 text-blue-800': subscriber.source === 'footer',
+                  'bg-green-100 text-green-800': subscriber.source === 'adhesion',
+                  'bg-purple-100 text-purple-800': subscriber.source === 'donation',
+                  'bg-orange-100 text-orange-800': subscriber.source === 'pre-adhesion',
+                  'bg-gray-100 text-gray-800': !subscriber.source
+                }"
+              >
+                {{ getSourceLabel(subscriber.source) }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-500">Statut:</span>
+              <span
+                class="px-2 py-1 text-xs font-semibold rounded-full"
+                :class="{
+                  'bg-green-100 text-green-800': subscriber.isActive,
+                  'bg-red-100 text-red-800': !subscriber.isActive
+                }"
+              >
+                {{ subscriber.isActive ? 'Actif' : 'Désabonné' }}
+              </span>
+            </div>
+            <p class="text-gray-600">🕐 Inscrit le {{ formatDate(subscriber.createdAt) }}</p>
+            <p class="text-gray-600" v-if="subscriber.unsubscribedAt">
+              🚫 Désabonné le {{ formatDate(subscriber.unsubscribedAt) }}
+            </p>
+          </div>
+
+          <div class="flex gap-2 pt-3 border-t">
+            <UButton
+              color="red"
+              size="xs"
+              icon="i-heroicons-trash"
+              @click="confirmDelete(subscriber.id, subscriber.email)"
+              class="flex-1"
+            >
+              Supprimer
+            </UButton>
+          </div>
         </div>
       </div>
 

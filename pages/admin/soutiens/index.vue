@@ -19,7 +19,7 @@
 
     <div v-else>
       <!-- Filters and search -->
-      <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <input
           v-model="searchQuery"
           type="text"
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Stats summary -->
-      <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div class="text-2xl font-bold text-gray-900">{{ filteredSupporters.length }}</div>
           <div class="text-sm text-gray-600">Total affiché</div>

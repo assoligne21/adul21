@@ -7,7 +7,7 @@
     </div>
 
     <div v-else>
-      <div class="mb-6 flex gap-4">
+      <div class="mb-6 flex flex-wrap gap-2 sm:gap-4">
         <UButton
           :color="filter === 'all' ? 'primary' : 'gray'"
           @click="filter = 'all'"
@@ -28,7 +28,7 @@
         </UButton>
       </div>
 
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -112,6 +112,72 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="md:hidden space-y-4">
+        <div
+          v-for="testimony in filteredTestimonies"
+          :key="testimony.id"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+        >
+          <div class="mb-3">
+            <h3 class="font-semibold text-gray-900">
+              {{ testimony.firstName }} {{ testimony.lastName }}
+            </h3>
+            <p class="text-sm text-gray-600">{{ testimony.email }}</p>
+          </div>
+
+          <div class="space-y-2 text-sm mb-3">
+            <p class="text-gray-600">📍 {{ testimony.city }}</p>
+            <p class="text-gray-500">🕐 {{ formatDate(testimony.createdAt) }}</p>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-500">Statut:</span>
+              <span
+                class="px-2 py-1 text-xs font-semibold rounded-full"
+                :class="{
+                  'bg-orange-100 text-orange-800': testimony.moderationStatus === 'pending',
+                  'bg-green-100 text-green-800': testimony.isPublished,
+                  'bg-red-100 text-red-800': testimony.moderationStatus === 'rejected'
+                }"
+              >
+                {{ getStatusLabel(testimony) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-3 border-t">
+            <UButton
+              v-if="testimony.moderationStatus === 'pending'"
+              color="green"
+              size="xs"
+              icon="i-heroicons-eye"
+              @click="publishTestimony(testimony.id)"
+              class="flex-1"
+            >
+              Publier
+            </UButton>
+            <UButton
+              v-if="testimony.isPublished"
+              color="orange"
+              size="xs"
+              icon="i-heroicons-eye-slash"
+              @click="unpublishTestimony(testimony.id)"
+              class="flex-1"
+            >
+              Dépublier
+            </UButton>
+            <UButton
+              color="red"
+              size="xs"
+              icon="i-heroicons-trash"
+              @click="confirmDelete(testimony.id, `${testimony.firstName} ${testimony.lastName}`)"
+              class="flex-1"
+            >
+              Supprimer
+            </UButton>
+          </div>
         </div>
       </div>
     </div>

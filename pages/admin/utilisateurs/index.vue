@@ -64,7 +64,7 @@
                   {{ user.lastLoginAt ? formatDate(user.lastLoginAt) : 'Jamais' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                  <div class="flex gap-2">
+                  <div class="flex flex-wrap gap-2">
                     <UButton
                       color="blue"
                       size="xs"
