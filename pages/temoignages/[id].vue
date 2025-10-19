@@ -168,23 +168,16 @@ const fetchTestimony = async () => {
   error.value = null
 
   try {
-    const { supabase } = useSupabase()
     const id = route.params.id as string
 
-    // Get testimony
-    const { data, error: fetchError } = await supabase
-      .from('testimonies')
-      .select('*')
-      .eq('id', id)
-      .eq('is_published', true)
-      .eq('moderation_status', 'approved')
-      .single()
+    // Get testimony via API
+    const response = await $fetch(`/api/testimonies/${id}`)
 
-    if (fetchError || !data) {
+    if (!response.success || !response.data) {
       throw new Error('Témoignage introuvable ou non publié')
     }
 
-    testimony.value = data
+    testimony.value = response.data
 
     // Increment views count via API
     try {
@@ -295,7 +288,7 @@ useHead({
   meta: computed(() => [
     {
       name: 'description',
-      content: testimony.value
+      content: testimony.value && testimony.value.testimony_text
         ? testimony.value.testimony_text.substring(0, 160) + '...'
         : 'Découvrez les témoignages des habitants impactés par la suppression de la ligne 21.'
     }

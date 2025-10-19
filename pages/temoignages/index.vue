@@ -231,17 +231,13 @@ const fetchTestimonies = async () => {
   error.value = null
 
   try {
-    const { supabase } = useSupabase()
-    const { data, error: fetchError } = await supabase
-      .from('testimonies')
-      .select('*')
-      .eq('is_published', true)
-      .eq('moderation_status', 'approved')
-      .order('created_at', { ascending: false })
+    const response = await $fetch('/api/testimonies')
 
-    if (fetchError) throw fetchError
+    if (!response.success) {
+      throw new Error('Impossible de charger les témoignages')
+    }
 
-    testimonies.value = data || []
+    testimonies.value = response.data || []
   } catch (e: unknown) {
     console.error('Error fetching testimonies:', e)
     error.value = 'Impossible de charger les témoignages. Veuillez réessayer.'

@@ -94,17 +94,11 @@ const recentTestimonies = ref<Testimony[]>([])
 
 const fetchRecentTestimonies = async () => {
   try {
-    const { supabase } = useSupabase()
-    const { data, error } = await supabase
-      .from('testimonies')
-      .select('*')
-      .eq('is_published', true)
-      .eq('moderation_status', 'approved')
-      .order('created_at', { ascending: false })
-      .limit(2)
+    const response = await $fetch('/api/testimonies?limit=2')
 
-    if (error) throw error
-    recentTestimonies.value = data || []
+    if (response.success && response.data) {
+      recentTestimonies.value = response.data
+    }
   } catch (e) {
     console.error('Error fetching testimonies:', e)
   } finally {
