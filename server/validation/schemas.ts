@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { optionalPhoneField, requiredPhoneField } from './fields'
 
 // Testimony Validation Schema
 export const testimonySchema = z.object({
@@ -7,7 +8,7 @@ export const testimonySchema = z.object({
   last_name: z.string().optional(),
   age_range: z.enum(['under_18', '18-30', '30-50', '50-70', 'over_70']),
   email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
-  phone: z.string().optional(),
+  phone: optionalPhoneField,
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   user_type: z.enum(['student', 'parent', 'senior', 'pmr', 'worker', 'other']),
   school_name: z.string().optional(),
@@ -64,7 +65,7 @@ export const memberSchema = z.object({
   lastName: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
   birthDate: z.string().optional(),
   email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
-  phone: z.string().min(10, 'Numéro de téléphone invalide'),
+  phone: requiredPhoneField,
   address: z.string().min(5, 'L\'adresse doit contenir au moins 5 caractères'),
   postalCode: z.string().regex(/^\d{5}$/, 'Code postal invalide'),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
@@ -95,7 +96,7 @@ export type MemberInput = z.infer<typeof memberSchema>
 export const contactSchema = z.object({
   name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
   email: z.string().email('Email invalide').max(90, 'Email trop long (max 90 caractères)'),
-  phone: z.string().optional(),
+  phone: optionalPhoneField,
   subject: z.string().min(5, 'Le sujet doit contenir au moins 5 caractères'),
   message: z.string().min(20, 'Le message doit contenir au moins 20 caractères'),
   acceptsContact: z.boolean()

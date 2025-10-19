@@ -2,18 +2,14 @@ import { z } from 'zod'
 import { getDb } from '~/server/database/connection'
 import { preMembers } from '~/server/database/schema'
 import { eq, count as drizzleCount } from 'drizzle-orm'
+import { optionalPhoneField } from '~/server/validation/fields'
 
 // Validation schema
 const preMemberSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.string().default('')
-    .transform(val => val === '' ? undefined : val)
-    .refine(val => {
-      if (!val) return true
-      return val.length >= 10 && val.length <= 20
-    }, { message: 'Le téléphone doit contenir entre 10 et 20 caractères' }),
+  phone: optionalPhoneField,
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   userType: z.enum(['student', 'parent', 'worker', 'senior', 'pmr', 'other']),
   wantsToBecomeMember: z.boolean(),

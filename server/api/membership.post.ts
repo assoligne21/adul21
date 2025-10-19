@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { serverSupabaseServiceRole } from '../utils/supabase-compat.ts'
+import { requiredPhoneField } from '~/server/validation/fields'
 
 // Validation schema
 const membershipSchema = z.object({
@@ -9,7 +10,7 @@ const membershipSchema = z.object({
   lastName: z.string().min(2).max(100),
   birthDate: z.string().optional(),
   email: z.string().email().max(255),
-  phone: z.string().min(10).max(20),
+  phone: requiredPhoneField,
   address: z.string().min(10),
   postalCode: z.string().regex(/^[0-9]{5}$/),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
