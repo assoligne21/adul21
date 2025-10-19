@@ -7,9 +7,8 @@ const contactSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.string()
+  phone: z.string().default('')
     .transform(val => val === '' ? undefined : val)
-    .optional()
     .refine(val => {
       if (!val) return true
       return val.length >= 10 && val.length <= 20
