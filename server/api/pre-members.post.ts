@@ -8,16 +8,13 @@ const preMemberSchema = z.object({
   firstName: z.string().min(2).max(100),
   lastName: z.string().min(2).max(100),
   email: z.string().email().max(255),
-  phone: z.union([z.string(), z.null(), z.undefined()])
-    .transform(val => {
-      if (!val || val === '') return undefined
-      return val
-    })
+  phone: z.string()
+    .transform(val => val === '' ? undefined : val)
+    .optional()
     .refine(val => {
       if (!val) return true
       return val.length >= 10 && val.length <= 20
-    }, { message: 'Le téléphone doit contenir entre 10 et 20 caractères' })
-    .optional(),
+    }, { message: 'Le téléphone doit contenir entre 10 et 20 caractères' }),
   city: z.enum(['Ledenon', 'Cabrières', 'Saint-Gervasy', 'Autre']),
   userType: z.enum(['student', 'parent', 'worker', 'senior', 'pmr', 'other']),
   wantsToBecomeMember: z.boolean(),
