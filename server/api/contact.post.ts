@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { sanitizePlainText } from '~/server/utils/sanitize'
 import { optionalPhoneField } from '~/server/validation/fields'
+import { sendEmail } from '~/server/utils/email'
 
 // Validation schema
 const contactSchema = z.object({
