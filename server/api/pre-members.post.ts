@@ -3,6 +3,7 @@ import { getDb } from '~/server/database/connection'
 import { preMembers } from '~/server/database/schema'
 import { eq, count as drizzleCount } from 'drizzle-orm'
 import { optionalPhoneField } from '~/server/validation/fields'
+import { sendEmail } from '~/server/utils/email'
 
 // Validation schema
 const preMemberSchema = z.object({
@@ -67,12 +68,11 @@ export default defineEventHandler(async (event) => {
       .select({ value: drizzleCount() })
       .from(preMembers)
 
-    // Send notification to admin
-    try {
-      await sendEmail({
-        to: 'assoligne21@gmail.com',
-        subject: `[ADUL21] Nouveau soutien : ${validatedData.firstName} ${validatedData.lastName}`,
-        html: `
+    // Send notification to admin asynchronously (don't block response)
+    sendEmail({
+      to: 'assoligne21@gmail.com',
+      subject: `[ADUL21] Nouveau soutien : ${validatedData.firstName} ${validatedData.lastName}`,
+      html: `
           <!DOCTYPE html>
           <html>
           <head>
@@ -143,18 +143,15 @@ export default defineEventHandler(async (event) => {
           </body>
           </html>
         `
-      })
-    } catch (emailError) {
-      // Log but don't fail
+    }).catch((emailError) => {
       console.error('Failed to send admin notification:', emailError)
-    }
+    })
 
-    // Send confirmation to pre-member
-    try {
-      await sendEmail({
-        to: validatedData.email,
-        subject: 'Merci pour votre soutien - ADUL21',
-        html: `
+    // Send confirmation to pre-member asynchronously
+    sendEmail({
+      to: validatedData.email,
+      subject: 'Merci pour votre soutien - ADUL21',
+      html: `
           <!DOCTYPE html>
           <html>
           <head>
@@ -232,7 +229,7 @@ export default defineEventHandler(async (event) => {
           </body>
           </html>
         `,
-        text: `
+      text: `
 Merci ${validatedData.firstName} !
 
 Bienvenue dans le mouvement ADUL21
@@ -263,11 +260,9 @@ L'équipe ADUL21
 Email : assoligne21@gmail.com
 Site web : https://adul21.fr
         `
-      })
-    } catch (emailError) {
-      // Log but don't fail - admin was notified
+    }).catch((emailError) => {
       console.error('Failed to send confirmation:', emailError)
-    }
+    })
 
     return {
       success: true,

@@ -89,12 +89,11 @@ export default defineEventHandler(async (event) => {
       'Testimony created successfully'
     )
 
-    // Send notification to admin
-    try {
-      await sendEmail({
-        to: 'assoligne21@gmail.com',
-        subject: `[ADUL21] Nouveau témoignage : ${validatedData.first_name} ${validatedData.last_name}`,
-        html: `
+    // Send notification to admin asynchronously (don't block response)
+    sendEmail({
+      to: 'assoligne21@gmail.com',
+      subject: `[ADUL21] Nouveau témoignage : ${validatedData.first_name} ${validatedData.last_name}`,
+      html: `
           <!DOCTYPE html>
           <html>
           <head>
@@ -146,18 +145,15 @@ export default defineEventHandler(async (event) => {
           </body>
           </html>
         `
-      })
-    } catch (emailError) {
-      // Log but don't fail - testimony was saved
+    }).catch((emailError) => {
       console.error('Failed to send admin notification:', emailError)
-    }
+    })
 
-    // Send confirmation to witness
-    try {
-      await sendEmail({
-        to: validatedData.email,
-        subject: 'Merci pour votre témoignage - ADUL21',
-        html: `
+    // Send confirmation to witness asynchronously
+    sendEmail({
+      to: validatedData.email,
+      subject: 'Merci pour votre témoignage - ADUL21',
+      html: `
           <!DOCTYPE html>
           <html>
           <head>
@@ -224,7 +220,7 @@ export default defineEventHandler(async (event) => {
           </body>
           </html>
         `,
-        text: `
+      text: `
 Merci ${validatedData.first_name} !
 
 Votre témoignage a bien été reçu
@@ -256,11 +252,9 @@ L'équipe ADUL21
 Email : assoligne21@gmail.com
 Site web : https://adul21.fr
         `
-      })
-    } catch (emailError) {
-      // Log but don't fail - testimony was saved
+    }).catch((emailError) => {
       console.error('Failed to send confirmation:', emailError)
-    }
+    })
 
     return {
       success: true,

@@ -44,11 +44,10 @@ export default defineEventHandler(async (event) => {
     // Get config for admin email
     const config = useRuntimeConfig()
 
-    // Send notification to admin (don't fail if email fails in tests)
-    try {
-      await sendEmail({
-        to: 'assoligne21@gmail.com',
-        subject: `[ADUL21] Nouveau message : ${getSubjectLabel(validatedData.subject)}`,
+    // Send notification to admin asynchronously (don't block response)
+    sendEmail({
+      to: 'assoligne21@gmail.com',
+      subject: `[ADUL21] Nouveau message : ${getSubjectLabel(validatedData.subject)}`,
         html: `
           <!DOCTYPE html>
           <html>
@@ -91,18 +90,15 @@ export default defineEventHandler(async (event) => {
           </body>
           </html>
         `
-      })
-    } catch (emailError) {
-      // Log but don't fail - continue processing
+    }).catch((emailError) => {
       console.error('Failed to send admin notification:', emailError)
-    }
+    })
 
-    // Send confirmation to user
-    try {
-      await sendEmail({
-        to: validatedData.email,
-        subject: 'Nous avons bien reçu votre message - ADUL21',
-        html: `
+    // Send confirmation to user asynchronously
+    sendEmail({
+      to: validatedData.email,
+      subject: 'Nous avons bien reçu votre message - ADUL21',
+      html: `
           <!DOCTYPE html>
           <html>
           <head>
@@ -151,7 +147,7 @@ export default defineEventHandler(async (event) => {
           </body>
           </html>
         `,
-        text: `
+      text: `
 Message bien reçu
 
 Bonjour ${sanitizedFirstName},
@@ -168,11 +164,9 @@ Association de Défense des Usagers de la Ligne 21
 Email : assoligne21@gmail.com
 Site web : https://adul21.fr
         `
-      })
-    } catch (emailError) {
-      // Log but don't fail - admin was notified
+    }).catch((emailError) => {
       console.error('Failed to send user confirmation:', emailError)
-    }
+    })
 
     return {
       success: true,
