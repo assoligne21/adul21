@@ -153,7 +153,7 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div>
               <div class="text-4xl font-bold mb-2">Avant</div>
-              <p class="text-green-100">150 trajets bus/jour</p>
+              <p class="text-green-100">Trajets bus</p>
             </div>
             <div>
               <div class="text-4xl font-bold mb-2">Après</div>
