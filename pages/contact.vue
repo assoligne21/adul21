@@ -158,17 +158,18 @@
                 <!-- Message -->
                 <div>
                   <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-                    Message <span class="text-red-500">*</span>
+                    Message <span class="text-red-500">*</span> <span class="text-gray-500 font-normal">(minimum 10 caractères)</span>
                   </label>
                   <textarea
                     id="message"
                     v-model="form.message"
                     rows="6"
                     required
+                    minlength="10"
                     :aria-invalid="!form.message && submitError ? 'true' : 'false'"
                     aria-describedby="message-error"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Décrivez votre demande..."
+                    placeholder="Décrivez votre demande... (minimum 10 caractères)"
                   ></textarea>
                 </div>
 
@@ -218,7 +219,7 @@
                   aria-live="assertive"
                   class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800"
                 >
-                  ✗ Une erreur est survenue. Veuillez réessayer ou nous contacter directement par email.
+                  ✗ {{ errorMessage }}
                 </div>
               </form>
             </div>
@@ -244,11 +245,13 @@ const form = ref({
 const isSubmitting = ref(false)
 const submitSuccess = ref(false)
 const submitError = ref(false)
+const errorMessage = ref('')
 
 const submitForm = async () => {
   isSubmitting.value = true
   submitSuccess.value = false
   submitError.value = false
+  errorMessage.value = ''
 
   try {
     await $fetch('/api/contact', {
@@ -268,8 +271,22 @@ const submitForm = async () => {
       message: '',
       acceptsProcessing: false
     }
-  } catch (error) {
+  } catch (error: any) {
     submitError.value = true
+
+    // Parse validation errors from Zod
+    if (error.data?.data && Array.isArray(error.data.data)) {
+      const errors = error.data.data
+      const messageError = errors.find((e: any) => e.path?.[0] === 'message')
+
+      if (messageError && messageError.code === 'too_small') {
+        errorMessage.value = 'Votre message doit contenir au moins 10 caractères.'
+      } else {
+        errorMessage.value = 'Certains champs sont invalides. Veuillez vérifier vos informations.'
+      }
+    } else {
+      errorMessage.value = 'Une erreur est survenue. Veuillez réessayer ou nous contacter directement par email.'
+    }
   } finally {
     isSubmitting.value = false
   }
