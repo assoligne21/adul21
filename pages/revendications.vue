@@ -25,7 +25,7 @@
                   Rétablissement immédiat de la ligne directe 21
                 </h2>
                 <p class="text-gray-700 mb-4">
-                  Nous exigeons le retour à une liaison directe entre Ledenon, Cabrières, Saint-Gervasy et la gare SNCF de Nîmes, sans correspondance forcée à Marguerittes.
+                  Nous exigeons le retour à une liaison directe entre Ledenon, Cabrières, Saint-Gervasy et la gare SNCF de Nîmes, sans correspondance forcée à Paloma.
                 </p>
                 <div class="bg-primary-50 border-l-4 border-primary-600 p-4">
                   <p class="text-sm text-primary-900">
