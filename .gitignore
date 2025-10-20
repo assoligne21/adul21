@@ -25,3 +25,11 @@ logs
 
 # Test coverage
 coverage
+
+# Sensitive files with credentials
+tests/unit/email-runtime.test.ts
+scripts/create-admin.ts
+docs/03-api-endpoints.md
+tests/integration/api/password-reset.test.ts
+tests/integration/api/admin-users.test.ts
+tests/unit/jwt-extended.test.ts
