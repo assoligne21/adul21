@@ -29,23 +29,23 @@ useHead({
 const documents = ref<Document[]>([
   {
     id: 1,
-    title: 'Courrier au maire',
-    description: 'Modèle de courrier à envoyer à votre maire pour lui faire part de votre situation.',
-    category: 'Courrier type',
-    icon: 'i-heroicons-document-text',
-    formats: [
-      { type: 'DOCX', url: '/CourrierMairie.docx', size: '18 Ko', version: 2 }
-    ],
-    available: true
-  },
-  {
-    id: 2,
     title: 'Courrier à Nîmes Métropole',
     description: 'Modèle de courrier officiel à adresser au président de Nîmes Métropole.',
     category: 'Courrier type',
     icon: 'i-heroicons-document-text',
     formats: [
       { type: 'DOCX', url: '/CourrierMetropole.docx', size: '15 Ko', version: 2 }
+    ],
+    available: true
+  },
+  {
+    id: 2,
+    title: 'Courrier au maire',
+    description: 'Modèle de courrier à envoyer à votre maire pour lui faire part de votre situation.',
+    category: 'Courrier type',
+    icon: 'i-heroicons-document-text',
+    formats: [
+      { type: 'DOCX', url: '/CourrierMairie.docx', size: '18 Ko', version: 2 }
     ],
     available: true
   },
