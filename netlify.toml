@@ -1,20 +1,14 @@
 [build]
   command = "pnpm run build"
-  publish = ".output/public"
 
 [build.environment]
   NODE_VERSION = "22"
   PNPM_VERSION = "10.18.3"
-
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/server/:splat"
-  status = 200
-  force = true
-
-[functions]
-  directory = ".output/server"
-  node_bundler = "none"
+  # Provide minimal env vars for build
+  DATABASE_URL = "postgresql://placeholder:placeholder@localhost:5432/placeholder"
+  JWT_SECRET = "placeholder-build-only"
+  GMAIL_USER = "placeholder@example.com"
+  GMAIL_APP_PASSWORD = "placeholder"
 
 # Headers for security
 [[headers]]
