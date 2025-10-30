@@ -72,7 +72,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'node-server'
+    preset: process.env.NETLIFY ? 'netlify' : 'node-server'
   },
 
   typescript: {
